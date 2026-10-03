@@ -8,7 +8,8 @@ pipeline that predicts the **2026–27 Premier League season** from live state (
 ## Quick start
 
 ```bash
-cd ninety-plus-pl-predictor
+cd ninety-plus-pl-predictor      # or whatever this repo is called where you cloned it
+                                # (the GitHub repo is github.com/joshuathomas171717-cpu/90-I-)
 
 # everything in one command (data gate → calendar validation → datasets → models → backtest → dashboard)
 python3 run_all.py
