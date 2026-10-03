@@ -33,6 +33,19 @@ checks) is documented in [DEPLOY.md](DEPLOY.md).
 Publishing it, or keeping a deployed copy current for free, is covered in
 [PUBLISH.md](PUBLISH.md) — including a static GitHub Pages URL and the scheduled weekly refresh.
 
+### Tests
+
+```bash
+python3 tests/run_tests.py      # 90 checks, no test dependencies at all — open this one by name
+pytest -m "not slow"            # the same suite under pytest, if you prefer it (requirements-dev.txt)
+```
+
+The suite is written to run on a bare interpreter, so `requirements.txt` carries only the pipeline's
+own dependencies and pytest lives in `requirements-dev.txt`. Two checks are worth knowing about
+because they will stop a build: `tests/test_golden.py` freezes the headline numbers, and
+`check_page_current.py` (the last step of `run_all.py`) fails if the published page no longer carries
+the numbers the committed dataset describes.
+
 `static/index.html` is **self-contained**: fonts are embedded as base64 WOFF2, club crests are generated
 inline as SVG, and there are no external requests at all — so it renders identically offline, inside
 sandboxed previews, and from the server. When the Python server *is* reachable the front-end detects it,
@@ -211,6 +224,7 @@ ninety-plus-pl-predictor/
 ├── ml_engine.py               # feature engineering, model training, CV, Monte Carlo, player awards
 ├── backtest.py                # leakage-free 2025-26 replay + scoring vs baselines
 ├── build_dashboard.py         # compiles payload + static/src/* into the single-file dashboard
+├── check_page_current.py      # gate: is the published page the page the committed data describes?
 ├── server.py                  # threaded HTTP server: JSON API, /healthz + /readyz, background warm-up
 ├── Dockerfile                 # two-stage image, non-root, pre-warms the model cache at build time
 ├── fly.toml · render.yaml     # host configs; both gate traffic on /readyz

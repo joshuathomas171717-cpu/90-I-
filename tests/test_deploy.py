@@ -16,9 +16,7 @@ import time
 import urllib.error
 import urllib.request
 
-import pytest  # noqa: F401  (markers; also runs under tests/run_tests.py)
-
-from _util import ROOT, skip
+from _util import ROOT, pytest, skip
 
 DATA = os.path.join(ROOT, "data")
 SNAPSHOT = os.path.join(DATA, "predictions_2026_27_summary.json")

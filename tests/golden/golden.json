@@ -1,5 +1,12 @@
 {
   "_note": "Frozen headline numbers. Regenerate with python3 tests/make_golden.py only for intended changes.",
+  "environment": {
+    "python": "3.13.14",
+    "numpy": "2.3.5",
+    "pandas": "2.2.3",
+    "scipy": "1.17.1",
+    "sklearn": "1.6.1"
+  },
   "as_of": "2026-10-02 (Matchweek 5 Complete)",
   "model_version": "2.1",
   "lambda_scale": 0.948,

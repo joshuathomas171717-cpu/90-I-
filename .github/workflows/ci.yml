@@ -35,7 +35,11 @@ jobs:
       - name: Install
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          # requirements-dev.txt pulls in requirements.txt and pytest. A bare
+          # `pip install -r requirements.txt` used to be enough for the pipeline but not for the
+          # tests, and the difference only showed up here — never locally, where pytest is already
+          # on the machine. Install both.
+          pip install -r requirements-dev.txt
 
       # ── the gate, called out on its own so a data failure is unambiguous in the UI ──────────
       - name: Data validation gate
@@ -45,6 +49,16 @@ jobs:
       - name: Pipeline, tests and dashboard
         run: python3 run_all.py
 
+      # ── the zero-dependency promise, checked rather than asserted ─────────────────────────────
+      # requirements.txt carries no test tooling, and the suite is documented to run on a bare
+      # interpreter. This step proves it: a stub `pytest` module that refuses to import is put
+      # first on the path, so any test module that grows a bare `import pytest` fails right here.
+      - name: Tests run without pytest installed
+        run: |
+          mkdir -p /tmp/nopytest
+          printf 'raise ImportError("pytest is not installed (simulated)")\n' > /tmp/nopytest/pytest.py
+          PYTHONPATH=/tmp/nopytest python3 tests/run_tests.py
+
       # The weekly job is the part that can quietly rot, so it runs here too — with no network and
       # no key, against the checked-in dataset, which is exactly the fallback path.
       - name: Weekly job (offline dry run)
@@ -53,10 +67,15 @@ jobs:
         run: python3 update_week.py --dry-run
 
       # ── the committed page must match the committed sources ────────────────────────────────
+      # Not `git diff` on the file. The page embeds projected numbers, and their last decimals come
+      # from whichever numpy/scipy/scikit-learn the runner installed — so a byte comparison fails on
+      # a page that is perfectly current. check_page_current.py compares the two builds by identity
+      # (club, player, fixture, scoreline), holds every data-derived number to exact equality, and
+      # allows only a documented band on the projections, printing the largest drift it finds.
       - name: Dashboard is current and reproducible
         run: |
-          git diff --exit-code --stat -- static/index.html \
-            || { echo "::error::static/index.html is stale — run python3 build_dashboard.py and commit it"; exit 1; }
+          git show HEAD:static/index.html > /tmp/committed_index.html
+          python3 check_page_current.py --against /tmp/committed_index.html
 
       # ── does it actually serve? (boots, warms, answers, then dies) ─────────────────────────
       - name: Server smoke test

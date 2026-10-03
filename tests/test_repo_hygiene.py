@@ -159,3 +159,133 @@ def test_the_workflows_exist_and_do_what_they_claim():
     assert "workflow_run" in pages, \
         "pages.yml must also trigger on the weekly job finishing, or its commit will not redeploy"
     assert "workflow_run" in pages and "Weekly update" in pages
+
+
+# ════════════════════════════════════════════════════════════════════════════
+#  5. the dependency declarations mean what they say
+#
+#  The first CI runs failed here, and the failure was invisible locally: requirements.txt carried
+#  `pytest>=8.0 ; extra == "dev"`. Nothing declares extras for a requirements file, so the marker was
+#  simply never true, pip installed nothing, and the test modules died on import in CI — while the
+#  machine this was developed on already had pytest and never noticed. These checks are cheap and
+#  they make that whole class of mistake impossible to repeat.
+# ════════════════════════════════════════════════════════════════════════════
+import ast  # noqa: E402  (kept next to the checks that use it)
+
+REQ_FILES = ("requirements.txt", "requirements-dev.txt")
+#: Import name → distribution name, where they differ.
+DISTRIBUTION_NAMES = {"sklearn": "scikit-learn", "yaml": "pyyaml"}
+#: Allowed to be imported and not declared, with a reason.
+IMPORT_EXEMPTIONS = {"pytest": "optional test tooling, resolved by tests/_util.py with a fallback"}
+
+
+def _requirements_text():
+    for name in REQ_FILES:
+        path = os.path.join(ROOT, name)
+        if os.path.exists(path):
+            yield name, open(path, encoding="utf-8").read()
+
+
+def test_no_environment_markers_that_can_never_activate():
+    """A requirements line ending in `; extra == "..."` is a line pip will never install.
+
+    Extras are declared by a package's own metadata (setup.py / pyproject), never by a
+    requirements file. `pip install -r requirements.txt` also installs nothing for such a line, and
+    does not warn. If you want dev-only packages, put them in requirements-dev.txt.
+    """
+    for name, text in _requirements_text():
+        for line in text.splitlines():
+            code = line.split("#", 1)[0].strip()
+            if not code:
+                continue
+            assert "extra ==" not in code, (
+                "%s: %r can never be installed — nothing declares extras for a requirements file. "
+                "Move it to requirements-dev.txt instead." % (name, code))
+            assert "extra==" not in code, "%s: %r can never be installed" % (name, code)
+
+
+def test_dev_requirements_include_the_runtime_requirements():
+    """One command has to be enough: CI installs requirements-dev.txt and expects the pipeline too."""
+    dev = open(os.path.join(ROOT, "requirements-dev.txt"), encoding="utf-8").read()
+    assert re.search(r"^-r\s+requirements\.txt\s*$", dev, re.M), \
+        "requirements-dev.txt must start from `-r requirements.txt`, or a single install misses the pipeline"
+
+
+def test_pytest_is_only_imported_through_the_optional_resolver():
+    """Test modules import pytest from tests/_util.py, which falls back to a shim when it is absent.
+
+    A bare `import pytest` at module level turns a missing test dependency into a crashed test run,
+    which is exactly what CI hit. Importing it from _util keeps the suite runnable on a bare
+    interpreter — the promise `python3 tests/run_tests.py` makes and tests without pytest.
+    """
+    tests_dir = os.path.join(ROOT, "tests")
+    for name in sorted(os.listdir(tests_dir)):
+        if not (name.startswith("test_") and name.endswith(".py")):
+            continue
+        path = os.path.join(tests_dir, name)
+        tree = ast.parse(open(path, encoding="utf-8").read(), path)
+        for node in tree.body:  # module level only: imports inside a function are fine
+            if isinstance(node, ast.Import):
+                assert all(a.name.split(".")[0] != "pytest" for a in node.names), \
+                    "tests/%s does a bare `import pytest` — use `from _util import pytest`" % name
+            elif isinstance(node, ast.ImportFrom) and node.level == 0 and node.module == "pytest":
+                assert False, "tests/%s imports pytest directly — use `from _util import pytest`" % name
+
+
+def test_every_third_party_import_is_declared():
+    """Every module-level import in the pipeline and the tests is either stdlib, local, or declared.
+
+    This is the check that would have caught the missing pytest, and it will catch the next missing
+    dependency before CI does. Import-time-only is deliberate: an import inside a function is a
+    documented optional path, not a hard requirement.
+    """
+    declared = set()
+    for _, text in _requirements_text():
+        for line in text.splitlines():
+            code = line.split("#", 1)[0].strip()
+            if not code or code.startswith("-"):
+                continue
+            m = re.match(r"^([A-Za-z0-9_.\-]+)", code)
+            if m:
+                declared.add(m.group(1).lower().replace("_", "-"))
+
+    local = {"__init__"}
+    for dirname in (ROOT, os.path.join(ROOT, "tests"), os.path.join(ROOT, "sources")):
+        if not os.path.isdir(dirname):
+            continue
+        for name in os.listdir(dirname):
+            if name.endswith(".py"):
+                local.add(name[:-3])
+            elif os.path.isdir(os.path.join(dirname, name)):
+                local.add(name)
+
+    seen = {}
+    scanned = [(ROOT, n) for n in sorted(os.listdir(ROOT)) if n.endswith(".py")]
+    for sub in ("tests", "sources"):
+        d = os.path.join(ROOT, sub)
+        if os.path.isdir(d):
+            scanned += [(d, n) for n in sorted(os.listdir(d)) if n.endswith(".py")]
+
+    for d, name in scanned:
+        path = os.path.join(d, name)
+        tree = ast.parse(open(path, encoding="utf-8").read(), path)
+        tops = set()
+        for node in tree.body:
+            if isinstance(node, ast.Import):
+                tops |= {a.name.split(".")[0] for a in node.names}
+            elif isinstance(node, ast.ImportFrom) and node.level == 0 and node.module:
+                tops.add(node.module.split(".")[0])
+        for top in tops:
+            if top in sys.stdlib_module_names or top in local or top in IMPORT_EXEMPTIONS:
+                continue
+            seen.setdefault(top, []).append(os.path.relpath(path, ROOT))
+
+    undeclared = {}
+    for top, where in seen.items():
+        dist = DISTRIBUTION_NAMES.get(top, top).lower().replace("_", "-")
+        if dist not in declared and top.lower() not in declared:
+            undeclared[top] = where
+    assert not undeclared, (
+        "imported at module level but not in %s: %s"
+        % (" or ".join(REQ_FILES),
+           ", ".join("%s (%s)" % (k, ", ".join(sorted(set(v)))) for k, v in sorted(undeclared.items()))))

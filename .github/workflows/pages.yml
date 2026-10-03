@@ -60,10 +60,13 @@ jobs:
       - name: Rebuild the dashboard
         run: python3 build_dashboard.py
 
+      # Compared the same way CI does it, and for the same reason: a byte-for-byte diff of this file
+      # fails on library drift and blocks the deploy of a page that is perfectly current.
+      # See check_page_current.py.
       - name: Fail if the committed page was stale
         run: |
-          git diff --exit-code -- static/index.html \
-            || { echo "::error::static/index.html is out of date — commit a rebuild"; exit 1; }
+          git show HEAD:static/index.html > /tmp/committed_index.html
+          python3 check_page_current.py --against /tmp/committed_index.html
 
       # The page is one file, so the artifact is one file. No Jekyll, no dependencies.
       - name: Configure Pages

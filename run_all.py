@@ -22,6 +22,10 @@ STEPS = [
     ("backtest.py", "replaying the 2025-26 season for out-of-sample scoring"),
     ("tests/run_tests.py", "verifying invariants, golden snapshots and portability"),
     ("build_dashboard.py", "rebuilding static/index.html"),
+    # Last, because it can only be answered once the page has been rebuilt: does the page carry the
+    # numbers the committed dataset describes? The library versions running here cannot affect the
+    # answer, which is the point — see check_page_current.py.
+    ("check_page_current.py", "checking the published page against the committed data"),
 ]
 
 

@@ -11,7 +11,7 @@ import math
 import os
 import sys
 
-import pytest  # noqa: F401  (markers; tests also run without pytest via tests/run_tests.py)
+from _util import pytest  # noqa: F401  (real pytest, or the shim in _util)
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)

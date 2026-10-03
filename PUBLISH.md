@@ -75,6 +75,16 @@ without changing anything.
 Pages redeploys automatically after the weekly commit (`pages.yml` also triggers on the weekly
 workflow finishing), so the published site tracks the season without you touching it.
 
+**What a quiet week does: nothing.** The job rebuilds everything on GitHub's runner, whose numpy /
+scipy / scikit-learn are not the ones your committed numbers came from — so even with no new results
+the *projections* come back a few tenths of a point different. Committing that would mean a
+"weekly refresh" commit every week carrying no news. If the rebuild is the same page within
+documented tolerances, the derived outputs are restored exactly as committed and no commit is made.
+A real gameweek moves the matchweek stamp and the probabilities far beyond those bands, so it is
+published as normal; so is any change to the source data. `check_page_current.py` is what draws
+that line, and the same gate is what CI and Pages use instead of a byte-for-byte `git diff` of
+`static/index.html` — a diff that fails on library drift rather than on staleness.
+
 ## 5. Before you make it public — the checklist
 
 - [x] **`.gitignore`** covers `__pycache__/`, `*.pyc`, `.env`, `.venv/`, `.DS_Store`, `artifacts/`,

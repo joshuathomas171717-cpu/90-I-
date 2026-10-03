@@ -19,9 +19,7 @@ import subprocess
 import sys
 import tempfile
 
-import pytest  # noqa: F401  (markers; also runs under tests/run_tests.py)
-
-from _util import ROOT, skip
+from _util import ROOT, pytest, skip
 
 DATA = os.path.join(ROOT, "data")
 sys.path.insert(0, ROOT)

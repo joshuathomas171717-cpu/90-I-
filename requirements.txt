@@ -3,13 +3,17 @@
 #
 # Only the offline pipeline needs these. static/index.html is fully self-contained:
 # no external requests, no CDN, no font downloads — it runs by double-clicking it.
+#
+# Test tooling is NOT here on purpose: the suite runs on a bare interpreter
+# (`python3 tests/run_tests.py`), and pytest is optional. It lives in
+# requirements-dev.txt, and CI installs that file too.
+#
+# Note for future edits: do not add a `; extra == "..."` marker to a line in this
+# file. Nothing declares extras for a requirements file, so the marker is simply
+# never true and pip silently installs nothing — which is how pytest went missing
+# in CI while passing locally. tests/test_repo_hygiene.py now fails on any such marker.
 
 numpy>=1.26,<3
 pandas>=2.0,<3
 scipy>=1.11,<2
 scikit-learn>=1.3,<2
-
-# ── development / verification (optional) ──
-# The test suite runs with or without pytest: `python3 tests/run_tests.py`
-# requires nothing extra, and `pytest -m "not slow"` works if you prefer it.
-pytest>=8.0 ; extra == "dev"

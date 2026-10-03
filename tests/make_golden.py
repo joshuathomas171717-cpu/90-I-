@@ -5,6 +5,10 @@ snapshot is that unexpected movement fails the build.
 """
 import json
 import os
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from _util import env_versions  # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -14,6 +18,9 @@ bt = json.load(open(os.path.join(ROOT, "data", "backtest_2025_26.json"), encodin
 
 golden = {
     "_note": "Frozen headline numbers. Regenerate with python3 tests/make_golden.py only for intended changes.",
+    # Which library versions produced these numbers. tests/test_golden.py compares tightly inside
+    # this environment and with a documented, wider band outside it — see the comment there.
+    "environment": env_versions(),
     "as_of": summary["meta"]["as_of_date"],
     "model_version": "2.1",
     "lambda_scale": summary["meta"]["lambda_scale"],

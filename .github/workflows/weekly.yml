@@ -69,6 +69,35 @@ jobs:
       - name: Test gate
         run: python3 tests/run_tests.py
 
+      # This job rebuilds everything on a runner whose numpy/scipy/scikit-learn are not the ones the
+      # committed numbers were produced with, so when no new results arrived the *projections* still
+      # come back a few tenths of a point different. Committing that every week would fill the history
+      # with "weekly refresh" commits that carry no news.
+      #
+      # So: if the rebuilt page is the same page within the documented tolerances, nothing real
+      # happened, and the derived outputs are put back exactly as committed. Note that the page and
+      # the projected datasets are reverted *together* — reverting only one of them would leave the
+      # repository holding a page that no longer matches its own data, which CI would then reject
+      # (check_page_current.py compares those two files exactly).
+      #
+      # A real promotion moves the matchweek stamp and the probabilities far beyond these bands, so
+      # it is kept and committed; so is any change to the source data, which is not in this list.
+      - name: Discard churn that is only library noise
+        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && !inputs.dry_run)
+        run: |
+          git show HEAD:static/index.html > /tmp/committed_index.html
+          if python3 check_page_current.py --against /tmp/committed_index.html; then
+            git checkout -- static/index.html \
+                             data/predictions_2026_27_summary.json \
+                             data/projected_table_2026_27.csv \
+                             data/projected_golden_boot_2026_27.csv \
+                             data/projected_playmaker_2026_27.csv \
+                             data/projected_golden_glove_2026_27.csv
+            echo "Nothing new arrived — the differences were numerical noise, and they have been discarded."
+          else
+            echo "The rebuild genuinely moved — it will be committed."
+          fi
+
       - name: Commit the refreshed dataset
         if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && !inputs.dry_run)
         run: |

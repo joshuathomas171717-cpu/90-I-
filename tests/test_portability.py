@@ -20,7 +20,7 @@ import subprocess
 import sys
 import tempfile
 
-import pytest
+from _util import pytest  # noqa: F401
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)

@@ -1,0 +1,7 @@
+# NINETY+ — development and CI dependencies.
+#
+# `pip install -r requirements-dev.txt` gets you everything requirements.txt has *plus* pytest.
+# Use this if you want to run `pytest -m "not slow"` instead of the dependency-free runner
+# (`python3 tests/run_tests.py`). Neither is required to use the dashboard or the pipeline.
+-r requirements.txt
+pytest>=8.0

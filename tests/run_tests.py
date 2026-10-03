@@ -21,13 +21,32 @@ sys.path.insert(0, os.path.dirname(HERE))
 SLOW_MARKER = "pytest.mark.slow"
 
 
+class _ImportFailure:
+    """A test module that could not even be imported.
+
+    This used to be a hard crash: the generator blew up inside `main()`, so the run died with a
+    traceback and every test in every module after the broken one silently never ran. That is a bad
+    way to learn that a dependency is missing — it happened in CI, where requirements.txt did not
+    install pytest. A module that cannot be imported is now reported as one failed check, with the
+    rest of the suite still running.
+    """
+
+    def __init__(self, name, exc):
+        self.name, self.exc = name, exc
+
+
 def discover():
     for name in sorted(os.listdir(HERE)):
-        if name.startswith("test_") and name.endswith(".py"):
+        if not (name.startswith("test_") and name.endswith(".py")):
+            continue
+        try:
             spec = importlib.util.spec_from_file_location(name[:-3], os.path.join(HERE, name))
             mod = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(mod)
-            yield name, mod
+        except Exception as exc:  # noqa: BLE001 - deliberate: report, do not crash the run
+            yield name, _ImportFailure(name, exc)
+            continue
+        yield name, mod
 
 
 def main(argv):
@@ -40,6 +59,17 @@ def main(argv):
     t0 = time.perf_counter()
 
     for filename, mod in discover():
+        if isinstance(mod, _ImportFailure):
+            full = f"{filename}::<module import>"
+            failed.append((full, mod.exc))
+            print(f"  ✗ {full}\n      {type(mod.exc).__name__}: {str(mod.exc)[:400]}")
+            if isinstance(mod.exc, ImportError):
+                missing = getattr(mod.exc, "name", None)
+                detail = f"cannot import {missing!r}" if missing else "a module this test file needs is missing"
+                print(f"      hint: {detail} — the pipeline's dependencies are in requirements.txt, "
+                      "test tooling (pytest) in requirements-dev.txt")
+                print("      hint: `pip install -r requirements-dev.txt` installs both")
+            continue
         for attr in sorted(dir(mod)):
             if not attr.startswith("test_"):
                 continue

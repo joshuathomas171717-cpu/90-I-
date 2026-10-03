@@ -20,9 +20,7 @@ import sys
 import time
 import http.client
 
-import pytest
-
-from _util import ROOT, skip
+from _util import ROOT, pytest, skip
 
 sys.path.insert(0, ROOT)
 

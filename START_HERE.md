@@ -22,6 +22,10 @@ PORT=8000 python3 server.py # then open http://localhost:8000  (health: /healthz
 The page auto-detects the server and switches from "offline preview" to **live engine**.
 Rebuild with `python3 build_dashboard.py` after changing anything in `static/src/`.
 
+To run the checks: `python3 tests/run_tests.py` — no test dependencies needed. If you would rather use
+pytest, `pip install -r requirements-dev.txt` first. `run_all.py` already runs the suite, and finishes
+by checking that the published page carries the numbers the committed dataset describes.
+
 ## 3. Keeping it up to date
 
 ```bash
