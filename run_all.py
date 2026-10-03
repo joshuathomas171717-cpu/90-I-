@@ -20,8 +20,15 @@ STEPS = [
     ("data_builder.py", "building datasets (matches, fixtures, teams, players)"),
     ("ml_engine.py", "training models + running the baseline Monte Carlo"),
     ("backtest.py", "replaying the 2025-26 season for out-of-sample scoring"),
-    ("tests/run_tests.py", "verifying invariants, golden snapshots and portability"),
+    # The pages are built *before* the tests, not after. Two of the checks read the generated site —
+    # that its fixture text matches the projected-fixtures table, that a club page states its club's
+    # projection — and a page built from the previous run's data is not a product bug, it is the
+    # pipeline testing itself out of order. Building first and verifying second is also the order that
+    # makes the checks mean something: nothing downstream of a test can be published unverified,
+    # because run_all exits non-zero and CI goes red on the first failure either way.
     ("build_dashboard.py", "rebuilding static/index.html"),
+    ("site_pages.py", "writing crawlable pages, icons, previews and the sitemap"),
+    ("tests/run_tests.py", "verifying invariants, golden snapshots, the generated site and portability"),
     # Last, because it can only be answered once the page has been rebuilt: does the page carry the
     # numbers the committed dataset describes? The library versions running here cannot affect the
     # answer, which is the point — see check_page_current.py.

@@ -174,8 +174,13 @@
       <div style="padding-top:16px"><button class="btn pri" id="fxGo">Run the model</button></div>
     </div>
     <div class="row" style="margin-top:14px" id="fxQuick"></div>
+    <div class="row" style="margin-top:12px;gap:8px">
+      <button class="btn sm" id="shareDuel" data-tip="Copy a link to this exact duel">Share duel</button>
+      <button class="btn sm" id="cardDuel" data-tip="Download a 1200×630 card of this duel">Download card</button>
+    </div>
   </div>
   <div id="fxResult" style="margin-top:16px"></div>
+  <canvas id="cardCanvas" width="1200" height="630" style="display:none"></canvas>
 </section>
 
 <!-- ══════════════════ WHAT-IF ══════════════════ -->
@@ -203,6 +208,7 @@
           <button class="btn hot" id="runSim">Re-simulate season</button>
           <button class="btn" id="resetScen">Clear scenario</button>
           <button class="btn sm" id="shareScen" data-tip="Copy a link that reopens this exact scenario">Share scenario</button>
+          <button class="btn sm" id="cardScen" data-tip="Download a 1200×630 card of this scenario">Download card</button>
         </div>
         <div class="small dim" style="margin-top:10px">
           <kbd>R</kbd> resets, <kbd>S</kbd> copies a shareable link, <kbd>?</kbd> lists every shortcut.

@@ -87,12 +87,19 @@ jobs:
         run: |
           git show HEAD:static/index.html > /tmp/committed_index.html
           if python3 check_page_current.py --against /tmp/committed_index.html; then
-            git checkout -- static/index.html \
+            # Everything derived is put back together. `static/` now covers the crawlable pages,
+            # the preview cards and the icons as well as the dashboard, and all of them are written
+            # from the same numbers — reverting one without the others would leave the repository
+            # holding a page that contradicts its own data, which the page check then rejects.
+            # Source data (matches, fixtures, teams, players) is deliberately NOT in this list: it is
+            # what the job exists to update, and the gate above only passes when it did not change.
+            git checkout -- static \
                              data/predictions_2026_27_summary.json \
                              data/projected_table_2026_27.csv \
                              data/projected_golden_boot_2026_27.csv \
                              data/projected_playmaker_2026_27.csv \
-                             data/projected_golden_glove_2026_27.csv
+                             data/projected_golden_glove_2026_27.csv \
+                             data/projected_fixtures_2026_27.csv
             echo "Nothing new arrived — the differences were numerical noise, and they have been discarded."
           else
             echo "The rebuild genuinely moved — it will be committed."
@@ -103,7 +110,9 @@ jobs:
         run: |
           git config user.name  "ninety-plus-bot"
           git config user.email "bot@users.noreply.github.com"
-          git add data/ static/index.html
+          # static/ is the whole generated site: the dashboard, the crawlable pages, the preview
+          # cards and the icons. Adding the directory keeps them in step with the data.
+          git add data/ static/
           if git diff --cached --quiet; then
             echo "No changes — the model already reflects the latest results."
           else

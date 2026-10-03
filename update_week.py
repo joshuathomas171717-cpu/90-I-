@@ -222,7 +222,8 @@ def log(step, message):
     print("  %-9s %s" % (step, message), flush=True)
 
 
-def run_build(steps=("data_builder.py", "ml_engine.py", "backtest.py", "build_dashboard.py")):
+def run_build(steps=("data_builder.py", "ml_engine.py", "backtest.py", "build_dashboard.py",
+                     "site_pages.py")):
     for script in steps:
         t0 = time.perf_counter()
         result = subprocess.run([sys.executable, os.path.join(BASE_DIR, script)], cwd=BASE_DIR,

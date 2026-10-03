@@ -22,6 +22,10 @@ PORT=8000 python3 server.py # then open http://localhost:8000  (health: /healthz
 The page auto-detects the server and switches from "offline preview" to **live engine**.
 Rebuild with `python3 build_dashboard.py` after changing anything in `static/src/`.
 
+The site also ships as real pages: `static/gameweek/mw6.html`, `static/club/arsenal.html`,
+`static/table.html` and `static/model.html` are generated HTML with the numbers as text, for search
+engines and for anyone who wants to read rather than click. `python3 site_pages.py` regenerates them.
+
 To run the checks: `python3 tests/run_tests.py` — no test dependencies needed. If you would rather use
 pytest, `pip install -r requirements-dev.txt` first. `run_all.py` already runs the suite, and finishes
 by checking that the published page carries the numbers the committed dataset describes.

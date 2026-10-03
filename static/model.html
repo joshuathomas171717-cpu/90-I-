@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How the NINETY+ model works — method, accuracy and limits</title>
+<meta name="description" content="The method behind the projections, the measured accuracy on a blind 2025-26 replay, and an honest list of what the model cannot know.">
+<meta name="theme-color" content="#0B0F1A">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="icons/favicon-32.png" sizes="32x32" type="image/png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="NINETY+">
+<meta property="og:title" content="How the NINETY+ model works — method, accuracy and limits">
+<meta property="og:description" content="The method behind the projections, the measured accuracy on a blind 2025-26 replay, and an honest list of what the model cannot know.">
+
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="How the NINETY+ model works — method, accuracy and limits">
+<meta name="twitter:description" content="The method behind the projections, the measured accuracy on a blind 2025-26 replay, and an honest list of what the model cannot know.">
+<link rel="canonical" href="model.html">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebPage","name":"The NINETY+ model","about":{"@type":"Dataset","name":"Premier League 2026-27 predictions"}}]}</script>
+<style>
+:root{color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:#0B0F1A;color:#ECF1FB;
+     font:16px/1.55 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+a{color:#6ee7ff;text-decoration:none}a:hover{text-decoration:underline}
+.wrap{max-width:960px;margin:0 auto;padding:28px 20px 64px}
+header.site{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;padding:18px 20px;
+        border-bottom:1px solid #232b42;max-width:960px;margin:0 auto}
+header.site .brand{font-weight:800;letter-spacing:.14em;font-size:18px}
+header.site .tag{color:#8E9BB8;font-size:13px}
+nav.crumbs{color:#8E9BB8;font-size:13px;margin:0 0 18px}
+nav.crumbs a{color:#8E9BB8}
+h1{font-size:30px;line-height:1.15;margin:14px 0 6px;letter-spacing:-.01em}
+h2{font-size:19px;margin:30px 0 10px;letter-spacing:.01em}
+p.lede{color:#B9C4DC;margin:0 0 22px}
+.card{background:#12182A;border:1px solid #232b42;border-radius:14px;padding:18px 18px 8px;margin:0 0 18px}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid #1d2437;font-size:14px}
+th{color:#8E9BB8;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.08em}
+td.num,th.num{text-align:right}
+tr:last-child td{border-bottom:0}
+.chip{display:inline-block;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;
+      letter-spacing:.06em;text-transform:uppercase}
+.chip.ucl{background:rgba(34,211,238,.14);color:#6ee7ff}
+.chip.rel{background:rgba(229,75,154,.16);color:#ff8fc4}
+.bar{height:7px;border-radius:4px;background:#232b42;overflow:hidden;min-width:60px}
+.bar>i{display:block;height:100%;background:#22D3EE}
+.bar.rel>i{background:#E54B9A}
+.muted{color:#8E9BB8}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+.kv{background:#0f1626;border:1px solid #1d2437;border-radius:12px;padding:12px 14px}
+.kv b{display:block;font-size:22px;letter-spacing:-.01em}
+.kv span{color:#8E9BB8;font-size:12px;text-transform:uppercase;letter-spacing:.08em}
+footer.site{border-top:1px solid #232b42;margin-top:40px;padding-top:18px;color:#8E9BB8;font-size:13px}
+.cta{display:inline-block;background:#22D3EE;color:#062028;font-weight:700;padding:10px 18px;
+     border-radius:10px;margin:6px 0 0}
+.cta:hover{text-decoration:none;filter:brightness(1.08)}
+.fixture{display:flex;justify-content:space-between;gap:14px;align-items:baseline;
+         padding:9px 0;border-bottom:1px solid #1d2437}
+.fixture:last-child{border-bottom:0}
+.fixture .pick{color:#6ee7ff;font-weight:700;font-size:13px}
+.fixture .score{color:#8E9BB8;font-size:13px}
+ul.plain{padding-left:18px}ul.plain li{margin:4px 0}
+</style>
+</head>
+<body>
+<header class="site">
+  <a class="brand" href="index.html">NINETY+</a>
+  <span class="tag">Premier League 2026–27 predictions, simulated 5,000 times</span>
+</header>
+<main class="wrap">
+
+<nav class="crumbs"><a href="index.html">Dashboard</a> › Model</nav>
+<h1>How the model works, and how well it does</h1>
+<p class="lede">A short, plain account of what produced every number on this site — including the
+parts that are not flattering.</p>
+<div class="card"><div class="grid">
+  <div class="kv"><span>Matches trained on</span><b>430</b>380 from 2025-26 + 50 live</div>
+  <div class="kv"><span>Ranked probability score</span><b>0.2036</b>lower is better, 0.25 = coin-flip</div>
+  <div class="kv"><span>Brier score</span><b>0.6085</b>3-outcome, 0.667 = always guessing</div>
+  <div class="kv"><span>Simulations per refresh</span><b>5,000</b>full-season Monte Carlo</div>
+</div></div>
+<h2>What it does</h2>
+<ul class="plain">
+  <li>Estimates each club's attack and defence from goals, shots and shot quality, then projects a
+      scoreline for every remaining fixture with a bivariate-Poisson model (Dixon-Coles correction
+      for the low-score cells).</li>
+  <li>Simulates the rest of the season 5,000 times, carrying the live table forward, to get title,
+      top-four and relegation probabilities rather than a single guess.</li>
+  <li>Scores players separately — minutes, shot volume, conversion, penalties and assists — to project
+      the Golden Boot, the playmaker race and the Golden Glove.</li>
+  <li>Replays the whole 2025-26 season blind (only data available before each kickoff) to produce the
+      scores above.</li>
+</ul>
+<h2>What it does not do</h2>
+<ul class="plain">
+  <li>It does not know about injuries, suspensions or a manager being sacked — unless you put them in
+      the What-If simulator yourself.</li>
+  <li>The free data tier publishes goals, not expected goals, for the live season; the xG columns are
+      derived from shot data and carry that uncertainty.</li>
+  <li>Football is low-scoring and high-variance. A 40% favourite loses more often than a 40% favourite
+      sounds like it should.</li>
+</ul>
+<p class="muted">Forecasts, not advice. Not affiliated with the Premier League or any club. Result
+data from the official fixture list and football-data.org.</p>
+<p style="margin-top:18px"><a class="cta" href="index.html">Back to the dashboard</a></p>
+
+<footer class="site">
+  <p><a href="index.html">Open the interactive dashboard</a> — six views, a
+  What-If simulator and the full model breakdown. Everything on this page is generated from
+  <code>data/</code> at build time; nothing here is hand-written.</p>
+  <p class="muted">Model output is a probabilistic forecast, not advice. Not affiliated with the
+  Premier League or any club. Results data from the official fixture list and
+  football-data.org; see <a href="model.html">the model page</a> for sources and
+  limitations.</p>
+</footer>
+</main>
+</body>
+</html>

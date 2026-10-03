@@ -46,6 +46,9 @@ jobs:
         run: python3 validate_data.py
 
       # ── everything else, in the same order a human would run it ────────────────────────────
+      # Data → models → backtest → dashboard and crawlable pages → tests → page gate. The pages are
+      # built before the tests because the tests read them (fixture text, club projections), and a
+      # page built from a previous run's data would make the suite fail for the wrong reason.
       - name: Pipeline, tests and dashboard
         run: python3 run_all.py
 

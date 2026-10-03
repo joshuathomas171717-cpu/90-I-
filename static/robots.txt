@@ -1,5 +1,6 @@
-# The dashboard itself is meant to be seen. The API is not meant to be crawled: every
-# simulation costs real CPU, and a crawler walking /api/simulate would spend it.
 User-agent: *
-Allow: /$
+Allow: /
 Disallow: /api/
+Disallow: /healthz
+Disallow: /readyz
+# Set NT90_SITE_URL at build time to emit an absolute Sitemap: line.

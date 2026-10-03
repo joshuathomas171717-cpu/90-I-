@@ -2,6 +2,7 @@ import hashlib
 import os
 import json
 import pickle
+import sys
 import time
 import numpy as np
 import pandas as pd
@@ -28,16 +29,44 @@ CACHED_ATTRS = ("scaler", "glm_home", "glm_away", "gb_home", "gb_away", "clf_gb"
 FORCE_RETRAIN = os.environ.get("NT90_FORCE_RETRAIN", "").lower() in ("1", "true", "yes", "on")
 
 
+def library_fingerprint():
+    """The versions of the libraries the trained artifacts were produced with.
+
+    This belongs in the cache key and was missing from it. The cache held pickles of scikit-learn
+    estimators; unpickling one into a *different* scikit-learn is not a hit but a coin flip — scikit
+    logs `InconsistentVersionWarning: Trying to unpickle estimator PoissonRegressor from version 1.9.1
+    when using version 1.6.1. This might lead to breaking code or invalid results`, and the numbers
+    that come out of it are nobody's intent.
+
+    It surfaced in this project's own CI rig, where a copy trained under scikit-learn 1.9.1 was served
+    by an interpreter holding 1.6.1: the model loaded without complaint and answered differently. The
+    same trap waits for anyone who upgrades numpy and keeps their artifacts/ directory, so the key now
+    moves when they do, and the cost is one retrain.
+    """
+    parts = []
+    for module in ("numpy", "pandas", "scipy", "sklearn"):
+        try:
+            parts.append("%s=%s" % (module, __import__(module).__version__))
+        except Exception:                              # a missing optional library is not a reason to die
+            parts.append("%s=absent" % module)
+    parts.append("py=%d.%d" % sys.version_info[:2])
+    return ";".join(parts)
+
+
 def engine_fingerprint(paths=None, engine_path=None, salt=""):
-    """SHA-256 over every input to the model: the five CSVs *and* this file's own source.
+    """SHA-256 over every input to the model: the five CSVs, this file's own source, and the versions
+    of the libraries that do the arithmetic.
 
     Hashing the source matters — a change to the maths must miss the cache, or the dashboard would keep
-    serving numbers from a model that no longer exists. Callers may pass explicit paths to prove the key
-    actually moves when the inputs do (see tests/test_deploy.py).
+    serving numbers from a model that no longer exists. The library versions matter for the same reason
+    in the other direction: the same maths on a different numpy is legitimately a slightly different
+    model (see library_fingerprint). Callers may pass explicit paths to prove the key actually moves
+    when the inputs do (see tests/test_deploy.py).
     """
     digest = hashlib.sha256()
     digest.update(CACHE_FORMAT.encode())
     digest.update(salt.encode())
+    digest.update(library_fingerprint().encode())
     for path in (paths if paths is not None else [os.path.join(DATA_DIR, n) for n in CACHE_INPUTS]):
         with open(path, "rb") as fh:
             for chunk in iter(lambda: fh.read(1 << 20), b""):
@@ -887,6 +916,25 @@ class PremierLeagueMLEngine:
 
         next_gw_predictions = predict_gameweek(next_gw)
         after_gw_predictions = predict_gameweek(after_gw)
+
+        # ── every remaining fixture, compact (P5.4) ──────────────────────────────────────────────
+        # The dashboard only ever shows the next two gameweeks, so the payload carries two. The
+        # crawlable gameweek pages (site_pages.py) need all 330, and so does anyone who wants this as
+        # data rather than as a chart. Kept out of the summary JSON deliberately — it is written to
+        # data/projected_fixtures_2026_27.csv instead, so the page that every visitor downloads does
+        # not grow by 60 KB to serve a crawler.
+        projected_fixtures = []
+        for f in rem_fixtures:
+            p_fx = self.predict_fixture(f["home"], f["away"], ts)
+            top = p_fx["top_scorelines"][0] if p_fx.get("top_scorelines") else {"score": "", "prob": ""}
+            row = {k: p_fx[k] for k in ("lambda_home", "lambda_away", "prob_home", "prob_draw",
+                                        "prob_away", "clean_sheet_home", "clean_sheet_away",
+                                        "btts_prob", "over_2_5_prob")}
+            row.update({"fixture_id": int(f.get("fixture_id", 0)), "gw": int(f["gw"]),
+                        "dates": f["dates"], "home": f["home"], "away": f["away"],
+                        "top_score": top["score"], "top_score_prob": top["prob"]})
+            projected_fixtures.append(row)
+        projected_fixtures.sort(key=lambda r: (r["gw"], -r["prob_home"]))
         gw6_predictions = next_gw_predictions      # legacy key: the dashboard reads this
         gw7_predictions = after_gw_predictions
 
@@ -939,6 +987,8 @@ class PremierLeagueMLEngine:
             "after_gw_predictions": after_gw_predictions,
             "marquee_predictions": marquee_predictions,
             "ml_metrics": self.cv_metrics,
+            # Private: popped and written to CSV by __main__ before the summary is serialised.
+            "_projected_fixtures": projected_fixtures,
         }
 
 
@@ -966,6 +1016,18 @@ if __name__ == "__main__":
     pd.DataFrame(res["golden_glove_race"]).to_csv(
         os.path.join(DATA_DIR, "projected_golden_glove_2026_27.csv"), index=False
     )
+    # Every remaining fixture with its projection: the crawlable-content export (P5.4). Written with
+    # the shared writer so a no-op rebuild keeps the bytes identical, then removed from `res` so the
+    # dashboard payload does not carry it.
+    from dataset_io import write_dataset
+    projected = res.pop("_projected_fixtures", [])
+    if projected:
+        fields = ["fixture_id", "gw", "dates", "home", "away", "lambda_home", "lambda_away",
+                  "prob_home", "prob_draw", "prob_away", "clean_sheet_home", "clean_sheet_away",
+                  "btts_prob", "over_2_5_prob", "top_score", "top_score_prob"]
+        write_dataset(DATA_DIR, {"projected_fixtures_2026_27.csv":
+                                 ([{k: r[k] for k in fields} for r in projected], fields)})
+        print(f"Projected all {len(projected)} remaining fixtures -> projected_fixtures_2026_27.csv")
     with open(os.path.join(DATA_DIR, "predictions_2026_27_summary.json"), "w") as f:
         json.dump(json_safe(res), f, indent=2, allow_nan=False)
 

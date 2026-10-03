@@ -36,7 +36,7 @@ Publishing it, or keeping a deployed copy current for free, is covered in
 ### Tests
 
 ```bash
-python3 tests/run_tests.py      # 90 checks, no test dependencies at all — open this one by name
+python3 tests/run_tests.py      # 112 checks, no test dependencies at all — open this one by name
 pytest -m "not slow"            # the same suite under pytest, if you prefer it (requirements-dev.txt)
 ```
 
@@ -51,6 +51,25 @@ inline as SVG, and there are no external requests at all — so it renders ident
 sandboxed previews, and from the server. When the Python server *is* reachable the front-end detects it,
 labels itself "live engine", and re-renders with the fresher API payload — falling back to a client-side
 structural Monte Carlo otherwise.
+
+### Routes
+
+The dashboard is one file, but the site has real URLs — served by `server.py` on a local/container
+deploy, and as generated HTML on a static host:
+
+| URL | What it is |
+|---|---|
+| `/` | the interactive dashboard (six views) |
+| `/table`, `/awards`, `/duel`, `/whatif`, `/model` | app routes: the same file, `router.js` reads the path |
+| `/gameweek/6` | the app, opened on matchweek 6 |
+| `/club/arsenal` | the app, opened on the table with Arsenal's row highlighted |
+| `/gameweek/mw6.html` | **generated page** — every fixture, probability and pick as text |
+| `/club/arsenal.html`, `/table.html`, `/model.html` | generated pages |
+| `/sitemap.xml`, `/robots.txt`, `/og/*.png`, `/icons/*` | discovery and identity |
+
+Build the whole site with `python3 site_pages.py` (it runs as part of `run_all.py`). Set
+`NT90_SITE_URL=https://your-host` to emit absolute canonicals and a `Sitemap:` line —
+see [docs/discoverability.md](docs/discoverability.md).
 
 ### Front-end source layout
 
@@ -225,14 +244,23 @@ ninety-plus-pl-predictor/
 ├── backtest.py                # leakage-free 2025-26 replay + scoring vs baselines
 ├── build_dashboard.py         # compiles payload + static/src/* into the single-file dashboard
 ├── check_page_current.py      # gate: is the published page the page the committed data describes?
+├── site_pages.py              # real HTML, sitemap, robots, 404 and every preview card (Wave 4)
+├── og_image.py                # 1200x630 PNG cards with no browser and no Pillow — stdlib only
 ├── server.py                  # threaded HTTP server: JSON API, /healthz + /readyz, background warm-up
 ├── Dockerfile                 # two-stage image, non-root, pre-warms the model cache at build time
 ├── fly.toml · render.yaml     # host configs; both gate traffic on /readyz
 ├── DEPLOY.md                  # deploy runbook: cold-start numbers, env vars, rollback, uptime check
 ├── artifacts/                 # model artifact cache (gitignored, rebuilt on demand)
 ├── static/
-│   ├── src/                   # front-end source (fonts, theme, shell, core, motion, render)
-│   └── index.html             # the built dashboard (open directly or via the server)
+│   ├── src/                   # front-end source (fonts, theme, shell, core, motion, ux, render,
+│   │                          #   share, router)
+│   ├── index.html             # the built dashboard (open directly or via the server)
+│   ├── gameweek/mw1..38.html  # one crawlable page per matchweek: results once played, then picks
+│   ├── club/*.html            # one per club: projection, goals, remaining fixtures
+│   ├── table.html · model.html · 404.html
+│   ├── og/*.png               # link previews: site, table, duel, 20 clubs, 38 matchweeks
+│   ├── icons/, icon.svg, apple-touch-icon.png, manifest.webmanifest
+│   └── sitemap.xml · robots.txt
 └── data/
     ├── matches_2025_26.csv                 # 380 training matches
     ├── matches_2026_27_played.csv          # 50 played matches, MW1–MW5

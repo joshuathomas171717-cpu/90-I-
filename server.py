@@ -28,6 +28,7 @@ import hashlib
 import json
 import math
 import os
+import re
 import sys
 import threading
 import time
@@ -696,6 +697,47 @@ class PLRequestHandler(BaseHTTPRequestHandler):
                 self.send_header("Vary", "Origin")
         super().end_headers()
 
+    #: Extensions this server will serve out of static/. Nothing else leaves the directory.
+    STATIC_TYPES = {
+        ".html": "text/html; charset=utf-8", ".css": "text/css; charset=utf-8",
+        ".js": "text/javascript; charset=utf-8", ".json": "application/json; charset=utf-8",
+        ".xml": "application/xml; charset=utf-8", ".txt": "text/plain; charset=utf-8",
+        ".svg": "image/svg+xml", ".png": "image/png", ".ico": "image/x-icon",
+        ".woff2": "font/woff2", ".webmanifest": "application/manifest+json",
+    }
+
+    def _static_file(self, path):
+        """Resolve a URL path to a file inside static/, or None.
+
+        The check is deliberately belt-and-braces: `os.path.normpath` collapses `..`, the resolved
+        path must still be inside STATIC_DIR, and only known extensions are served. A page generator
+        that writes hundreds of files should not also mean a directory-traversal surface.
+        """
+        rel = os.path.normpath(path.lstrip("/"))
+        if rel.startswith("..") or os.path.isabs(rel):
+            return None
+        full = os.path.join(STATIC_DIR, rel)
+        if not os.path.abspath(full).startswith(os.path.abspath(STATIC_DIR) + os.sep):
+            return None
+        if not os.path.isfile(full):
+            return None
+        ctype = self.STATIC_TYPES.get(os.path.splitext(full)[1].lower())
+        if ctype is None:
+            return None
+        return full, ctype
+
+    def _serve_static(self, path, head_only=False, code=200):
+        hit = self._static_file(path)
+        if hit is None:
+            return False
+        full, ctype = hit
+        with open(full, "rb") as fh:
+            blob = fh.read()
+        # These are rebuilt whenever the model is, so they are cacheable but must revalidate cheaply.
+        return self._send(code, blob, ctype,
+                          {"Cache-Control": "public, max-age=300", "X-Engine": HOST_STATE.status()["engine"]},
+                          head_only=head_only)
+
     def _send(self, code, body, ctype, extra=None, head_only=False):
         if isinstance(body, str):
             body = body.encode("utf-8")
@@ -790,6 +832,40 @@ class PLRequestHandler(BaseHTTPRequestHandler):
                                   head_only=head_only)
             return self.send_error(404, "Not found")
 
+        # ── generated pages, icons and preview cards (P5.1, P5.3, P5.4) ─────────────────────
+        # /club/arsenal.html, /gameweek/mw6.html, /table.html, /model.html, /sitemap.xml, /og/*.png,
+        # /icons/*, /apple-touch-icon.png, /icon.svg — all written by site_pages.py at build time.
+        # /manifest.webmanifest belongs in this list even though nothing renders it: every page's
+        # <head> links it, so a browser fetches it on first load and a 404 there is a visible error in
+        # the console of a page that otherwise works. It was missing until a clean-room extraction
+        # probed the links the generated pages actually advertise (tests/test_wave4_site.py).
+        if (path in ("/table.html", "/model.html", "/404.html", "/sitemap.xml", "/apple-touch-icon.png",
+                     "/icon.svg", "/manifest.webmanifest")
+                or path.startswith(("/club/", "/gameweek/", "/icons/", "/og/"))):
+            hit = self._static_file(path)
+            if hit is not None:
+                self._route = "static"
+                return self._serve_static(path, head_only=head_only)
+
+        # ── the app's own routes, rewritten to the dashboard (P5.3) ──────────────────────────
+        # The server cannot know which view you want — only the client can — so every app route is
+        # served the same single file, and router.js reads the path. This is what makes
+        # /gameweek/6 and /club/arsenal real URLs you can paste anywhere.
+        app_route = (
+            path in ("/matchweek", "/table", "/awards", "/duel", "/whatif", "/model")
+            or re.fullmatch(r"/gameweek/(?:mw)?\d{1,2}", path)
+            or re.fullmatch(r"/club/[A-Za-z0-9'\-]+", path)
+        )
+        if app_route:
+            self._route = "/app-route"
+            index_path = os.path.join(STATIC_DIR, "index.html")
+            if os.path.exists(index_path):
+                prepared = HOST_STATE.page()
+                return self._send_prepared(200, prepared, "text/html; charset=utf-8",
+                                           {"Cache-Control": "no-cache", "ETag": prepared.etag,
+                                            "X-Engine": HOST_STATE.status()["engine"]},
+                                           head_only=head_only)
+
         if path == "/api/stats":
             self._route = "/api/stats"
             return self._json(200, {
@@ -850,6 +926,16 @@ class PLRequestHandler(BaseHTTPRequestHandler):
                                   {"Content-Disposition": f'attachment; filename="{fname}"'})
             return self.send_error(404, "File not found")
 
+        # A 404 that is a page rather than a dead end: site_pages.py writes static/404.html, and it
+        # lists every URL this site has. It is served with a 404 status, because that is the truth.
+        # `Accept: */*` — what curl sends by default and what the first version of this check missed
+        # — asks for anything, so it gets HTML like any other client that has not said it only wants
+        # JSON.
+        accept = (self.headers.get("Accept") or "*/*").lower()
+        if "application/json" not in accept or "text/html" in accept or accept == "*/*":
+            if self._static_file("/404.html") is not None:
+                self._route = "404"
+                return self._serve_static("/404.html", head_only=head_only, code=404)
         self._route = "404"
         return self.send_error(404, "Not found")
 

@@ -63,6 +63,12 @@ jobs:
       - name: Rebuild the dashboard
         run: python3 build_dashboard.py
 
+      # The crawlable pages, preview cards, icons and sitemap are generated from the same data. They
+      # are committed, but rebuilding them here means the deployed site can never be a mixture of a
+      # fresh dashboard and week-old club pages.
+      - name: Rebuild the crawlable pages and previews
+        run: python3 site_pages.py
+
       # Compared the same way CI does it, and for the same reason: a byte-for-byte diff of this file
       # fails on library drift and blocks the deploy of a page that is perfectly current.
       # See check_page_current.py.

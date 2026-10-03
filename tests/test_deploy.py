@@ -236,3 +236,30 @@ def test_healthz_is_live_before_readyz_and_baseline_still_answers():
     finally:
         proc.terminate()
         proc.wait(timeout=10)
+
+
+def test_the_model_cache_key_includes_the_library_versions():
+    """A cached model is only a model if the same libraries load it back.
+
+    The cache holds pickles of scikit-learn estimators. Unpickling one into a different
+    scikit-learn does not fail — it warns and returns numbers that are nobody's intent. It happened
+    in this project's own CI rig: a copy trained under scikit-learn 1.9.1 was loaded by an interpreter
+    holding 1.6.1, and the pickles came back with `InconsistentVersionWarning` and different answers.
+
+    So the key must move when the versions do. Proved by swapping the version string, not by reading
+    the source: a comment claiming this is not the same as the key actually containing it.
+    """
+    sys.path.insert(0, ROOT)
+    import ml_engine
+    original = ml_engine.library_fingerprint
+    try:
+        before = ml_engine.engine_fingerprint()
+        ml_engine.library_fingerprint = lambda: "numpy=99.0.0;sklearn=99.0.0"
+        after = ml_engine.engine_fingerprint()
+    finally:
+        ml_engine.library_fingerprint = original
+    assert before != after, (
+        "changing the library versions did not change the cache key — an artifact trained under one "
+        "scikit-learn would be loaded by another")
+    restored = ml_engine.engine_fingerprint()
+    assert restored == before, "the key is not stable after the swap was undone"

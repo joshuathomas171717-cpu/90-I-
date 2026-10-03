@@ -97,7 +97,11 @@ def check(page_path=PAGE, summary_path=SUMMARY, limit=12):
     if embedded is None:
         return ["the page payload has no `baseline` block"]
 
-    diffs = list(_walk_diff(summary, embedded))
+    # Machine measurements are excluded here too — see IGNORED_FIELDS. Re-running the engine on its
+    # own changes runtime_ms without moving a single projected number, and reporting a current page
+    # as stale for that would train everyone to ignore this check.
+    diffs = [d for d in _walk_diff(summary, embedded)
+             if not any(f in d for f in IGNORED_FIELDS)]
     if diffs:
         problems.append(
             "the page carries different numbers from data/%s — rebuild it with "
@@ -156,6 +160,10 @@ PROB_HINTS = ("prob", "matrix", "clean_sheet", "btts", "top4", "title", "relegat
 #: Recorded on the page but describing the *build*, not the season. `runtime_ms` measures how long
 #: the pipeline took, which is exactly the sort of thing a different machine changes; comparing it
 #: would fail CI every time for no reason.
+#: Ignored in both halves of the gate. `runtime_ms` is the model training time: a measurement of the
+#: machine, not of football. Re-running the engine on a busy box produces a different one with no
+#: projected number moving — which is exactly what happened the first time this gate ran after
+#: `python3 ml_engine.py` on its own, and it called a perfectly current page stale.
 IGNORED_FIELDS = ("runtime_ms",)
 
 #: Subtrees that are pass-throughs of the committed CSV datasets rather than anything the model

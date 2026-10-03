@@ -11,7 +11,7 @@
     },
     "fixture_calendar": "Official Premier League 2026-27 fixture release (19 June 2026)",
     "n_simulations": 5000,
-    "runtime_ms": 500.7,
+    "runtime_ms": 1296.4,
     "lambda_scale": 0.948,
     "scenario_active": false
   },

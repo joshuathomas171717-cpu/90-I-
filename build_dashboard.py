@@ -115,7 +115,66 @@ payload = json_safe({
 })
 
 parts = {p: open(os.path.join(SRC, p), encoding="utf-8").read()
-         for p in ("fonts.css", "theme.css", "app.html", "core.js", "motion.js", "ux.js", "render.js")}
+         for p in ("fonts.css", "theme.css", "app.html", "core.js", "motion.js", "ux.js", "render.js",
+                   "share.js", "router.js")}
+
+# ── identity, previews and structured data for the app page itself (P5.1, P5.2) ────────────────
+# Everything here is relative on purpose: the same file has to work from GitHub Pages under /90-I-/,
+# from a local server at /, and from a double-clicked file:// path. `NT90_SITE_URL` upgrades the
+# canonical and og:url to absolute when a build knows its own host — social platforms ignore a
+# relative og:url, but a canonical is resolved against the page, so relative is honest and portable.
+_site_url = (os.environ.get("NT90_SITE_URL") or "").rstrip("/")
+_canonical = (_site_url + "/") if _site_url else "./"
+_og_url = (_site_url + "/") if _site_url else ""
+_champion = max(summary["table_projections"], key=lambda t: t.get("title_prob", 0))
+_runner = sorted(summary["table_projections"], key=lambda t: -t.get("title_prob", 0))[1]
+_head_meta = f"""<meta name="description" content="Machine-learning predictions for the 2026–27 Premier League: title race, relegation, Golden Boot, assists, clean sheets and every remaining fixture.">
+<meta name="theme-color" content="#0B0F1A">
+<meta name="color-scheme" content="dark">
+<link rel="canonical" href="{_canonical}">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="icon" href="icons/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="NINETY+">
+<meta property="og:title" content="Premier League 2026–27 predictions — NINETY+">
+<meta property="og:description" content="{_champion['name']} to win the league at {_champion['title_prob']:.0f}%, projected {_champion['proj_pts']:.0f} points. {summary['ml_metrics']['remaining_fixtures']} fixtures simulated 5,000 times.">
+<meta property="og:image" content="og/site.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="NINETY+ — {_champion['name']} projected to win the 2026-27 Premier League">
+{"" if not _og_url else f'<meta property="og:url" content="{_og_url}">'}
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Premier League 2026–27 predictions — NINETY+">
+<meta name="twitter:description" content="{_champion['name']} to win the league at {_champion['title_prob']:.0f}%, projected {_champion['proj_pts']:.0f} points.">
+<meta name="twitter:image" content="og/site.png">"""
+
+def _jsonld_blocks():
+    """WebSite + Dataset + the club list. Enough for a search engine to know what this is."""
+    base = _site_url + "/" if _site_url else "./"
+    graph = [
+        {"@type": "WebSite", "name": "NINETY+", "url": base,
+         "description": "Premier League 2026-27 machine-learning predictions",
+         "inLanguage": "en"},
+        {"@type": "Dataset", "name": "NINETY+ Premier League 2026-27 projections",
+         "description": ("Projected final table, title/top-four/relegation probabilities and player "
+                         "award races for the 2026-27 Premier League, from 5,000 simulated seasons."),
+         "creator": {"@type": "Organization", "name": "NINETY+"},
+         "dateModified": (summary.get("meta", {}).get("as_of_date") or "")[:10],
+         "variableMeasured": ["Projected points", "Title probability", "Top-four probability",
+                              "Relegation probability", "Projected goals", "Projected assists",
+                              "Projected clean sheets"],
+         "license": "https://opensource.org/licenses/MIT"},
+        {"@type": "ItemList", "name": "Projected 2026-27 Premier League table",
+         "itemListElement": [
+             {"@type": "ListItem", "position": i + 1,
+              "item": {"@type": "SportsTeam", "name": t["name"],
+                       "location": {"@type": "Place", "name": t.get("stadium", "")}}}
+             for i, t in enumerate(summary["table_projections"])]},
+    ]
+    return json.dumps({"@context": "https://schema.org", "@graph": graph},
+                      separators=(",", ":"), ensure_ascii=False)
 
 html = f"""<!DOCTYPE html>
 <html lang="en">
@@ -123,7 +182,8 @@ html = f"""<!DOCTYPE html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>NINETY+ · Premier League 2026–27 Predictions</title>
-<meta name="description" content="Machine-learning predictions for the 2026–27 Premier League: title race, relegation, Golden Boot, assists, clean sheets and every remaining fixture.">
+{_head_meta}
+<script type="application/ld+json">{_jsonld_blocks()}</script>
 <style>
 {parts['fonts.css']}
 {parts['theme.css']}
@@ -137,10 +197,31 @@ const EMBEDDED = {json.dumps(payload, separators=(",", ":"), allow_nan=False)};
 {parts['motion.js']}
 {parts['ux.js']}
 {parts['render.js']}
+{parts['share.js']}
+{parts['router.js']}
 </script>
 </body>
 </html>
 """
+
+# A web app manifest, so "add to home screen" produces something better than a bookmark.
+_manifest = {
+    "name": "NINETY+ — Premier League Predictions",
+    "short_name": "NINETY+",
+    "description": "Premier League 2026-27 predictions, simulated 5,000 times.",
+    "start_url": "./",
+    "scope": "./",
+    "display": "standalone",
+    "background_color": "#0B0F1A",
+    "theme_color": "#0B0F1A",
+    "icons": [
+        {"src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png"},
+        {"src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png"},
+        {"src": "icon.svg", "sizes": "any", "type": "image/svg+xml"},
+    ],
+}
+with open(os.path.join(STATIC, "manifest.webmanifest"), "w", encoding="utf-8") as fh:
+    json.dump(_manifest, fh, indent=2)
 
 out = os.path.join(STATIC, "index.html")
 open(out, "w", encoding="utf-8").write(html)
