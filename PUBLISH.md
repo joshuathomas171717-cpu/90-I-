@@ -44,7 +44,15 @@ This repo ships `.github/workflows/pages.yml`, so it is one setting:
 1. **Settings → Pages → Build and deployment → Source: GitHub Actions**.
 2. Push to `main` (or run the workflow by hand from the Actions tab).
 
-The site lands at `https://YOUR-USERNAME.github.io/ninety-plus-pl-predictor/`.
+The site lands at `https://YOUR-USERNAME.github.io/REPOSITORY-NAME/` — for this repo,
+`https://joshuathomas171717-cpu.github.io/90-I-/`.
+
+Until step 1 is done, the Pages workflow is the one thing that runs red: it fails at `Configure Pages`
+with "Please verify that the repository has Pages enabled and configured to build using GitHub
+Actions". That is the setting above, not a problem with the build — every other step of that workflow
+(checkout, install, rebuild, page check) passes. The workflow asks the action to enable Pages itself
+(`enablement: true`), which works when the token is allowed to change repository settings; on a
+personal repository reserved to `GITHUB_TOKEN` it is not, which is why the click is still needed.
 
 **One honest caveat:** Pages serves a static file, so there is no Python API behind it. The dashboard
 detects that and falls back to its in-browser engine — everything still works, but the What-If tab
