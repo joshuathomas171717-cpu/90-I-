@@ -56,7 +56,10 @@ jobs:
           pip install -r requirements.txt
 
       # Rebuild from source rather than trusting the committed file, so the site and the code can
-      # never drift. The build is deterministic (CI proves it), so this is also a check.
+      # never drift — and then check the rebuild against the committed page (see the next step).
+      # The model itself is seeded and deterministic: a clean-room rebuild reproduces all 8,784
+      # projected numbers to the last decimal, and the only field that ever moves is `runtime_ms`,
+      # the model training time, which measures the machine and is deliberately not compared.
       - name: Rebuild the dashboard
         run: python3 build_dashboard.py
 
@@ -69,8 +72,16 @@ jobs:
           python3 check_page_current.py --against /tmp/committed_index.html
 
       # The page is one file, so the artifact is one file. No Jekyll, no dependencies.
+      #
+      # `enablement: true` lets the action switch Pages on itself (it has `pages: write` above). Without
+      # it, the first run of this workflow fails at this step on a repository where Pages has never been
+      # enabled — with a message telling a human to go and click a setting. With it, the common case
+      # (a personal repository, an Actions token) needs no clicking at all. If the token is not allowed
+      # to change repository settings, the action says so and the step fails exactly as before.
       - name: Configure Pages
         uses: actions/configure-pages@v5
+        with:
+          enablement: true
 
       - name: Upload the site
         uses: actions/upload-pages-artifact@v3
