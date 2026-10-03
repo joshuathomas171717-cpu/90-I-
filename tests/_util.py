@@ -9,17 +9,29 @@ DATA = os.path.join(ROOT, "data")
 _CACHE = {}
 
 
-class Skipped(Exception):
-    pass
+# One exception that BOTH runners understand.
+#
+# The zero-dep runner (tests/run_tests.py) catches `Skipped`; pytest catches its own exception class.
+# Making ours a subclass of pytest's means a skipped test is a skip under either — which is the whole
+# point of the shared helper. It was neither before: the helper raised pytest's exception
+# unconditionally when pytest was importable, so the zero-dep runner crashed outright the first time
+# a test wanted to skip (a fresh clone with no artifacts/ built yet — exactly the case a new reader
+# hits when they run the tests before running the pipeline).
+try:
+    import pytest as _pytest
+
+    _SkipBase = _pytest.skip.Exception
+except Exception:                                    # pytest not installed: fine, below is enough
+    _SkipBase = Exception
+
+
+class Skipped(_SkipBase):
+    """Raised by skip(). A skip under pytest *and* under tests/run_tests.py."""
 
 
 def skip(reason):
     """Skip a test in either runner."""
-    try:
-        import pytest
-        pytest.skip(reason)
-    except ImportError:
-        raise Skipped(reason)
+    raise Skipped(reason)
 
 
 def load_json(path):

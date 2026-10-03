@@ -71,6 +71,11 @@ def main(argv):
                 skipped.append((full, str(exc)))
                 print(f"  – {full}  (skipped: {exc})")
             except Exception as exc:  # noqa: BLE001
+                # pytest.skip() raised directly (not via _util.skip) is still a skip, not a crash.
+                if type(exc).__module__.startswith("_pytest") and "Skipped" in type(exc).__name__:
+                    skipped.append((full, str(exc)))
+                    print(f"  – {full}  (skipped: {exc})")
+                    continue
                 failed.append((full, exc))
                 print(f"  ✗ {full}\n      {type(exc).__name__}: {str(exc)[:400]}")
                 if os.environ.get("NTEST_TRACE"):

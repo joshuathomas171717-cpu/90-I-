@@ -101,14 +101,26 @@ def test_the_tracked_data_is_the_data_that_matters():
 # ════════════════════════════════════════════════════════════════════════════
 #  3. the visitor's first command works
 # ════════════════════════════════════════════════════════════════════════════
+PROJECT_NAME = "ninety-plus-pl-predictor"
+
+
 def test_readme_tells_visitors_to_cd_into_a_folder_that_exists():
+    """The quick start must name a folder the reader could plausibly be standing in.
+
+    Two names are legitimate: the folder actually checked out here, and the project's canonical name.
+    They differ routinely — `actions/checkout` names the working copy after the *repository* (so CI
+    runs inside `90-I-`), and anyone who clones or unzips gets the canonical name instead. Accepting
+    both still catches the mistake this guards against: a `cd` into some folder that nothing creates.
+    """
     readme = open(os.path.join(ROOT, "README.md"), encoding="utf-8").read()
     found = re.findall(r"^cd\s+(\S+)", readme, flags=re.M)
     assert found, "README has no `cd` line — the quick start should start by telling you where to be"
     folder = os.path.basename(ROOT.rstrip(os.sep))
+    acceptable = {folder, PROJECT_NAME}
     for target in found:
-        assert target == folder, ("README says `cd %s` but the folder is `%s` — a visitor copy-pastes "
-                                  "that and hits an error" % (target, folder))
+        assert target in acceptable, (
+            "README says `cd %s`, which is neither the checked-out folder (%s) nor the project name "
+            "(%s) — a visitor copy-pastes that and hits an error" % (target, folder, PROJECT_NAME))
 
 
 def test_the_licence_exists_and_says_what_it_does_not_cover():
