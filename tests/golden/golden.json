@@ -1,0 +1,328 @@
+{
+  "_note": "Frozen headline numbers. Regenerate with python3 tests/make_golden.py only for intended changes.",
+  "as_of": "2026-10-02 (Matchweek 5 Complete)",
+  "model_version": "2.1",
+  "lambda_scale": 0.948,
+  "matches_trained": 430,
+  "remaining_fixtures": 330,
+  "table": [
+    {
+      "code": "MCI",
+      "name": "Manchester City",
+      "proj_pts": 82.4,
+      "title_prob": 52.5,
+      "top4_prob": 99.2,
+      "relegation_prob": 0.0
+    },
+    {
+      "code": "ARS",
+      "name": "Arsenal",
+      "proj_pts": 81.2,
+      "title_prob": 43.1,
+      "top4_prob": 99.0,
+      "relegation_prob": 0.0
+    },
+    {
+      "code": "BHA",
+      "name": "Brighton & Hove Albion",
+      "proj_pts": 67.4,
+      "title_prob": 2.1,
+      "top4_prob": 66.4,
+      "relegation_prob": 0.0
+    },
+    {
+      "code": "LIV",
+      "name": "Liverpool",
+      "proj_pts": 67.0,
+      "title_prob": 2.0,
+      "top4_prob": 64.2,
+      "relegation_prob": 0.0
+    },
+    {
+      "code": "BRE",
+      "name": "Brentford",
+      "proj_pts": 58.4,
+      "title_prob": 0.1,
+      "top4_prob": 17.7,
+      "relegation_prob": 0.2
+    },
+    {
+      "code": "CHE",
+      "name": "Chelsea",
+      "proj_pts": 56.7,
+      "title_prob": 0.0,
+      "top4_prob": 12.6,
+      "relegation_prob": 0.4
+    },
+    {
+      "code": "LEE",
+      "name": "Leeds United",
+      "proj_pts": 56.4,
+      "title_prob": 0.0,
+      "top4_prob": 11.3,
+      "relegation_prob": 0.5
+    },
+    {
+      "code": "NEW",
+      "name": "Newcastle United",
+      "proj_pts": 55.6,
+      "title_prob": 0.0,
+      "top4_prob": 9.2,
+      "relegation_prob": 0.5
+    },
+    {
+      "code": "EVE",
+      "name": "Everton",
+      "proj_pts": 55.2,
+      "title_prob": 0.0,
+      "top4_prob": 8.4,
+      "relegation_prob": 0.6
+    },
+    {
+      "code": "MUN",
+      "name": "Manchester United",
+      "proj_pts": 54.8,
+      "title_prob": 0.0,
+      "top4_prob": 8.8,
+      "relegation_prob": 0.6
+    },
+    {
+      "code": "AVL",
+      "name": "Aston Villa",
+      "proj_pts": 48.4,
+      "title_prob": 0.0,
+      "top4_prob": 1.5,
+      "relegation_prob": 5.9
+    },
+    {
+      "code": "BOU",
+      "name": "Bournemouth",
+      "proj_pts": 45.7,
+      "title_prob": 0.0,
+      "top4_prob": 0.5,
+      "relegation_prob": 10.7
+    },
+    {
+      "code": "NFO",
+      "name": "Nottingham Forest",
+      "proj_pts": 45.3,
+      "title_prob": 0.0,
+      "top4_prob": 0.6,
+      "relegation_prob": 11.3
+    },
+    {
+      "code": "HUL",
+      "name": "Hull City",
+      "proj_pts": 43.9,
+      "title_prob": 0.0,
+      "top4_prob": 0.1,
+      "relegation_prob": 15.6
+    },
+    {
+      "code": "SUN",
+      "name": "Sunderland",
+      "proj_pts": 41.1,
+      "title_prob": 0.0,
+      "top4_prob": 0.2,
+      "relegation_prob": 28.1
+    },
+    {
+      "code": "CRY",
+      "name": "Crystal Palace",
+      "proj_pts": 40.7,
+      "title_prob": 0.0,
+      "top4_prob": 0.1,
+      "relegation_prob": 29.4
+    },
+    {
+      "code": "TOT",
+      "name": "Tottenham Hotspur",
+      "proj_pts": 40.2,
+      "title_prob": 0.0,
+      "top4_prob": 0.1,
+      "relegation_prob": 31.0
+    },
+    {
+      "code": "FUL",
+      "name": "Fulham",
+      "proj_pts": 39.2,
+      "title_prob": 0.0,
+      "top4_prob": 0.0,
+      "relegation_prob": 36.9
+    },
+    {
+      "code": "IPS",
+      "name": "Ipswich Town",
+      "proj_pts": 38.8,
+      "title_prob": 0.0,
+      "top4_prob": 0.0,
+      "relegation_prob": 40.0
+    },
+    {
+      "code": "COV",
+      "name": "Coventry City",
+      "proj_pts": 29.2,
+      "title_prob": 0.0,
+      "top4_prob": 0.0,
+      "relegation_prob": 88.2
+    }
+  ],
+  "headline": {
+    "champion": {
+      "player_id": null,
+      "name": "Manchester City"
+    },
+    "runner_up": {
+      "player_id": null,
+      "name": "Arsenal"
+    },
+    "golden_boot": {
+      "player_id": "haaland",
+      "name": "Erling Haaland"
+    },
+    "playmaker": {
+      "player_id": "gross",
+      "name": "Pascal Gro\u00df"
+    },
+    "golden_glove": {
+      "player_id": "raya",
+      "name": "David Raya"
+    },
+    "poty": {
+      "player_id": "haaland",
+      "name": "Erling Haaland"
+    }
+  },
+  "golden_boot_race": [
+    {
+      "player_id": "haaland",
+      "name": "Erling Haaland",
+      "proj_goals": 29.4
+    },
+    {
+      "player_id": "isak",
+      "name": "Alexander Isak",
+      "proj_goals": 20.7
+    },
+    {
+      "player_id": "saka",
+      "name": "Bukayo Saka",
+      "proj_goals": 16.3
+    },
+    {
+      "player_id": "igor_thiago",
+      "name": "Igor Thiago",
+      "proj_goals": 15.9
+    },
+    {
+      "player_id": "joao_pedro",
+      "name": "Jo\u00e3o Pedro",
+      "proj_goals": 15.6
+    },
+    {
+      "player_id": "gyokeres",
+      "name": "Viktor Gy\u00f6keres",
+      "proj_goals": 15.1
+    },
+    {
+      "player_id": "dcl",
+      "name": "Dominic Calvert-Lewin",
+      "proj_goals": 15.1
+    },
+    {
+      "player_id": "palmer",
+      "name": "Cole Palmer",
+      "proj_goals": 14.3
+    }
+  ],
+  "playmaker_race": [
+    {
+      "player_id": "gross",
+      "name": "Pascal Gro\u00df",
+      "proj_assists": 13.8
+    },
+    {
+      "player_id": "bruno",
+      "name": "Bruno Fernandes",
+      "proj_assists": 12.1
+    },
+    {
+      "player_id": "saka",
+      "name": "Bukayo Saka",
+      "proj_assists": 12.0
+    },
+    {
+      "player_id": "palmer",
+      "name": "Cole Palmer",
+      "proj_assists": 11.6
+    },
+    {
+      "player_id": "cherki",
+      "name": "Rayan Cherki",
+      "proj_assists": 11.6
+    },
+    {
+      "player_id": "semenyo",
+      "name": "Antoine Semenyo",
+      "proj_assists": 10.7
+    },
+    {
+      "player_id": "odegaard",
+      "name": "Martin \u00d8degaard",
+      "proj_assists": 10.6
+    },
+    {
+      "player_id": "wirtz",
+      "name": "Florian Wirtz",
+      "proj_assists": 10.5
+    }
+  ],
+  "golden_glove_race": [
+    {
+      "player_id": "raya",
+      "name": "David Raya",
+      "proj_cs": 18.5
+    },
+    {
+      "player_id": "donnarumma",
+      "name": "Gianluigi Donnarumma",
+      "proj_cs": 14.7
+    },
+    {
+      "player_id": "alisson",
+      "name": "Alisson Becker",
+      "proj_cs": 13.6
+    },
+    {
+      "player_id": "pickford",
+      "name": "Jordan Pickford",
+      "proj_cs": 13.2
+    },
+    {
+      "player_id": "verbruggen",
+      "name": "Bart Verbruggen",
+      "proj_cs": 12.8
+    },
+    {
+      "player_id": "trafford",
+      "name": "James Trafford",
+      "proj_cs": 11.1
+    },
+    {
+      "player_id": "kelleher",
+      "name": "Caoimh\u00edn Kelleher",
+      "proj_cs": 11.0
+    },
+    {
+      "player_id": "tzolakis",
+      "name": "Konstantinos Tzolakis",
+      "proj_cs": 10.4
+    }
+  ],
+  "backtest": {
+    "accuracy": 46.3,
+    "rps": 0.2184,
+    "skill_rps": 8.8,
+    "spearman": 0.566
+  }
+}

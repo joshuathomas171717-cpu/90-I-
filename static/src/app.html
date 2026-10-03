@@ -1,0 +1,308 @@
+<div id="progress" aria-hidden="true"></div>
+<div id="ptr" aria-hidden="true"></div>
+
+<div class="ambient" aria-hidden="true">
+  <div class="glow g1"></div><div class="glow g2"></div><div class="glow g3"></div>
+  <div class="pitchlines"></div><div class="grain"></div>
+</div>
+
+<header class="top">
+  <div class="hrow">
+    <div class="mark">
+      <div class="badge"><span>N+</span></div>
+      <div>
+        <div class="wm">NINETY<i>+</i></div>
+        <div class="sub" id="markSub">Premier League 2026–27 · model v2.1</div>
+      </div>
+    </div>
+    <div class="hstats" id="hstats"></div>
+  </div>
+  <nav class="tabs" id="tabs" role="tablist" aria-label="Views">
+    <button data-tab="matchweek" class="on" role="tab">Matchweek<span class="k">1</span></button>
+    <button data-tab="table" role="tab">Table<span class="k">2</span></button>
+    <button data-tab="awards" role="tab">Awards<span class="k">3</span></button>
+    <button data-tab="duel" role="tab">Duel<span class="k">4</span></button>
+    <button data-tab="whatif" role="tab">What-If<span class="k">5</span></button>
+    <button data-tab="model" role="tab">Model<span class="k">6</span></button>
+  </nav>
+</header>
+
+<div class="ticker" id="ticker" aria-label="Model board">
+  <div class="rail" id="tickerRail"></div>
+</div>
+
+<div class="wrap">
+
+<!-- ══════════════════ MATCHWEEK ══════════════════ -->
+<section class="page on" id="tab-matchweek">
+  <div class="hero" id="hero">
+    <div class="inner">
+      <div>
+        <span class="kick" id="heroKick">Matchweek 6 · 10–12 October 2026</span>
+        <div class="verdict" id="heroVerdict">—</div>
+        <div class="lede" id="heroLede"></div>
+        <div class="row" style="margin-top:18px">
+          <button class="btn pri" id="heroCta">See the full gameweek ↓</button>
+          <button class="btn" id="heroDuel">Open the big one →</button>
+        </div>
+        <div class="small dim heroTip" style="margin-top:12px">
+          Tip: press <kbd>W</kbd> for the scenario desk, <kbd>4</kbd> for the duel, <kbd>?</kbd> for everything else.
+        </div>
+      </div>
+      <div id="heroRight"></div>
+    </div>
+  </div>
+
+  <div class="grid g5h" id="headTiles" style="margin-top:16px"></div>
+
+  <div class="grid g23" style="margin-top:16px">
+    <div class="panel pitch">
+      <div class="phead">
+        <div>
+          <span class="kick" id="gwKick">Every fixture, model view</span>
+          <h2>How lopsided is each game?</h2>
+        </div>
+        <span class="chip lean" id="gwLegend">click any card to open the duel</span>
+      </div>
+      <div class="fxgrid" id="gwGrid"></div>
+      <div class="note" style="margin-top:14px">
+        Bar segments are the model's win / draw / win probabilities. A near-even three-way split
+        means a coin-flip; a bar dominated by one colour is a near-certainty.
+        <b>Toss-up</b> flags matches where no result exceeds 40%.
+      </div>
+    </div>
+    <div class="stack">
+      <div class="panel" id="racePanel">
+        <div class="phead"><div><span class="kick">Season</span><h3>Title race probability</h3></div></div>
+        <div id="raceBars"></div>
+      </div>
+      <div class="panel hot">
+        <div class="phead"><div><span class="kick">Trust, earned</span><h3>Model pulse</h3></div></div>
+        <div id="pulse"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel" style="margin-top:16px">
+    <div class="phead">
+      <div><span class="kick">Picked for you</span><h2>Matches worth clearing your Saturday for</h2></div>
+    </div>
+    <div class="grid g3" id="marquee"></div>
+  </div>
+</section>
+
+<!-- ══════════════════ TABLE ══════════════════ -->
+<section class="page" id="tab-table">
+  <div class="grid g4" id="tableTiles"></div>
+  <div class="grid g23" style="margin-top:16px">
+    <div class="panel pitch">
+      <div class="phead">
+        <div><span class="kick">Projected 2026–27</span><h2>Final standings forecast</h2></div>
+        <div class="row">
+          <span class="chip lean" id="cmpHint">click two rows to compare</span>
+          <button class="btn sm" id="tblSortPts">By points</button>
+          <button class="btn sm" id="tblSortRib">By spread</button>
+        </div>
+      </div>
+      <div class="scroll tall"><table class="tbl" id="fullTable"></table></div>
+      <div class="row" id="compareBar" style="display:none; margin-top:12px"></div>
+      <div class="note" style="margin-top:12px" id="tableNote"></div>
+    </div>
+    <div class="stack">
+      <div class="panel">
+        <div class="phead"><div><span class="kick">Season markets</span><h3>Where the probabilities sit</h3></div></div>
+        <div id="marketPanel"></div>
+      </div>
+      <div class="panel">
+        <div class="phead"><div><span class="kick">European places</span><h3>Top-six race</h3></div></div>
+        <div id="top6Rings"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ AWARDS ══════════════════ -->
+<section class="page" id="tab-awards">
+  <div class="grid g4" id="awardTiles"></div>
+  <div class="row" style="margin-top:18px">
+    <button class="btn pri" data-award="gb">Golden Boot</button>
+    <button class="btn" data-award="pm">Most assists</button>
+    <button class="btn" data-award="gg">Golden Glove</button>
+    <button class="btn" data-award="poty">Player of the Season</button>
+    <span class="chip lean" style="margin-left:auto" data-tip="or press P">cycle with P</span>
+  </div>
+  <div class="grid g23" style="margin-top:16px">
+    <div class="panel pitch">
+      <div class="phead"><div><span class="kick" id="awardKick">Golden Boot</span><h2 id="awardTitle">Goals, projected</h2></div></div>
+      <div id="awardPodium" class="podium"></div>
+      <div style="margin-top:16px">
+        <label class="ctl" for="awardSearch">Filter the board</label>
+        <div class="row" style="gap:12px">
+          <input type="text" id="awardSearch" placeholder="search a player or club…" style="width:100%; max-width:320px">
+          <span class="small dim" id="awardSearchInfo"></span>
+        </div>
+      </div>
+      <div class="scroll" style="margin-top:14px; max-height:560px"><table class="tbl" id="awardTable"></table></div>
+      <div class="note" style="margin-top:12px" id="awardNote"></div>
+    </div>
+    <div class="stack">
+      <div class="panel">
+        <div class="phead"><div><span class="kick">Why these names</span><h3>The inputs behind the board</h3></div></div>
+        <div id="awardWhy"></div>
+      </div>
+      <div class="panel">
+        <div class="phead"><div><span class="kick">History</span><h3>Last season's winners</h3></div></div>
+        <div id="awardHistory"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ DUEL ══════════════════ -->
+<section class="page" id="tab-duel">
+  <div class="panel">
+    <div class="row" style="gap:14px">
+      <div style="flex:1;min-width:190px">
+        <label class="ctl" for="fxHome">Home side</label>
+        <select id="fxHome" style="width:100%"></select>
+      </div>
+      <div style="flex:0 0 auto; padding-top:18px"><span class="kick">vs</span></div>
+      <div style="flex:1;min-width:190px">
+        <label class="ctl" for="fxAway">Away side</label>
+        <select id="fxAway" style="width:100%"></select>
+      </div>
+      <div style="padding-top:16px"><button class="btn pri" id="fxGo">Run the model</button></div>
+    </div>
+    <div class="row" style="margin-top:14px" id="fxQuick"></div>
+  </div>
+  <div id="fxResult" style="margin-top:16px"></div>
+</section>
+
+<!-- ══════════════════ WHAT-IF ══════════════════ -->
+<section class="page" id="tab-whatif">
+  <div class="grid g32">
+    <div class="stack">
+      <div class="panel pitch">
+        <div class="phead">
+          <div><span class="kick">Scenario desk</span><h2>Change the future, re-run the season</h2></div>
+          <span class="chip lean">press W</span>
+        </div>
+        <div class="note" style="margin-bottom:14px">
+          Every change here re-simulates all 330 remaining fixtures. Injuries reduce a club's attacking
+          output and Elo; form sliders scale attack and defence; points deductions are applied directly.
+        </div>
+        <div class="presets" id="presets"></div>
+        <div class="stack" id="scenarioForm"></div>
+        <div class="row" style="margin-top:16px">
+          <label class="ctl" style="margin:0">Simulations</label>
+          <select id="simCount">
+            <option value="1000">1,000</option>
+            <option value="2500">2,500</option>
+            <option value="5000" selected>5,000</option>
+          </select>
+          <button class="btn hot" id="runSim">Re-simulate season</button>
+          <button class="btn" id="resetScen">Clear scenario</button>
+          <button class="btn sm" id="shareScen" data-tip="Copy a link that reopens this exact scenario">Share scenario</button>
+        </div>
+        <div class="small dim" style="margin-top:10px">
+          <kbd>R</kbd> resets, <kbd>S</kbd> copies a shareable link, <kbd>?</kbd> lists every shortcut.
+        </div>
+      </div>
+      <div class="panel">
+        <div class="phead"><div><span class="kick">Scenario output</span><h2>What changes</h2></div></div>
+        <div id="simSummary"><div class="note">Adjust something above, then hit <b>Re-simulate season</b>.</div></div>
+        <div class="scroll" style="margin-top:14px"><table class="tbl" id="scenTable"></table></div>
+      </div>
+    </div>
+    <div class="stack">
+      <div class="panel hot">
+        <div class="phead"><div><span class="kick">Awards under this scenario</span><h3>Player markets shift too</h3></div></div>
+        <div class="row" id="scenAwardBtns"></div>
+        <div id="scenAwards" style="margin-top:14px"></div>
+      </div>
+      <div class="panel">
+        <div class="phead"><div><span class="kick">Deltas</span><h3>Biggest movers vs baseline</h3></div></div>
+        <div id="simMovers"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ MODEL ══════════════════ -->
+<section class="page" id="tab-model">
+  <div class="grid g4" id="metricTiles"></div>
+
+  <div class="grid g23" style="margin-top:16px">
+    <div class="panel pitch">
+      <div class="phead"><div><span class="kick">Validation</span><h2>How the model is scored</h2></div></div>
+      <div class="grid g2" style="gap:20px">
+        <div><div class="kick" style="margin-bottom:10px">Ranked probability score</div><div id="chartRps"></div></div>
+        <div><div class="kick" style="margin-bottom:10px">Reliability — predicted vs observed</div><div id="chartCalib"></div></div>
+      </div>
+      <div class="note" style="margin-top:14px">
+        RPS, Brier and log-loss score the whole probability distribution, not just the top pick — so they
+        reward honest uncertainty. Lower is better; the model beats the home-win base rate on all three.
+      </div>
+    </div>
+    <div class="panel">
+      <div class="phead"><div><span class="kick">What drives a prediction</span><h3>Feature importance</h3></div></div>
+      <div id="featImp"></div>
+    </div>
+  </div>
+
+  <div class="panel hot" style="margin-top:16px">
+    <div class="phead">
+      <div><span class="kick">Out of sample · 380 matches</span><h2>The 2025–26 replay, in the open</h2></div>
+      <span class="chip lean" id="btStamp">—</span>
+    </div>
+    <div class="grid g4" id="btTiles"></div>
+    <div class="grid g2" style="margin-top:18px; gap:20px">
+      <div>
+        <div class="kick" style="margin-bottom:10px">Rolling accuracy across the replayed season</div>
+        <div id="btRolling"></div>
+      </div>
+      <div>
+        <div class="kick" style="margin-bottom:10px">Projected finish vs what actually happened</div>
+        <div id="btDumbbell"></div>
+      </div>
+    </div>
+    <div class="grid g2" style="margin-top:18px; gap:20px">
+      <div><div class="kick" style="margin-bottom:10px">Model vs baselines</div><div class="scroll"><table class="tbl" id="btMetrics"></table></div></div>
+      <div id="btFindings"></div>
+    </div>
+  </div>
+
+  <div class="grid g2" style="margin-top:16px">
+    <div class="panel">
+      <div class="phead"><div><span class="kick">Under the hood</span><h3>Architecture</h3></div></div>
+      <div id="archList"></div>
+    </div>
+    <div class="panel">
+      <div class="phead"><div><span class="kick">Honest limitations</span><h3>What this can't know</h3></div></div>
+      <div id="limits"></div>
+    </div>
+  </div>
+
+  <div class="panel" style="margin-top:16px">
+    <div class="phead"><div><span class="kick">Downloads</span><h2>Take the data with you</h2></div></div>
+    <div id="dataTab"></div>
+  </div>
+</section>
+
+</div>
+
+<footer id="colophon" style="max-width:1180px;margin:26px auto 34px;padding:0 20px;
+    font-size:11.5px;line-height:1.75;color:var(--mid);border-top:1px solid var(--line);padding-top:16px">
+  <div><b style="color:var(--txt)">NINETY+</b> · Premier League 2026–27 predictor ·
+    <a href="https://github.com/" id="srcLink" style="color:var(--accent);text-decoration:none">source</a> ·
+    <span title="The model, the pipeline and this page">MIT licensed</span></div>
+  <div>Results and tables compiled from publicly published match data for commentary and analysis.
+    Live mode uses the <b>football-data.org</b> API (free tier, non-commercial) — credit to them for the feed.</div>
+  <div>Club names and colours are used descriptively. Crests are abstract shields drawn from club colours;
+    this project uses no official club badges or Premier League marks, and is not affiliated with or
+    endorsed by any club or by the Premier League.</div>
+  <div>Predictions are a statistical model's output, not advice. See <b>Model → What this can't know</b>.</div>
+</footer>
+
+<div id="sheet" class="sheet" role="presentation"></div>
+<div id="toast" role="status" aria-live="polite"></div>

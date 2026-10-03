@@ -1,0 +1,5 @@
+# The dashboard itself is meant to be seen. The API is not meant to be crawled: every
+# simulation costs real CPU, and a crawler walking /api/simulate would spend it.
+User-agent: *
+Allow: /$
+Disallow: /api/

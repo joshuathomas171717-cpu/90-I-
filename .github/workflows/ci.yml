@@ -1,0 +1,90 @@
+# CI on every change (P4.4).
+#
+# The whole pipeline, on a clean machine, on every push and pull request: install → data gate →
+# datasets → engine → backtest → tests → dashboard → server smoke test. Red means the change does not
+# ship, and because `run_all.py` refuses to build on a failed gate, "green" means the numbers in the
+# dashboard were produced by a dataset that passed every check.
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # ── the gate, called out on its own so a data failure is unambiguous in the UI ──────────
+      - name: Data validation gate
+        run: python3 validate_data.py
+
+      # ── everything else, in the same order a human would run it ────────────────────────────
+      - name: Pipeline, tests and dashboard
+        run: python3 run_all.py
+
+      # The weekly job is the part that can quietly rot, so it runs here too — with no network and
+      # no key, against the checked-in dataset, which is exactly the fallback path.
+      - name: Weekly job (offline dry run)
+        env:
+          NT90_SOURCE: local
+        run: python3 update_week.py --dry-run
+
+      # ── the committed page must match the committed sources ────────────────────────────────
+      - name: Dashboard is current and reproducible
+        run: |
+          git diff --exit-code --stat -- static/index.html \
+            || { echo "::error::static/index.html is stale — run python3 build_dashboard.py and commit it"; exit 1; }
+
+      # ── does it actually serve? (boots, warms, answers, then dies) ─────────────────────────
+      - name: Server smoke test
+        run: |
+          PORT=8123 NT90_PRELOAD=1 python3 server.py & SRV=$!
+          for i in $(seq 1 40); do
+            if curl -fsS http://127.0.0.1:8123/readyz >/dev/null 2>&1; then break; fi
+            sleep 1
+          done
+          set -e
+          curl -fsS http://127.0.0.1:8123/healthz
+          curl -fsS http://127.0.0.1:8123/readyz | head -c 400; echo
+          test "$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8123/)" = 200
+          test "$(curl -s -o /dev/null -w '%{content_type}' --compressed http://127.0.0.1:8123/)" = "text/html; charset=utf-8"
+          ENC=$(curl -s -o /dev/null -w '%{size_download}' --compressed http://127.0.0.1:8123/)
+          RAW=$(curl -s -o /dev/null -w '%{size_download}' -H 'Accept-Encoding: identity' http://127.0.0.1:8123/)
+          echo "page: ${ENC} bytes gzipped vs ${RAW} identity"
+          test "$ENC" -lt "$RAW"
+          curl -fsS -X POST http://127.0.0.1:8123/api/simulate \
+            -H 'Content-Type: application/json' \
+            -d '{"n_sims":600,"team_boosts":{"ARS":{"attack":5,"defence":5}}}' | head -c 200; echo
+          kill $SRV
+
+      - name: Upload the built dashboard
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dashboard
+          path: static/index.html
+          retention-days: 14
+          if-no-files-found: warn

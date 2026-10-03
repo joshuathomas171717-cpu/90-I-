@@ -1,0 +1,20 @@
+# Render blueprint for NINETY+.
+#   Render dashboard -> New -> Blueprint -> point at the repo
+# healthCheckPath is /readyz: Render holds traffic until the model is warm.
+services:
+  - type: web
+    name: ninety-plus
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: starter
+    region: frankfurt
+    healthCheckPath: /readyz
+    autoDeploy: true
+    envVars:
+      - key: HOST
+        value: 0.0.0.0
+      - key: NT90_PRELOAD
+        value: "1"
+      - key: NT90_REFRESH_SECONDS
+        value: "21600"
+      # Server.py takes PORT from the environment; Render injects its own.

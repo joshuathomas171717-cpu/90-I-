@@ -1,0 +1,13 @@
+{
+  "snapshots": [
+    {
+      "file": "gw06.json",
+      "gameweek": 6,
+      "as_of": "2026-10-03",
+      "played_matches": 50,
+      "leader": "MCI",
+      "title_prob": 52.5,
+      "source": "local"
+    }
+  ]
+}

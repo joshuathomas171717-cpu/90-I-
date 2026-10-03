@@ -1,0 +1,94 @@
+# Weekly data refresh (P2.4).
+#
+# Runs the same job you would run by hand — fetch, validate, promote, rebuild, snapshot, score — and
+# only commits when the validation gate passes. GitHub Actions cron is free for public repos and
+# outlives any sandbox, which is why the weekly job lives here rather than on a laptop.
+#
+# Cron is UTC. Matchweeks end Sunday evening/Monday; Mon 06:00 UTC is comfortably after the last
+# fixture and before anyone looks at the table over breakfast in the UK.
+#
+#   Actions -> "Weekly update" -> Run workflow      to trigger a dry run by hand
+name: Weekly update
+
+on:
+  schedule:
+    - cron: "0 6 * * 1"          # every Monday, 06:00 UTC
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Fetch + validate only (no promotion, no commit)"
+        type: boolean
+        default: true
+      provider:
+        description: "Provider name (blank = auto)"
+        type: string
+        default: ""
+
+permissions:
+  contents: write                # needed to commit the refreshed dataset back
+
+concurrency:
+  group: weekly-update
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Validate the checked-in dataset before touching anything
+        run: python3 validate_data.py
+
+      - name: Weekly job (dry run)
+        if: github.event_name == 'workflow_dispatch' && inputs.dry_run
+        env:
+          FOOTBALL_DATA_ORG_TOKEN: ${{ secrets.FOOTBALL_DATA_ORG_TOKEN }}
+          NT90_SOURCE: ${{ inputs.provider }}
+        run: python3 update_week.py --dry-run
+
+      - name: Weekly job
+        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && !inputs.dry_run)
+        env:
+          FOOTBALL_DATA_ORG_TOKEN: ${{ secrets.FOOTBALL_DATA_ORG_TOKEN }}
+          NT90_SOURCE: ${{ inputs.provider }}
+        # The job itself refuses to promote a dataset that fails validation, so a bad pull leaves the
+        # repository untouched and this step exits non-zero — which is the alert.
+        run: python3 update_week.py
+
+      - name: Test gate
+        run: python3 tests/run_tests.py
+
+      - name: Commit the refreshed dataset
+        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && !inputs.dry_run)
+        run: |
+          git config user.name  "ninety-plus-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add data/ static/index.html
+          if git diff --cached --quiet; then
+            echo "No changes — the model already reflects the latest results."
+          else
+            git commit -m "chore(data): weekly refresh $(date -u +%Y-%m-%d)"
+            git push
+          fi
+
+      - name: Upload the audit trail
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: weekly-audit
+          path: |
+            data/raw/
+            data/staging/
+          retention-days: 30
+          if-no-files-found: ignore

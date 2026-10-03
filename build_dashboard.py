@@ -1,0 +1,181 @@
+"""Assemble the dashboard: payload + club identity + source parts → static/index.html
+
+The front-end lives in static/src/ as separate parts (theme, shell, logic, motion, ux, render) and is
+compiled into ONE self-contained HTML file — no external requests, so it works offline and inside
+sandboxed previews. Fonts are embedded as base64 WOFF2 for the same reason.
+"""
+import json
+import os
+import re
+import pandas as pd
+
+BASE = os.path.dirname(os.path.abspath(__file__))
+DATA = os.path.join(BASE, "data")
+STATIC = os.path.join(BASE, "static")
+SRC = os.path.join(STATIC, "src")
+
+def json_safe(obj):
+    """Browsers' JSON.parse() rejects bare NaN/Infinity — strip them before embedding."""
+    import math
+    if isinstance(obj, float):
+        return obj if math.isfinite(obj) else None
+    if isinstance(obj, dict):
+        return {k: json_safe(v) for k, v in obj.items()}
+    if isinstance(obj, (list, tuple)):
+        return [json_safe(v) for v in obj]
+    return obj
+
+
+summary = json.load(open(os.path.join(DATA, "predictions_2026_27_summary.json")))
+teams = pd.read_csv(os.path.join(DATA, "teams_2026_27.csv"))
+fixtures = pd.read_csv(os.path.join(DATA, "fixtures_2026_27_remaining.csv"))
+players = pd.read_csv(os.path.join(DATA, "players_2026_27.csv"))
+
+# ── club identity: secondary kit colour + shirt pattern, used to draw inline SVG crests ──────────
+CLUB_EXTRAS = {
+    "ARS": ("#ffffff", "shoulders"), "AVL": ("#95bfe5", "shoulders"), "BOU": ("#000000", "stripes"),
+    "BRE": ("#ffffff", "stripes"),   "BHA": ("#ffffff", "stripes"),   "CHE": ("#ffffff", "plain"),
+    "COV": ("#ffffff", "plain"),     "CRY": ("#c4122e", "stripes"),   "EVE": ("#ffffff", "plain"),
+    "FUL": ("#0a0a0a", "chest"),     "HUL": ("#000000", "stripes"),   "IPS": ("#ffffff", "plain"),
+    "LEE": ("#1d428a", "chest"),     "LIV": ("#f6eb61", "plain"),     "MCI": ("#ffffff", "plain"),
+    "MUN": ("#ffe500", "plain"),     "NEW": ("#ffffff", "stripes"),   "NFO": ("#ffffff", "plain"),
+    "SUN": ("#ffffff", "stripes"),   "TOT": ("#ffffff", "plain"),
+}
+
+teams_in = []
+for _, t in teams.iterrows():
+    sec, pat = CLUB_EXTRAS.get(t["code"], ("#ffffff", "plain"))
+    teams_in.append({
+        "code": t["code"], "name": t["name"], "short": t["short"], "manager": t["manager"],
+        "stadium": t["stadium"], "color": t["primary_color"], "europe": t["europe"],
+        "xg": float(round(t["xg_90_live"], 3)), "xga": float(round(t["xga_90_live"], 3)),
+        "elo": float(t["elo_live"]), "home_adv": float(t["home_adv"]), "ppg": float(t["ppg_current"]),
+        "value_m": int(t["squad_value_m"]), "ppda": float(t["ppda"]), "set_piece": float(t["set_piece_xg"]),
+        "capacity": int(t["capacity"]), "promoted": int(t["promoted"]),
+        "current_pos": int(t["current_pos"]),
+        "curr_p": int(t["P"]), "curr_w": int(t["W"]), "curr_d": int(t["D"]), "curr_l": int(t["L"]),
+        "curr_gf": int(t["GF"]), "curr_ga": int(t["GA"]), "curr_gd": int(t["GD"]), "curr_pts": int(t["Pts"]),
+        "form": t["form"],
+    })
+
+club_extras = {c: {"secondary": s, "pattern": p} for c, (s, p) in CLUB_EXTRAS.items()}
+
+fixtures_in = [[r["home"], r["away"]] for _, r in fixtures.iterrows()]
+
+players_in, gks_in = [], []
+for _, p in players.iterrows():
+    base = {
+        "player_id": p["player_id"], "name": p["name"], "club": p["club"], "pos": p["pos"],
+        "nation": p["nation"], "goals_curr": int(p["goals_curr"]), "assists_curr": int(p["assists_curr"]),
+        "cs_curr": int(p["cs_curr"]), "goals_prev": int(p["goals_prev"]), "assists_prev": int(p["assists_prev"]),
+        "goals_prev_verified": bool(p.get("goals_prev_verified", False)),
+        "assists_prev_verified": bool(p.get("assists_prev_verified", False)),
+        "mins_prob": float(p["mins_prob"]),
+    }
+    if p["pos"] == "GK":
+        gks_in.append({**base, "cs_prev": int(p["cs_prev"]), "gk_psxg_diff": float(p["gk_psxg_diff"]),
+                       "save_pct": float(p["save_pct"])})
+    else:
+        players_in.append({
+            **base,
+            "xg_90": float(p["xg_90"]), "xa_90": float(p["xa_90"]), "kp_90": float(p["kp_90"]),
+            "shot_conv": round(float(p["shot_conv"]) * 100.0, 1),
+            "pen_share": round(float(p["pen_share"]) * 100.0, 1),
+        })
+
+# ── head-to-head: real meetings inside the training window, both orderings ──────────────────────
+h2h = {}
+for path, label in ((os.path.join(DATA, "matches_2025_26.csv"), "2025–26"),
+                    (os.path.join(DATA, "matches_2026_27_played.csv"), "2026–27")):
+    df = pd.read_csv(path)
+    for _, r in df.iterrows():
+        rec = [r["home"], r["away"], int(r["home_goals"]), int(r["away_goals"]), label]
+        h2h.setdefault(f'{r["home"]}-{r["away"]}', []).insert(0, rec)
+        h2h.setdefault(f'{r["away"]}-{r["home"]}', []).insert(0, [r["home"], r["away"],
+                                                                 int(r["home_goals"]), int(r["away_goals"]), label])
+
+# ── backtest: per-match hit strip + rolling accuracy for the trust visual ───────────────────────
+backtest_path = os.path.join(DATA, "backtest_2025_26.json")
+backtest = None
+if os.path.exists(backtest_path):
+    backtest = json.load(open(backtest_path))
+    preds = backtest.pop("predictions", [])
+    backtest["hits"] = [1 if p.get("hit") else 0 for p in preds]
+    win, step = 40, 10
+    roll = []
+    for i in range(win, len(preds) + 1, step):
+        chunk = backtest["hits"][i - win:i]
+        roll.append(round(sum(chunk) / win * 100, 1))
+    backtest["rolling_accuracy"] = roll
+    backtest["meta"]["rolling_window"] = win
+
+payload = json_safe({
+    "baseline": summary, "backtest": backtest, "club_extras": club_extras, "h2h": h2h,
+    "inputs": {"teams": teams_in, "fixtures": fixtures_in, "players": players_in, "gks": gks_in},
+})
+
+parts = {p: open(os.path.join(SRC, p), encoding="utf-8").read()
+         for p in ("fonts.css", "theme.css", "app.html", "core.js", "motion.js", "ux.js", "render.js")}
+
+html = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NINETY+ · Premier League 2026–27 Predictions</title>
+<meta name="description" content="Machine-learning predictions for the 2026–27 Premier League: title race, relegation, Golden Boot, assists, clean sheets and every remaining fixture.">
+<style>
+{parts['fonts.css']}
+{parts['theme.css']}
+</style>
+</head>
+<body>
+{parts['app.html']}
+<script>
+const EMBEDDED = {json.dumps(payload, separators=(",", ":"), allow_nan=False)};
+{parts['core.js']}
+{parts['motion.js']}
+{parts['ux.js']}
+{parts['render.js']}
+</script>
+</body>
+</html>
+"""
+
+out = os.path.join(STATIC, "index.html")
+open(out, "w", encoding="utf-8").write(html)
+print(f"Wrote {out} ({len(html)/1024:.0f} KB) — {len(teams_in)} clubs, {len(fixtures_in)} fixtures, "
+      f"{len(players_in)} outfield players, {len(gks_in)} keepers, {len(h2h)//2} H2H pairings, "
+      f"{len(backtest['hits']) if backtest else 0} backtest calls")
+
+
+# ── stamp the payload's own matchweek into the static HTML ───────────────────
+# The runtime derives these from DATA.meta as well (render.js). Stamping them here too means the very
+# first paint — before a byte of JavaScript runs — is never stale after the weekly job promotes a
+# gameweek. P2.5.
+def _stamp(html):
+    meta = summary.get("meta", {}) or {}
+    next_gw = meta.get("next_gw", 6)
+    dates = (meta.get("next_matchweek") or {}).get("dates", "")
+    months = ("January February March April May June July August September October November December").split()
+    short = dates
+    for name in months:
+        short = short.replace(name, name[:3])
+    short = re.sub(r"\s*\d{4}\s*$", "", short).strip()
+    chip = f"Matchweek {next_gw}" + (f" · {short}" if short else "")
+    full = f"Matchweek {next_gw}" + (f" · {dates}" if dates else "")
+    sub = f"Premier League 2026–27 · model v2.1" + (f" · as of {meta['as_of_date']}" if meta.get("as_of_date") else "")
+    for el, text in (("heroKick", full), ("gwKick", f"Matchweek {next_gw} — every fixture, model view"),
+                     ("markSub", sub)):
+        # NB: "hstat" is deliberately absent — that element's text is a runtime-computed chip
+        # (nextGwChip() in render.js) and must not be chased with a regex.
+        html = re.sub(r'(id="%s"[^>]*>)[^<]*' % el, lambda mm, t=text: mm.group(1) + t, html, count=1)
+    return html
+
+
+with open(out, encoding="utf-8") as fh:
+    _page = fh.read()
+_page = _stamp(_page)
+with open(out, "w", encoding="utf-8") as fh:
+    fh.write(_page)
+print("Stamped matchweek %s into the static page." % (summary.get("meta", {}) or {}).get("next_gw", "?"))

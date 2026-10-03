@@ -1,0 +1,1247 @@
+{
+  "gameweek": 6,
+  "as_of": "2026-10-03",
+  "generated": "2026-10-03T04:58:45",
+  "source": "local",
+  "played_matches": 50,
+  "remaining_matches": 330,
+  "table": [
+    {
+      "code": "MCI",
+      "position": 1,
+      "points": 15,
+      "played": 5,
+      "gf": 13,
+      "ga": 5,
+      "form": "WWWWW"
+    },
+    {
+      "code": "ARS",
+      "position": 2,
+      "points": 12,
+      "played": 5,
+      "gf": 8,
+      "ga": 4,
+      "form": "WWWLW"
+    },
+    {
+      "code": "BHA",
+      "position": 3,
+      "points": 10,
+      "played": 5,
+      "gf": 16,
+      "ga": 5,
+      "form": "WDWWL"
+    },
+    {
+      "code": "BRE",
+      "position": 4,
+      "points": 9,
+      "played": 5,
+      "gf": 10,
+      "ga": 4,
+      "form": "DWDDW"
+    },
+    {
+      "code": "LEE",
+      "position": 5,
+      "points": 9,
+      "played": 5,
+      "gf": 7,
+      "ga": 3,
+      "form": "WWDDD"
+    },
+    {
+      "code": "LIV",
+      "position": 6,
+      "points": 9,
+      "played": 5,
+      "gf": 7,
+      "ga": 4,
+      "form": "WDDWD"
+    },
+    {
+      "code": "EVE",
+      "position": 7,
+      "points": 9,
+      "played": 5,
+      "gf": 6,
+      "ga": 3,
+      "form": "WDWDD"
+    },
+    {
+      "code": "HUL",
+      "position": 8,
+      "points": 8,
+      "played": 5,
+      "gf": 6,
+      "ga": 4,
+      "form": "WWDLD"
+    },
+    {
+      "code": "NEW",
+      "position": 9,
+      "points": 8,
+      "played": 5,
+      "gf": 9,
+      "ga": 9,
+      "form": "LWDWD"
+    },
+    {
+      "code": "CHE",
+      "position": 10,
+      "points": 7,
+      "played": 5,
+      "gf": 10,
+      "ga": 12,
+      "form": "LLDWW"
+    },
+    {
+      "code": "IPS",
+      "position": 11,
+      "points": 6,
+      "played": 5,
+      "gf": 7,
+      "ga": 11,
+      "form": "LWLLW"
+    },
+    {
+      "code": "MUN",
+      "position": 12,
+      "points": 5,
+      "played": 5,
+      "gf": 8,
+      "ga": 8,
+      "form": "LDWLD"
+    },
+    {
+      "code": "NFO",
+      "position": 13,
+      "points": 5,
+      "played": 5,
+      "gf": 4,
+      "ga": 5,
+      "form": "LDLDW"
+    },
+    {
+      "code": "SUN",
+      "position": 14,
+      "points": 4,
+      "played": 5,
+      "gf": 6,
+      "ga": 10,
+      "form": "WDLLL"
+    },
+    {
+      "code": "CRY",
+      "position": 15,
+      "points": 4,
+      "played": 5,
+      "gf": 6,
+      "ga": 11,
+      "form": "LLLWD"
+    },
+    {
+      "code": "AVL",
+      "position": 16,
+      "points": 4,
+      "played": 5,
+      "gf": 4,
+      "ga": 9,
+      "form": "LLWLD"
+    },
+    {
+      "code": "BOU",
+      "position": 17,
+      "points": 3,
+      "played": 5,
+      "gf": 6,
+      "ga": 8,
+      "form": "DLDDL"
+    },
+    {
+      "code": "COV",
+      "position": 18,
+      "points": 3,
+      "played": 5,
+      "gf": 1,
+      "ga": 10,
+      "form": "WLLLL"
+    },
+    {
+      "code": "FUL",
+      "position": 19,
+      "points": 2,
+      "played": 5,
+      "gf": 5,
+      "ga": 8,
+      "form": "LDDLL"
+    },
+    {
+      "code": "TOT",
+      "position": 20,
+      "points": 2,
+      "played": 5,
+      "gf": 2,
+      "ga": 8,
+      "form": "LDLDL"
+    }
+  ],
+  "model": {
+    "champion": {
+      "code": "MCI",
+      "short": "Man City",
+      "proj_pts": 82.4,
+      "title_prob": 52.5
+    },
+    "golden_boot": {
+      "name": "Erling Haaland",
+      "club": "MCI",
+      "proj_goals": 29.4
+    },
+    "golden_glove": {
+      "name": "David Raya",
+      "club": "ARS",
+      "proj_cs": 18.5
+    },
+    "n_simulations": 5000,
+    "as_of_date": "2026-10-03 (Matchweek 5 Complete)"
+  },
+  "predictions": [
+    {
+      "home": "ARS",
+      "away": "LEE",
+      "home_name": "Arsenal",
+      "away_name": "Leeds United",
+      "lambda_home": 2.12,
+      "lambda_away": 0.72,
+      "prob_home": 68.5,
+      "prob_draw": 20.9,
+      "prob_away": 10.6,
+      "clean_sheet_home": 48.5,
+      "clean_sheet_away": 12.1,
+      "btts_prob": 46.3,
+      "over_2_5_prob": 53.8,
+      "top_scorelines": [
+        {
+          "score": "2-0",
+          "home_goals": 2,
+          "away_goals": 0,
+          "prob": 13.2
+        },
+        {
+          "score": "1-0",
+          "home_goals": 1,
+          "away_goals": 0,
+          "prob": 11.4
+        },
+        {
+          "score": "1-1",
+          "home_goals": 1,
+          "away_goals": 1,
+          "prob": 10.0
+        },
+        {
+          "score": "2-1",
+          "home_goals": 2,
+          "away_goals": 1,
+          "prob": 9.5
+        },
+        {
+          "score": "3-0",
+          "home_goals": 3,
+          "away_goals": 0,
+          "prob": 9.3
+        },
+        {
+          "score": "0-0",
+          "home_goals": 0,
+          "away_goals": 0,
+          "prob": 6.8
+        }
+      ],
+      "matrix_5x5": [
+        [
+          6.84,
+          3.25,
+          1.53,
+          0.37,
+          0.07
+        ],
+        [
+          11.42,
+          9.97,
+          3.25,
+          0.78,
+          0.14
+        ],
+        [
+          13.16,
+          9.52,
+          3.45,
+          0.83,
+          0.15
+        ],
+        [
+          9.31,
+          6.73,
+          2.44,
+          0.59,
+          0.11
+        ],
+        [
+          4.93,
+          3.57,
+          1.29,
+          0.31,
+          0.06
+        ]
+      ],
+      "features_breakdown": {
+        "elo_diff": 2.954,
+        "home_xg_vs_away_xga": 2.116,
+        "away_xg_vs_home_xga": 0.786,
+        "squad_value_log_ratio": 1.152,
+        "set_piece_xg_diff": 0.18,
+        "pressing_ppda_diff": 1.5,
+        "european_congestion_diff": -0.065,
+        "home_fortress_advantage": 0.3,
+        "recent_form_ppg_diff": 0.6
+      },
+      "gw": 6,
+      "dates": "10-12 October 2026"
+    },
+    {
+      "home": "AVL",
+      "away": "BRE",
+      "home_name": "Aston Villa",
+      "away_name": "Brentford",
+      "lambda_home": 1.33,
+      "lambda_away": 1.41,
+      "prob_home": 34.0,
+      "prob_draw": 28.3,
+      "prob_away": 37.7,
+      "clean_sheet_home": 24.4,
+      "clean_sheet_away": 26.5,
+      "btts_prob": 56.9,
+      "over_2_5_prob": 51.5,
+      "top_scorelines": [
+        {
+          "score": "1-1",
+          "home_goals": 1,
+          "away_goals": 1,
+          "prob": 13.5
+        },
+        {
+          "score": "1-2",
+          "home_goals": 1,
+          "away_goals": 2,
+          "prob": 8.5
+        },
+        {
+          "score": "2-1",
+          "home_goals": 2,
+          "away_goals": 1,
+          "prob": 8.1
+        },
+        {
+          "score": "0-0",
+          "home_goals": 0,
+          "away_goals": 0,
+          "prob": 7.8
+        },
+        {
+          "score": "0-1",
+          "home_goals": 0,
+          "away_goals": 1,
+          "prob": 7.8
+        },
+        {
+          "score": "1-0",
+          "home_goals": 1,
+          "away_goals": 0,
+          "prob": 7.3
+        }
+      ],
+      "matrix_5x5": [
+        [
+          7.8,
+          7.79,
+          6.43,
+          3.02,
+          1.07
+        ],
+        [
+          7.26,
+          13.46,
+          8.55,
+          4.02,
+          1.42
+        ],
+        [
+          5.71,
+          8.06,
+          5.68,
+          2.67,
+          0.94
+        ],
+        [
+          2.53,
+          3.57,
+          2.52,
+          1.18,
+          0.42
+        ],
+        [
+          0.84,
+          1.19,
+          0.84,
+          0.39,
+          0.14
+        ]
+      ],
+      "features_breakdown": {
+        "elo_diff": 0.326,
+        "home_xg_vs_away_xga": 1.51,
+        "away_xg_vs_home_xga": 1.644,
+        "squad_value_log_ratio": 0.405,
+        "set_piece_xg_diff": -0.08,
+        "pressing_ppda_diff": 0.6,
+        "european_congestion_diff": -0.065,
+        "home_fortress_advantage": 0.25,
+        "recent_form_ppg_diff": -1.0
+      },
+      "gw": 6,
+      "dates": "10-12 October 2026"
+    },
+    {
+      "home": "CHE",
+      "away": "BOU",
+      "home_name": "Chelsea",
+      "away_name": "Bournemouth",
+      "lambda_home": 1.99,
+      "lambda_away": 1.39,
+      "prob_home": 50.3,
+      "prob_draw": 23.9,
+      "prob_away": 25.8,
+      "clean_sheet_home": 24.8,
+      "clean_sheet_away": 13.7,
+      "btts_prob": 65.9,
+      "over_2_5_prob": 65.6,
+      "top_scorelines": [
+        {
+          "score": "1-1",
+          "home_goals": 1,
+          "away_goals": 1,
+          "prob": 10.5
+        },
+        {
+          "score": "2-1",
+          "home_goals": 2,
+          "away_goals": 1,
+          "prob": 9.4
+        },
+        {
+          "score": "2-0",
+          "home_goals": 2,
+          "away_goals": 0,
+          "prob": 6.8
+        },
+        {
+          "score": "1-2",
+          "home_goals": 1,
+          "away_goals": 2,
+          "prob": 6.6
+        },
+        {
+          "score": "2-2",
+          "home_goals": 2,
+          "away_goals": 2,
+          "prob": 6.6
+        },
+        {
+          "score": "3-1",
+          "home_goals": 3,
+          "away_goals": 1,
+          "prob": 6.3
+        }
+      ],
+      "matrix_5x5": [
+        [
+          4.43,
+          3.69,
+          3.3,
+          1.53,
+          0.53
+        ],
+        [
+          5.73,
+          10.47,
+          6.57,
+          3.05,
+          1.06
+        ],
+        [
+          6.75,
+          9.41,
+          6.56,
+          3.04,
+          1.06
+        ],
+        [
+          4.49,
+          6.26,
+          4.36,
+          2.02,
+          0.71
+        ],
+        [
+          2.24,
+          3.12,
+          2.17,
+          1.01,
+          0.35
+        ]
+      ],
+      "features_breakdown": {
+        "elo_diff": 1.472,
+        "home_xg_vs_away_xga": 2.329,
+        "away_xg_vs_home_xga": 1.519,
+        "squad_value_log_ratio": 0.907,
+        "set_piece_xg_diff": 0.0,
+        "pressing_ppda_diff": 0.4,
+        "european_congestion_diff": 0.055,
+        "home_fortress_advantage": 0.25,
+        "recent_form_ppg_diff": 0.8
+      },
+      "gw": 6,
+      "dates": "10-12 October 2026"
+    },
+    {
+      "home": "COV",
+      "away": "NEW",
+      "home_name": "Coventry City",
+      "away_name": "Newcastle United",
+      "lambda_home": 0.97,
+      "lambda_away": 1.84,
+      "prob_home": 18.5,
+      "prob_draw": 25.1,
+      "prob_away": 56.4,
+      "clean_sheet_home": 15.9,
+      "clean_sheet_away": 37.7,
+      "btts_prob": 53.5,
+      "over_2_5_prob": 53.3,
+      "top_scorelines": [
+        {
+          "score": "1-1",
+          "home_goals": 1,
+          "away_goals": 1,
+          "prob": 12.0
+        },
+        {
+          "score": "0-2",
+          "home_goals": 0,
+          "away_goals": 2,
+          "prob": 10.2
+        },
+        {
+          "score": "1-2",
+          "home_goals": 1,
+          "away_goals": 2,
+          "prob": 9.9
+        },
+        {
+          "score": "0-1",
+          "home_goals": 0,
+          "away_goals": 1,
+          "prob": 9.9
+        },
+        {
+          "score": "0-0",
+          "home_goals": 0,
+          "away_goals": 0,
+          "prob": 7.2
+        },
+        {
+          "score": "0-3",
+          "home_goals": 0,
+          "away_goals": 3,
+          "prob": 6.2
+        }
+      ],
+      "matrix_5x5": [
+        [
+          7.19,
+          9.87,
+          10.18,
+          6.25,
+          2.87
+        ],
+        [
+          4.67,
+          11.96,
+          9.92,
+          6.09,
+          2.8
+        ],
+        [
+          2.85,
+          5.25,
+          4.83,
+          2.97,
+          1.36
+        ],
+        [
+          0.93,
+          1.71,
+          1.57,
+          0.96,
+          0.44
+        ],
+        [
+          0.23,
+          0.42,
+          0.38,
+          0.23,
+          0.11
+        ]
+      ],
+      "features_breakdown": {
+        "elo_diff": -1.296,
+        "home_xg_vs_away_xga": 1.08,
+        "away_xg_vs_home_xga": 2.09,
+        "squad_value_log_ratio": -1.127,
+        "set_piece_xg_diff": -0.08,
+        "pressing_ppda_diff": -2.6,
+        "european_congestion_diff": 0.0,
+        "home_fortress_advantage": 0.2,
+        "recent_form_ppg_diff": -1.0
+      },
+      "gw": 6,
+      "dates": "10-12 October 2026"
+    },
+    {
+      "home": "CRY",
+      "away": "NFO",
+      "home_name": "Crystal Palace",
+      "away_name": "Nottingham Forest",
+      "lambda_home": 1.27,
+      "lambda_away": 1.24,
+      "prob_home": 35.9,
+      "prob_draw": 29.8,
+      "prob_away": 34.3,
+      "clean_sheet_home": 29.0,
+      "clean_sheet_away": 28.1,
+      "btts_prob": 52.4,
+      "over_2_5_prob": 45.8,
+      "top_scorelines": [
+        {
+          "score": "1-1",
+          "home_goals": 1,
+          "away_goals": 1,
+          "prob": 14.2
+        },
+        {
+          "score": "0-0",
+          "home_goals": 0,
+          "away_goals": 0,
+          "prob": 9.6
+        },
+        {
+          "score": "1-0",
+          "home_goals": 1,
+          "away_goals": 0,
+          "prob": 9.0
+        },
+        {
+          "score": "0-1",
+          "home_goals": 0,
+          "away_goals": 1,
+          "prob": 8.7
+        },
+        {
+          "score": "2-1",
+          "home_goals": 2,
+          "away_goals": 1,
+          "prob": 8.1
+        },
+        {
+          "score": "1-2",
+          "home_goals": 1,
+          "away_goals": 2,
+          "prob": 7.9
+        }
+      ],
+      "matrix_5x5": [
+        [
+          9.57,
+          8.68,
+          6.24,
+          2.57,
+          0.79
+        ],
+        [
+          8.95,
+          14.22,
+          7.92,
+          3.27,
+          1.01
+        ],
+        [
+          6.58,
+          8.14,
+          5.03,
+          2.07,
+          0.64
+        ],
+        [
+          2.79,
+          3.45,
+          2.13,
+          0.88,
+          0.27
+        ],
+        [
+          0.89,
+          1.09,
+          0.68,
+          0.28,
+          0.09
+        ]
+      ],
+      "features_breakdown": {
+        "elo_diff": 0.272,
+        "home_xg_vs_away_xga": 1.376,
+        "away_xg_vs_home_xga": 1.4,
+        "squad_value_log_ratio": -0.069,
+        "set_piece_xg_diff": -0.01,
+        "pressing_ppda_diff": 0.1,
+        "european_congestion_diff": -0.055,
+        "home_fortress_advantage": 0.23,
+        "recent_form_ppg_diff": -0.2
+      },
+      "gw": 6,
+      "dates": "10-12 October 2026"
+    },
+    {
+      "home": "HUL",
+      "away": "EVE",
+      "home_name": "Hull City",
+      "away_name": "Everton",
+      "lambda_home": 1.05,
+      "lambda_away": 1.2,
+      "prob_home": 30.3,
+      "prob_draw": 31.5,
+      "prob_away": 38.1,
+      "clean_sheet_home": 30.0,
+      "clean_sheet_away": 35.1,
+      "btts_prob": 46.9,
+      "over_2_5_prob": 39.1,
+      "top_scorelines": [
+        {
+          "score": "1-1",
+          "home_goals": 1,
+          "away_goals": 1,
+          "prob": 14.7
+        },
+        {
+          "score": "0-0",
+          "home_goals": 0,
+          "away_goals": 0,
+          "prob": 12.0
+        },
+        {
+          "score": "0-1",
+          "home_goals": 0,
+          "away_goals": 1,
+          "prob": 11.2
+        },
+        {
+          "score": "1-0",
+          "home_goals": 1,
+          "away_goals": 0,
+          "prob": 9.6
+        },
+        {
+          "score": "1-2",
+          "home_goals": 1,
+          "away_goals": 2,
+          "prob": 8.0
+        },
+        {
+          "score": "0-2",
+          "home_goals": 0,
+          "away_goals": 2,
+          "prob": 7.6
+        }
+      ],
+      "matrix_5x5": [
+        [
+          11.98,
+          11.22,
+          7.64,
+          3.07,
+          0.92
+        ],
+        [
+          9.56,
+          14.74,
+          8.0,
+          3.21,
+          0.97
+        ],
+        [
+          5.77,
+          6.95,
+          4.19,
+          1.68,
+          0.51
+        ],
+        [
+          2.01,
+          2.43,
+          1.46,
+          0.59,
+          0.18
+        ],
+        [
+          0.53,
+          0.64,
+          0.38,
+          0.15,
+          0.05
+        ]
+      ],
+      "features_breakdown": {
+        "elo_diff": -0.39,
+        "home_xg_vs_away_xga": 1.09,
+        "away_xg_vs_home_xga": 1.35,
+        "squad_value_log_ratio": -0.563,
+        "set_piece_xg_diff": -0.12,
+        "pressing_ppda_diff": -0.3,
+        "european_congestion_diff": 0.0,
+        "home_fortress_advantage": 0.21,
+        "recent_form_ppg_diff": -0.2
+      },
+      "gw": 6,
+      "dates": "10-12 October 2026"
+    },
+    {
+      "home": "IPS",
+      "away": "FUL",
+      "home_name": "Ipswich Town",
+      "away_name": "Fulham",
+      "lambda_home": 1.35,
+      "lambda_away": 1.33,
+      "prob_home": 36.2,
+      "prob_draw": 28.7,
+      "prob_away": 35.1,
+      "clean_sheet_home": 26.5,
+      "clean_sheet_away": 25.9,
+      "btts_prob": 55.8,
+      "over_2_5_prob": 50.1,
+      "top_scorelines": [
+        {
+          "score": "1-1",
+          "home_goals": 1,
+          "away_goals": 1,
+          "prob": 13.7
+        },
+        {
+          "score": "2-1",
+          "home_goals": 2,
+          "away_goals": 1,
+          "prob": 8.3
+        },
+        {
+          "score": "0-0",
+          "home_goals": 0,
+          "away_goals": 0,
+          "prob": 8.2
+        },
+        {
+          "score": "1-2",
+          "home_goals": 1,
+          "away_goals": 2,
+          "prob": 8.2
+        },
+        {
+          "score": "1-0",
+          "home_goals": 1,
+          "away_goals": 0,
+          "prob": 7.9
+        },
+        {
+          "score": "0-1",
+          "home_goals": 0,
+          "away_goals": 1,
+          "prob": 7.8
+        }
+      ],
+      "matrix_5x5": [
+        [
+          8.21,
+          7.75,
+          6.05,
+          2.68,
+          0.89
+        ],
+        [
+          7.91,
+          13.67,
+          8.18,
+          3.63,
+          1.2
+        ],
+        [
+          6.27,
+          8.33,
+          5.54,
+          2.45,
+          0.81
+        ],
+        [
+          2.83,
+          3.76,
+          2.5,
+          1.11,
+          0.37
+        ],
+        [
+          0.96,
+          1.27,
+          0.84,
+          0.37,
+          0.12
+        ]
+      ],
+      "features_breakdown": {
+        "elo_diff": 0.122,
+        "home_xg_vs_away_xga": 1.507,
+        "away_xg_vs_home_xga": 1.519,
+        "squad_value_log_ratio": -0.386,
+        "set_piece_xg_diff": 0.0,
+        "pressing_ppda_diff": -1.0,
+        "european_congestion_diff": 0.0,
+        "home_fortress_advantage": 0.22,
+        "recent_form_ppg_diff": 0.8
+      },
+      "gw": 6,
+      "dates": "10-12 October 2026"
+    },
+    {
+      "home": "LIV",
+      "away": "MCI",
+      "home_name": "Liverpool",
+      "away_name": "Manchester City",
+      "lambda_home": 1.44,
+      "lambda_away": 1.49,
+      "prob_home": 35.2,
+      "prob_draw": 27.2,
+      "prob_away": 37.6,
+      "clean_sheet_home": 22.5,
+      "clean_sheet_away": 23.8,
+      "btts_prob": 60.3,
+      "over_2_5_prob": 56.0,
+      "top_scorelines": [
+        {
+          "score": "1-1",
+          "home_goals": 1,
+          "away_goals": 1,
+          "prob": 12.7
+        },
+        {
+          "score": "1-2",
+          "home_goals": 1,
+          "away_goals": 2,
+          "prob": 8.6
+        },
+        {
+          "score": "2-1",
+          "home_goals": 2,
+          "away_goals": 1,
+          "prob": 8.3
+        },
+        {
+          "score": "0-1",
+          "home_goals": 0,
+          "away_goals": 1,
+          "prob": 6.7
+        },
+        {
+          "score": "0-0",
+          "home_goals": 0,
+          "away_goals": 0,
+          "prob": 6.6
+        },
+        {
+          "score": "1-0",
+          "home_goals": 1,
+          "away_goals": 0,
+          "prob": 6.4
+        }
+      ],
+      "matrix_5x5": [
+        [
+          6.62,
+          6.72,
+          5.95,
+          2.96,
+          1.1
+        ],
+        [
+          6.43,
+          12.74,
+          8.56,
+          4.26,
+          1.59
+        ],
+        [
+          5.53,
+          8.25,
+          6.15,
+          3.06,
+          1.14
+        ],
+        [
+          2.65,
+          3.95,
+          2.95,
+          1.47,
+          0.55
+        ],
+        [
+          0.95,
+          1.42,
+          1.06,
+          0.53,
+          0.2
+        ]
+      ],
+      "features_breakdown": {
+        "elo_diff": -0.456,
+        "home_xg_vs_away_xga": 1.541,
+        "away_xg_vs_home_xga": 1.691,
+        "squad_value_log_ratio": -0.189,
+        "set_piece_xg_diff": -0.01,
+        "pressing_ppda_diff": -0.2,
+        "european_congestion_diff": 0.0,
+        "home_fortress_advantage": 0.31,
+        "recent_form_ppg_diff": -1.2
+      },
+      "gw": 6,
+      "dates": "10-12 October 2026"
+    },
+    {
+      "home": "MUN",
+      "away": "TOT",
+      "home_name": "Manchester United",
+      "away_name": "Tottenham Hotspur",
+      "lambda_home": 1.97,
+      "lambda_away": 1.05,
+      "prob_home": 57.3,
+      "prob_draw": 23.9,
+      "prob_away": 18.8,
+      "clean_sheet_home": 34.9,
+      "clean_sheet_away": 14.0,
+      "btts_prob": 57.1,
+      "over_2_5_prob": 58.0,
+      "top_scorelines": [
+        {
+          "score": "1-1",
+          "home_goals": 1,
+          "away_goals": 1,
+          "prob": 11.3
+        },
+        {
+          "score": "2-1",
+          "home_goals": 2,
+          "away_goals": 1,
+          "prob": 10.0
+        },
+        {
+          "score": "2-0",
+          "home_goals": 2,
+          "away_goals": 0,
+          "prob": 9.5
+        },
+        {
+          "score": "1-0",
+          "home_goals": 1,
+          "away_goals": 0,
+          "prob": 8.5
+        },
+        {
+          "score": "3-1",
+          "home_goals": 3,
+          "away_goals": 1,
+          "prob": 6.6
+        },
+        {
+          "score": "3-0",
+          "home_goals": 3,
+          "away_goals": 0,
+          "prob": 6.2
+        }
+      ],
+      "matrix_5x5": [
+        [
+          6.0,
+          4.04,
+          2.71,
+          0.95,
+          0.25
+        ],
+        [
+          8.51,
+          11.26,
+          5.34,
+          1.88,
+          0.49
+        ],
+        [
+          9.47,
+          9.98,
+          5.26,
+          1.85,
+          0.49
+        ],
+        [
+          6.22,
+          6.55,
+          3.45,
+          1.21,
+          0.32
+        ],
+        [
+          3.06,
+          3.23,
+          1.7,
+          0.6,
+          0.16
+        ]
+      ],
+      "features_breakdown": {
+        "elo_diff": 1.65,
+        "home_xg_vs_away_xga": 2.207,
+        "away_xg_vs_home_xga": 1.243,
+        "squad_value_log_ratio": 0.165,
+        "set_piece_xg_diff": 0.02,
+        "pressing_ppda_diff": -1.1,
+        "european_congestion_diff": -0.065,
+        "home_fortress_advantage": 0.26,
+        "recent_form_ppg_diff": 0.6
+      },
+      "gw": 6,
+      "dates": "10-12 October 2026"
+    },
+    {
+      "home": "SUN",
+      "away": "BHA",
+      "home_name": "Sunderland",
+      "away_name": "Brighton & Hove Albion",
+      "lambda_home": 1.16,
+      "lambda_away": 1.85,
+      "prob_home": 22.6,
+      "prob_draw": 25.2,
+      "prob_away": 52.2,
+      "clean_sheet_home": 15.8,
+      "clean_sheet_away": 31.4,
+      "btts_prob": 58.9,
+      "over_2_5_prob": 57.7,
+      "top_scorelines": [
+        {
+          "score": "1-1",
+          "home_goals": 1,
+          "away_goals": 1,
+          "prob": 11.8
+        },
+        {
+          "score": "1-2",
+          "home_goals": 1,
+          "away_goals": 2,
+          "prob": 9.8
+        },
+        {
+          "score": "0-2",
+          "home_goals": 0,
+          "away_goals": 2,
+          "prob": 8.5
+        },
+        {
+          "score": "0-1",
+          "home_goals": 0,
+          "away_goals": 1,
+          "prob": 8.0
+        },
+        {
+          "score": "2-1",
+          "home_goals": 2,
+          "away_goals": 1,
+          "prob": 6.2
+        },
+        {
+          "score": "0-0",
+          "home_goals": 0,
+          "away_goals": 0,
+          "prob": 6.1
+        }
+      ],
+      "matrix_5x5": [
+        [
+          6.14,
+          8.01,
+          8.48,
+          5.22,
+          2.41
+        ],
+        [
+          4.58,
+          11.8,
+          9.82,
+          6.05,
+          2.79
+        ],
+        [
+          3.33,
+          6.15,
+          5.68,
+          3.5,
+          1.62
+        ],
+        [
+          1.29,
+          2.37,
+          2.19,
+          1.35,
+          0.62
+        ],
+        [
+          0.37,
+          0.69,
+          0.64,
+          0.39,
+          0.18
+        ]
+      ],
+      "features_breakdown": {
+        "elo_diff": -0.918,
+        "home_xg_vs_away_xga": 1.249,
+        "away_xg_vs_home_xga": 2.221,
+        "squad_value_log_ratio": -0.633,
+        "set_piece_xg_diff": -0.04,
+        "pressing_ppda_diff": -2.1,
+        "european_congestion_diff": 0.0,
+        "home_fortress_advantage": 0.25,
+        "recent_form_ppg_diff": -1.2
+      },
+      "gw": 6,
+      "dates": "10-12 October 2026"
+    }
+  ],
+  "stale_payload": false,
+  "validation": {
+    "ok": true,
+    "checks": 11
+  }
+}

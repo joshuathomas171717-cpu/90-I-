@@ -1,0 +1,21 @@
+code,name,short,manager,stadium,capacity,europe,promoted,prev_pos,prev_pts,prev_gf,prev_ga,squad_value_m,elo_base,xg_90_base,xga_90_base,set_piece_xg,ppda,home_adv,primary_color,P,W,D,L,GF,GA,GD,Pts,form,ppg_current,xg_90_live,xga_90_live,elo_live,current_pos
+MCI,Manchester City,Man City,Enzo Maresca,Etihad Stadium,61038,UCL,0,2,78,77,35,1280,1952,2.25,0.9,0.36,8.6,0.28,#6CABDD,5,5,0,0,13,5,8,15,WWWWW,3.00,2.302,0.915,1994.4,1
+ARS,Arsenal,Arsenal,Mikel Arteta,Emirates Stadium,60704,UCL,0,1,85,71,27,1250,1960,2.14,0.76,0.48,8.4,0.3,#EF0107,5,4,0,1,8,4,4,12,WWWLW,2.40,2.059,0.766,1985.4,2
+BHA,Brighton & Hove Albion,Brighton,Fabian Hürzeler,Amex Stadium,32176,UECL,0,8,53,52,46,640,1805,1.84,1.16,0.31,9.4,0.23,#0057B8,5,3,1,1,16,5,11,10,WDWWL,2.00,2.044,1.136,1832.6,3
+BRE,Brentford,Brentford,Keith Andrews,Gtech Community Stadium,17250,None,0,9,53,55,52,460,1770,1.62,1.24,0.42,11.2,0.23,#E30613,5,2,3,0,10,4,6,9,DWDDW,1.80,1.677,1.174,1786.8,4
+LEE,Leeds United,Leeds,Daniel Farke,Elland Road,37633,None,0,14,47,49,56,395,1742,1.48,1.24,0.3,9.9,0.27,#FFCD00,5,2,3,0,7,3,4,9,WWDDD,1.80,1.468,1.144,1756.0,5
+LIV,Liverpool,Liverpool,Andoni Iraola,Anfield,61276,UCL,0,5,60,63,53,1060,1868,1.95,1.1,0.35,8.8,0.31,#C8102E,5,2,3,0,7,4,3,9,WDDWD,1.80,1.867,1.055,1880.6,6
+EVE,Everton,Everton,David Moyes,Hill Dickinson Stadium,52769,None,0,13,49,47,50,430,1752,1.4,1.15,0.39,11.8,0.27,#003399,5,2,3,0,6,3,3,9,WDWDD,1.80,1.37,1.067,1764.6,7
+HUL,Hull City,Hull City,Sergej Jakirović,MKM Stadium,24983,None,1,20,38,38,60,245,1672,1.18,1.46,0.27,12.1,0.21,#F5A12D,5,2,2,1,6,4,2,8,WWDLD,1.60,1.183,1.361,1679.4,8
+NEW,Newcastle United,Newcastle,Matthias Jaissle,St James' Park,52729,None,0,12,49,53,55,710,1780,1.68,1.3,0.33,9.8,0.29,#241F20,5,2,2,1,9,9,0,8,LWDWD,1.60,1.698,1.375,1784.6,9
+CHE,Chelsea,Chelsea,Xabi Alonso,Stamford Bridge,40044,None,0,10,52,58,52,1090,1815,1.88,1.32,0.29,9.1,0.25,#034694,5,2,1,2,10,12,-2,7,LLDWW,1.40,1.898,1.482,1813.0,10
+IPS,Ipswich Town,Ipswich,Gary O'Neil,Portman Road,30056,None,1,19,40,40,58,265,1662,1.2,1.56,0.28,11.9,0.22,#3A64A3,5,2,0,3,7,11,-4,6,LWLLW,1.20,1.23,1.656,1653.4,11
+MUN,Manchester United,Man Utd,Michael Carrick,Old Trafford,74158,UCL,0,3,71,69,50,920,1820,1.75,1.26,0.28,10.3,0.26,#DA291C,5,1,2,2,8,8,0,5,LDWLD,1.00,1.728,1.311,1813.2,12
+NFO,Nottingham Forest,Nott'm Forest,Oliver Glasner,City Ground,31212,None,0,16,44,48,51,450,1722,1.35,1.28,0.32,11.4,0.24,#DD0000,5,1,2,2,4,5,-1,5,LDLDW,1.00,1.268,1.238,1713.8,13
+SUN,Sunderland,Sunderland,Régis Le Bris,Stadium of Light,48095,UEL,0,7,54,42,48,340,1702,1.26,1.44,0.27,11.5,0.25,#EB172B,5,1,1,3,6,10,-4,4,WDLLL,0.80,1.251,1.524,1685.8,14
+CRY,Crystal Palace,Crystal Palace,Pierre Sage,Selhurst Park,25194,UEL,0,15,45,41,51,420,1708,1.29,1.42,0.31,11.3,0.23,#1B458F,5,1,1,3,6,11,-5,4,LLLWD,0.80,1.276,1.537,1690.4,15
+AVL,Aston Villa,Aston Villa,Unai Emery,Villa Park,36887,UCL,0,4,65,56,49,690,1782,1.58,1.3,0.34,10.6,0.25,#670E36,5,1,1,3,4,9,-5,4,LLWLD,0.80,1.463,1.375,1764.4,16
+BOU,Bournemouth,Bournemouth,Marco Rose,Vitality Stadium,12357,UEL,0,6,57,58,54,440,1738,1.48,1.36,0.29,9.5,0.19,#DA291C,5,0,3,2,6,8,-2,3,DLDDL,0.60,1.438,1.396,1720.8,17
+COV,Coventry City,Coventry,Frank Lampard,CBS Arena,32609,None,1,18,42,41,56,230,1638,1.04,1.64,0.25,12.4,0.2,#0593D3,5,1,0,4,1,10,-9,3,WLLLL,0.60,0.914,1.694,1611.0,18
+FUL,Fulham,Fulham,Álvaro Arbeloa,Craven Cottage,28107,None,0,11,52,47,51,390,1712,1.32,1.38,0.28,10.9,0.21,#000000,5,0,2,3,5,8,-3,2,LDDLL,0.40,1.272,1.413,1689.6,19
+TOT,Tottenham Hotspur,Tottenham,Roberto De Zerbi,Tottenham Hotspur Stadium,62850,None,0,17,41,48,57,780,1732,1.5,1.42,0.26,9.2,0.24,#132257,5,0,2,3,2,8,-6,2,LDLDL,0.40,1.335,1.447,1705.4,20

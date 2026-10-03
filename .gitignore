@@ -1,0 +1,34 @@
+# ── Python ───────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+env/
+
+# ── Secrets ──────────────────────────────────────────────────────────────────
+# Never commit a key. Bots scan public repos for tokens within minutes of a push.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# ── Model artifacts (derived) ────────────────────────────────────────────────
+# ~1 MB, rebuilt in seconds by `python3 ml_engine.py`, and keyed on the data — so a stale
+# artifact is worse than none. See DEPLOY.md §3.
+artifacts/
+
+# ── Fetched provider payloads (P2.2) ─────────────────────────────────────────
+# Raw responses are cached here so every published number can be traced back to the bytes that
+# produced it. They are *not* committed: football-data.org's free tier is for non-commercial use
+# and does not grant redistribution of its raw data. Derived datasets (data/*.csv) are ours.
+data/raw/
+data/staging/
+data/provider_drop/
+
+# ── Local scratch ────────────────────────────────────────────────────────────
+_design/
+*.zip
+*.png
+.DS_Store

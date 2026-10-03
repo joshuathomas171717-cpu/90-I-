@@ -1,0 +1,17 @@
+player_id,name,club,club_name,primary_color,nation,games_out,cs_curr,cs_prev,gk_psxg_diff,save_pct,team_xga_90,proj_rem_cs,proj_cs,proj_cs_int,cs_p10,cs_p90,golden_glove_prob
+raya,David Raya,ARS,Arsenal,#EF0107,ESP,0,3,19,4.2,76.8,0.77,15.4,18.5,18,15,22,70.0
+donnarumma,Gianluigi Donnarumma,MCI,Man City,#6CABDD,ITA,0,2,15,3.8,75.4,0.92,12.8,14.7,15,11,18,13.0
+alisson,Alisson Becker,LIV,Liverpool,#C8102E,BRA,0,3,11,3.5,74.9,1.05,10.7,13.6,14,10,17,6.5
+pickford,Jordan Pickford,EVE,Everton,#003399,ENG,0,3,11,3.1,73.8,1.07,10.2,13.2,13,10,17,4.6
+verbruggen,Bart Verbruggen,BHA,Brighton,#0057B8,NED,0,3,10,2.4,72.9,1.14,9.8,12.8,13,10,16,3.3
+trafford,James Trafford,LEE,Leeds,#FFCD00,ENG,0,2,9,1.9,71.8,1.14,9.1,11.1,11,8,14,1.1
+kelleher,Caoimhín Kelleher,BRE,Brentford,#E30613,IRL,0,2,10,2.1,72.4,1.17,9.0,11.0,11,8,14,0.9
+tzolakis,Konstantinos Tzolakis,HUL,Hull City,#F5A12D,GRE,0,3,12,2.9,74.1,1.36,7.4,10.4,10,7,13,0.4
+sels,Matz Sels,NFO,Nott'm Forest,#DD0000,BEL,0,1,9,1.5,71.2,1.24,7.9,8.9,9,6,12,0.0
+kinsky,Antonín Kinský,TOT,Tottenham,#132257,CZE,0,2,7,1.1,70.2,1.45,6.6,8.6,9,6,12,0.0
+suzuki,Zion Suzuki,AVL,Aston Villa,#670E36,JPN,0,1,8,0.8,69.8,1.38,7.4,8.4,8,5,11,0.0
+hornicek,Lukáš Horníček,NEW,Newcastle,#241F20,CZE,0,1,8,0.9,70.0,1.38,7.3,8.3,8,5,11,0.0
+leno,Bernd Leno,FUL,Fulham,#000000,GER,0,1,9,1.4,71.0,1.41,6.9,7.9,8,5,11,0.0
+onana,André Onana,MUN,Man Utd,#DA291C,CMR,0,0,9,1.2,70.8,1.31,7.9,7.9,8,5,11,0.0
+roefs,Robin Roefs,SUN,Sunderland,#EB172B,NED,0,1,10,1.0,70.1,1.52,6.4,7.5,8,5,10,0.0
+henderson,Dean Henderson,CRY,Crystal Palace,#1B458F,ENG,0,1,11,1.8,71.5,1.54,6.4,7.4,7,5,10,0.0

@@ -1,0 +1,48 @@
+# Fly.io config for NINETY+.
+#   fly launch --no-deploy --copy-config   (or set `app` to your own name first)
+#   fly deploy
+# The readiness check gates traffic on /readyz, so a machine that is still
+# warming its model receives no requests.
+app = "ninety-plus"
+primary_region = "lhr"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  HOST = "0.0.0.0"
+  PORT = "8000"
+  NT90_PRELOAD = "1"
+  NT90_REFRESH_SECONDS = "21600"
+
+[http_service]
+  internal_port = 8000
+  force_https = true
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 1
+  processes = ["app"]
+
+  [http_service.concurrency]
+    type = "requests"
+    soft_limit = 200
+    hard_limit = 250
+
+  [[http_service.checks]]
+    # readiness, not liveness: /readyz returns 503 until the model can serve
+    interval = "15s"
+    timeout = "4s"
+    grace_period = "20s"
+    method = "GET"
+    path = "/readyz"
+
+  [[http_service.checks]]
+    interval = "30s"
+    timeout = "4s"
+    grace_period = "5s"
+    method = "GET"
+    path = "/healthz"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "1gb"

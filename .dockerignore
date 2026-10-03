@@ -1,0 +1,17 @@
+# Never ship build noise, the foreign-copy proofs, or a machine-specific cache.
+# artifacts/ is excluded on purpose: the image pre-warms its own (see Dockerfile).
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.venv/
+venv/
+artifacts/
+_design/
+*.zip
+*.png
+uploads/
+Temp/
+.git/
+.gitignore
+.DS_Store

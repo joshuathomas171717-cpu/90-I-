@@ -1,0 +1,79 @@
+# Publish the dashboard to GitHub Pages — a live URL with no server and no bill.
+#
+# `static/index.html` is a single self-contained file (fonts inlined as base64, crests drawn as inline
+# SVG, zero external requests), which is exactly what a static host wants. There is no Python API
+# behind Pages, so the page falls back to its in-browser engine — see PUBLISH.md §3.
+#
+# Triggers:
+#   * push to main                 — a human changed something
+#   * the Weekly update finishing  — a *bot* commit does not trigger other workflows (GitHub's
+#                                    GITHUB_TOKEN rule), so the weekly refresh would otherwise
+#                                    publish new data and leave the live site a week behind
+#   * manual
+name: Pages
+
+on:
+  push:
+    branches: [main]
+    paths: ["static/**", "data/**", "build_dashboard.py", "ml_engine.py", "data_builder.py",
+            ".github/workflows/pages.yml"]
+  workflow_run:
+    workflows: ["Weekly update"]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    # A weekly run that failed validation should NOT redeploy: the point of that job is that
+    # production keeps serving the last good snapshot.
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # Rebuild from source rather than trusting the committed file, so the site and the code can
+      # never drift. The build is deterministic (CI proves it), so this is also a check.
+      - name: Rebuild the dashboard
+        run: python3 build_dashboard.py
+
+      - name: Fail if the committed page was stale
+        run: |
+          git diff --exit-code -- static/index.html \
+            || { echo "::error::static/index.html is out of date — commit a rebuild"; exit 1; }
+
+      # The page is one file, so the artifact is one file. No Jekyll, no dependencies.
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload the site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: static
+
+      - name: Deploy
+        id: deploy
+        uses: actions/deploy-pages@v4
