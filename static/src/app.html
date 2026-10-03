@@ -7,6 +7,7 @@
 </div>
 
 <header class="top">
+  <h1 class="off">NINETY+ — Premier League 2026-27 predictions, projections and awards</h1>
   <div class="hrow">
     <div class="mark">
       <div class="badge"><span>N+</span></div>
@@ -16,25 +17,26 @@
       </div>
     </div>
     <div class="hstats" id="hstats"></div>
+    <div id="freshness" class="fresh" aria-live="polite"></div>
   </div>
   <nav class="tabs" id="tabs" role="tablist" aria-label="Views">
-    <button data-tab="matchweek" class="on" role="tab">Matchweek<span class="k">1</span></button>
-    <button data-tab="table" role="tab">Table<span class="k">2</span></button>
-    <button data-tab="awards" role="tab">Awards<span class="k">3</span></button>
-    <button data-tab="duel" role="tab">Duel<span class="k">4</span></button>
-    <button data-tab="whatif" role="tab">What-If<span class="k">5</span></button>
-    <button data-tab="model" role="tab">Model<span class="k">6</span></button>
+    <button id="tabbtn-matchweek" data-tab="matchweek" class="on" role="tab" aria-selected="true" aria-controls="tab-matchweek" tabindex="0">Matchweek<span class="k" aria-hidden="true">1</span></button>
+    <button id="tabbtn-table" data-tab="table" role="tab" aria-selected="false" aria-controls="tab-table" tabindex="-1">Table<span class="k" aria-hidden="true">2</span></button>
+    <button id="tabbtn-awards" data-tab="awards" role="tab" aria-selected="false" aria-controls="tab-awards" tabindex="-1">Awards<span class="k" aria-hidden="true">3</span></button>
+    <button id="tabbtn-duel" data-tab="duel" role="tab" aria-selected="false" aria-controls="tab-duel" tabindex="-1">Duel<span class="k" aria-hidden="true">4</span></button>
+    <button id="tabbtn-whatif" data-tab="whatif" role="tab" aria-selected="false" aria-controls="tab-whatif" tabindex="-1">What-If<span class="k" aria-hidden="true">5</span></button>
+    <button id="tabbtn-model" data-tab="model" role="tab" aria-selected="false" aria-controls="tab-model" tabindex="-1">Model<span class="k" aria-hidden="true">6</span></button>
   </nav>
 </header>
 
-<div class="ticker" id="ticker" aria-label="Model board">
+<aside class="ticker" id="ticker" aria-label="Model board">
   <div class="rail" id="tickerRail"></div>
-</div>
+</aside>
 
-<div class="wrap">
+<main class="wrap" id="main">
 
 <!-- ══════════════════ MATCHWEEK ══════════════════ -->
-<section class="page on" id="tab-matchweek">
+<section class="page on" id="tab-matchweek" role="tabpanel" aria-labelledby="tabbtn-matchweek" tabindex="-1">
   <div class="hero" id="hero">
     <div class="inner">
       <div>
@@ -92,7 +94,7 @@
 </section>
 
 <!-- ══════════════════ TABLE ══════════════════ -->
-<section class="page" id="tab-table">
+<section class="page" id="tab-table" role="tabpanel" aria-labelledby="tabbtn-table" tabindex="-1">
   <div class="grid g4" id="tableTiles"></div>
   <div class="grid g23" style="margin-top:16px">
     <div class="panel pitch">
@@ -122,7 +124,7 @@
 </section>
 
 <!-- ══════════════════ AWARDS ══════════════════ -->
-<section class="page" id="tab-awards">
+<section class="page" id="tab-awards" role="tabpanel" aria-labelledby="tabbtn-awards" tabindex="-1">
   <div class="grid g4" id="awardTiles"></div>
   <div class="row" style="margin-top:18px">
     <button class="btn pri" data-award="gb">Golden Boot</button>
@@ -142,7 +144,7 @@
           <span class="small dim" id="awardSearchInfo"></span>
         </div>
       </div>
-      <div class="scroll" style="margin-top:14px; max-height:560px"><table class="tbl" id="awardTable"></table></div>
+      <div class="scroll" style="margin-top:14px; max-height:560px" tabindex="0" role="region" aria-label="Player boards, scrollable"><table class="tbl" id="awardTable"><caption class="off">Player boards — projected goals, assists and clean sheets</caption></table></div>
       <div class="note" style="margin-top:12px" id="awardNote"></div>
     </div>
     <div class="stack">
@@ -159,7 +161,8 @@
 </section>
 
 <!-- ══════════════════ DUEL ══════════════════ -->
-<section class="page" id="tab-duel">
+<section class="page" id="tab-duel" role="tabpanel" aria-labelledby="tabbtn-duel" tabindex="-1">
+  <h2 class="off">Duel — head to head between any two clubs</h2>
   <div class="panel">
     <div class="row" style="gap:14px">
       <div style="flex:1;min-width:190px">
@@ -184,7 +187,7 @@
 </section>
 
 <!-- ══════════════════ WHAT-IF ══════════════════ -->
-<section class="page" id="tab-whatif">
+<section class="page" id="tab-whatif" role="tabpanel" aria-labelledby="tabbtn-whatif" tabindex="-1">
   <div class="grid g32">
     <div class="stack">
       <div class="panel pitch">
@@ -217,7 +220,7 @@
       <div class="panel">
         <div class="phead"><div><span class="kick">Scenario output</span><h2>What changes</h2></div></div>
         <div id="simSummary"><div class="note">Adjust something above, then hit <b>Re-simulate season</b>.</div></div>
-        <div class="scroll" style="margin-top:14px"><table class="tbl" id="scenTable"></table></div>
+        <div class="scroll" style="margin-top:14px" tabindex="0" role="region" aria-label="Scenario table, scrollable"><table class="tbl" id="scenTable"><caption class="off">Scenario table — what the What-If settings do to each club</caption></table></div>
       </div>
     </div>
     <div class="stack">
@@ -235,7 +238,11 @@
 </section>
 
 <!-- ══════════════════ MODEL ══════════════════ -->
-<section class="page" id="tab-model">
+<section class="page" id="tab-model" role="tabpanel" aria-labelledby="tabbtn-model" tabindex="-1">
+  <div class="panel" id="modelCardPanel">
+    <div class="phead"><div><span class="kick">Model card</span><h2>What this is, and what it isn't</h2></div></div>
+    <div id="modelCard"></div>
+  </div>
   <div class="grid g4" id="metricTiles"></div>
 
   <div class="grid g23" style="margin-top:16px">
@@ -273,7 +280,7 @@
       </div>
     </div>
     <div class="grid g2" style="margin-top:18px; gap:20px">
-      <div><div class="kick" style="margin-bottom:10px">Model vs baselines</div><div class="scroll"><table class="tbl" id="btMetrics"></table></div></div>
+      <div><div class="kick" style="margin-bottom:10px">Model vs baselines</div><div class="scroll"><table class="tbl" id="btMetrics"><caption class="off">Backtest — the model against three baselines, 2025-26 replay</caption></table></div></div>
       <div id="btFindings"></div>
     </div>
   </div>
@@ -295,12 +302,14 @@
   </div>
 </section>
 
-</div>
+</main>
 
 <footer id="colophon" style="max-width:1180px;margin:26px auto 34px;padding:0 20px;
     font-size:11.5px;line-height:1.75;color:var(--mid);border-top:1px solid var(--line);padding-top:16px">
   <div><b style="color:var(--txt)">NINETY+</b> · Premier League 2026–27 predictor ·
-    <a href="https://github.com/" id="srcLink" style="color:var(--accent);text-decoration:none">source</a> ·
+    <a href="https://github.com/joshuathomas171717-cpu/90-I-" id="srcLink" style="color:var(--accent);text-decoration:underline;text-underline-offset:2px">source</a> ·
+    <a href="/method.html" style="color:var(--accent);text-decoration:underline;text-underline-offset:2px">how it works</a> ·
+    <a href="/privacy.html" style="color:var(--accent);text-decoration:underline;text-underline-offset:2px">privacy</a> ·
     <span title="The model, the pipeline and this page">MIT licensed</span></div>
   <div>Results and tables compiled from publicly published match data for commentary and analysis.
     Live mode uses the <b>football-data.org</b> API (free tier, non-commercial) — credit to them for the feed.</div>

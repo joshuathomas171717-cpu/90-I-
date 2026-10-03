@@ -333,3 +333,28 @@ ratings are standard published methods, implemented here from scratch on numpy +
 - The blind 2025-26 backtest shows the model's real-world floor is ~46% 1X2 accuracy and a table rank correlation of ~0.57 over a full pre-season horizon — club-level rating error (especially for promoted sides) is the dominant source of that, not the match model.
 - Player last-season figures are verified published totals for goal/assist leaders (marked ✓ in the dashboard) and model estimates for the rest (marked ~).
 - Projections are analysis, not betting advice; a 52% title probability means "more likely than not", not "certain".
+
+## Accessibility and trust
+
+The dashboard is built to be usable by people who do not use a mouse, cannot separate the red-green
+pair, or have asked their system for less motion. That is measured rather than asserted:
+
+```bash
+node tests/a11y/sweep.mjs --reduce-motion    # axe-core across all six views + first-paint timings
+node tests/a11y/contrast.mjs --sample 30     # pixel-true contrast + colour-vision separation
+```
+
+Both need node, Playwright and axe-core, which is why they are development tools and not part of the
+suite. `tests/test_wave5_a11y.py` pins down everything they found, on the standard library alone, and
+`docs/a11y-baseline.md` records the before-and-after numbers — including the bugs the measuring found,
+such as six views stacking on top of each other for anyone with reduced motion enabled.
+
+Two pages explain the project to someone who has never heard of it:
+
+| Page | What it says |
+|---|---|
+| `/method.html` | the model, its measured out-of-sample accuracy against three baselines, its data sources, and what it cannot know |
+| `/privacy.html` | no cookies, no third-party scripts, no accounts — and what that commits the code to |
+
+Budgets, asserted in the test suite: the page stays under 640 KB, the embedded fonts stay under 90 KB
+(subset them with `python3 tools/subset_fonts.py`), axe stays clean, and measured contrast stays clean.

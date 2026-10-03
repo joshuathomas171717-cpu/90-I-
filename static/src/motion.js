@@ -130,17 +130,45 @@ function moment(el){
   el.classList.remove("moment"); void el.offsetWidth; el.classList.add("moment");
 }
 
-/* ── tab choreography: current view slides out, next flows in ── */
-function switchTab(name){
+/* ── tab choreography: current view slides out, next flows in ──
+   P7.3: a tablist is only a tablist if it maintains itself. Switching a view has to move
+   aria-selected, keep exactly one tab in the tab order (the roving tabindex pattern), and — when the
+   switch came from the keyboard — carry focus into the panel that just appeared, or a keyboard user
+   lands nowhere and has to tab from the top of the document again. */
+let TAB_FROM_KEYBOARD = false;
+function syncTabState(name){
+  document.querySelectorAll("nav.tabs button").forEach(b => {
+    const on = b.dataset.tab === name;
+    b.classList.toggle("on", on);
+    b.setAttribute("aria-selected", on ? "true" : "false");
+    b.setAttribute("tabindex", on ? "0" : "-1");
+  });
+  const panel = $("tab-" + name);
+  if(panel) panel.setAttribute("aria-hidden", "false");
+  document.querySelectorAll("section.page").forEach(sec => {
+    if(sec !== panel) sec.setAttribute("aria-hidden", "true");
+  });
+}
+function switchTab(name, fromKeyboard){
   const cur = document.querySelector("section.page.on");
   const next = $("tab-" + name);
   if(!next || next === cur) return;
-  document.querySelectorAll("nav.tabs button").forEach(b => b.classList.toggle("on", b.dataset.tab === name));
+  TAB_FROM_KEYBOARD = fromKeyboard === true;
+  syncTabState(name);
   const dirIdx = { matchweek:0, table:1, awards:2, duel:3, whatif:4, model:5 };
   const curIdx = dirIdx[cur?.id?.replace("tab-", "")] ?? 0, nextIdx = dirIdx[name] ?? 0;
   const dir = nextIdx >= curIdx ? 1 : -1;
 
   const show = () => {
+    // Removing `.on` from the outgoing view belongs here, not in the animation branch below.
+    //
+    // It lived only in the 150 ms timeout of the slide path, so with `prefers-reduced-motion: reduce`
+    // — where that branch is skipped — the new view was shown and the old one was never hidden. Every
+    // view a reader opened stayed on the page: six dashboards stacked one under another. It was
+    // invisible in the default browser setting and permanent for anyone with reduced motion on, which
+    // is a group that includes people using assistive tech. Found by a probe that counted the text
+    // elements per view and found the counts only made sense if all six were on screen at once.
+    if(cur && cur !== next) cur.classList.remove("on", "leaving");
     next.classList.add("on");
     next.style.setProperty("--dir", dir);
     const kids = [...next.querySelectorAll(":scope > .grid, :scope > .panel, :scope > .hero, :scope > .row, :scope > .stack")];
@@ -149,6 +177,9 @@ function switchTab(name){
       k.classList.remove("in");
     });
     requestAnimationFrame(() => { kids.forEach(k => k.classList.add("in")); animate(next); });
+    // Move focus only when the switch was a keyboard action. Doing it on a mouse click would yank the
+    // caret away from where the reader put it, which is its own accessibility problem.
+    if(TAB_FROM_KEYBOARD){ next.focus({ preventScroll: true }); TAB_FROM_KEYBOARD = false; }
     window.scrollTo({ top:0, behavior: REDUCED ? "auto" : "smooth" });
     if(name === "duel" && !LAST_FIXTURE) predictFixture();
   };
@@ -170,3 +201,39 @@ if(window.matchMedia("(max-width: 720px)").matches){
   const rail = document.querySelector("#ticker .rail");
   if(rail) rail.style.animationDuration = "88s";
 }
+
+/* ── the tablist's keyboard contract (P7.3) ──────────────────────────────────────────────────────
+   Left/Right step through the views, Home/End jump to the ends, and the focused tab follows the
+   selection — the standard ARIA tabs pattern. Without this the arrow keys do nothing and the only way
+   through six views is six Tab presses in the right order. */
+document.addEventListener("keydown", (e) => {
+  const tabs = [...document.querySelectorAll("nav.tabs button")];
+  const focused = document.activeElement;
+  if(!tabs.includes(focused)) return;
+  const i = tabs.indexOf(focused);
+  let target = null;
+  if(e.key === "ArrowRight") target = tabs[(i + 1) % tabs.length];
+  else if(e.key === "ArrowLeft") target = tabs[(i - 1 + tabs.length) % tabs.length];
+  else if(e.key === "Home") target = tabs[0];
+  else if(e.key === "End") target = tabs[tabs.length - 1];
+  if(!target) return;
+  e.preventDefault();
+  // Focus follows the selection and stays on the tablist: moving focus into the panel on every arrow
+  // press would strand the reader there, one step from the tab they were about to open.
+  target.focus();
+  switchTab(target.dataset.tab, false);
+});
+
+/* Enter or Space on a focused tab opens that view and hands focus to the panel it revealed, which is
+   where the reader wants to be after choosing. */
+document.querySelectorAll("nav.tabs button").forEach(btn => {
+  btn.addEventListener("keydown", (e) => {
+    if(e.key === "Enter" || e.key === " "){ e.preventDefault(); switchTab(btn.dataset.tab, true); }
+  });
+});
+
+/* The first paint has no switch to sync, so the panels other than Matchweek rely on `display:none`
+   alone to stay out of the accessibility tree. Marking them explicitly at load costs one call and
+   means the state a reader lands on is the same shape as the state after any tab press. */
+if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", () => syncTabState("matchweek"));
+else syncTabState("matchweek");

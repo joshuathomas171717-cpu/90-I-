@@ -47,6 +47,10 @@ SITE_TAGLINE = "Premier League 2026–27 predictions, simulated 5,000 times"
 #: gets — the pages are self-relative and still correct, just without absolute canonicals.
 SITE_URL = (os.environ.get("NT90_SITE_URL") or "").rstrip("/")
 
+#: Where the source lives. Used by the method page, which invites readers to check the code or report a
+#: projection that looks wrong — an invitation that has to point somewhere real.
+REPO_URL = os.environ.get("NT90_REPO_URL", "https://github.com/joshuathomas171717-cpu/90-I-")
+
 #: The dashboard's six views, in the order the app presents them. Used for linking back into the app.
 VIEWS = ("matchweek", "table", "awards", "duel", "whatif", "model")
 
@@ -66,6 +70,16 @@ nav.crumbs a{color:#8E9BB8}
 h1{font-size:30px;line-height:1.15;margin:14px 0 6px;letter-spacing:-.01em}
 h2{font-size:19px;margin:30px 0 10px;letter-spacing:.01em}
 p.lede{color:#B9C4DC;margin:0 0 22px}
+/* the method page's tables and notes (P9.2): same palette as the rest of the generated site */
+.mtable{width:100%;border-collapse:collapse;margin:14px 0 18px;font-size:13px}
+.mtable caption{text-align:left;color:#97A1B3;font-size:11.5px;padding-bottom:7px}
+.mtable th{text-align:left;font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:#97A1B3;
+  border-bottom:1px solid rgba(255,255,255,.12);padding:6px 10px 7px 0;font-weight:600}
+.mtable td{padding:7px 10px 7px 0;border-bottom:1px solid rgba(255,255,255,.05);color:#C9D2E3;vertical-align:top}
+.mtable tr.hl td{color:#F3F6FA;font-weight:600}
+.mtable .num{text-align:right;font-variant-numeric:tabular-nums}
+p.note{color:#97A1B3;font-size:12.5px;border-left:2px solid rgba(45,212,191,.45);padding-left:11px;margin:0 0 18px}
+h2{margin-top:26px}
 .card{background:#12182A;border:1px solid #232b42;border-radius:14px;padding:18px 18px 8px;margin:0 0 18px}
 table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
 th,td{text-align:left;padding:9px 10px;border-bottom:1px solid #1d2437;font-size:14px}
@@ -223,6 +237,171 @@ def _slug(name):
 
 
 # ════════════════════════════════════════════════════════════════════════════════════════════════
+
+# ═══════════════════════════════════════════════════════════════════════════════════════════════════
+#  P9.2 · P9.3 — the pages that explain the project to a stranger
+# ═══════════════════════════════════════════════════════════════════════════════════════════════════
+def _method_page(summary, backtest):
+    """The method page (P9.2).
+
+    Written for a reader who arrived from a search result, has no idea who made this, and wants to know
+    whether to believe it. So it leads with what the model is, states the error bars in the model's own
+    measured numbers, names the things it cannot see, and says how to report a result it got wrong —
+    which is the part most model write-ups leave out, and the part that makes the rest credible.
+    """
+    m = (backtest or {}).get("model", {})
+    skill = (backtest or {}).get("skill_vs_prior_table", {})
+    table = (backtest or {}).get("table_level", {})
+    bases = (backtest or {}).get("baselines", {}) or {}
+    base_rows = "".join(
+        "<tr><td>%s</td><td class=\"num\">%.1f%%</td><td class=\"num\">%.4f</td><td class=\"num\">%.4f</td></tr>"
+        % (_esc(name.split(" (")[0]), v.get("accuracy", 0), v.get("rps", 0), v.get("log_loss", 0))
+        for name, v in sorted(bases.items(), key=lambda kv: kv[1].get("rps", 9)))
+
+    body = """
+<h1>How NINETY+ predicts the Premier League</h1>
+<p class="lede">NINETY+ predicts the rest of the 2026-27 Premier League season: every remaining fixture,
+the final table, and the individual awards. This page says how, and how well — including where it fails.</p>
+
+<h2>What the model actually is</h2>
+<p>Two layers. First a <b>Dixon-Coles</b> scoreline model: for each fixture it estimates the expected
+goals for each side, from attacking and defensive strength, home advantage and the fixture list, with the
+1997 Dixon-Coles correction for the fact that low-scoring games (0-0, 1-0, 1-1) happen more often than an
+independent Poisson process predicts. Gradient-boosted regressors refine those expectations from form,
+opponent strength and rest. The corrected scoreline grid then gives the 1X2 probabilities.</p>
+<p>Second, a <b>Monte Carlo</b> layer: those per-fixture probabilities are played out %s times, which is
+what turns "Arsenal are 68%% to win on Saturday" into "Arsenal finish with 82 points in a third of
+seasons". Every number on the dashboard that says "probability of finishing" is a count of simulated
+seasons, not an opinion.</p>
+
+<h2>How well it does, measured honestly</h2>
+<p>The only test that means anything is a season the model has not seen. The model was rebuilt using only
+2024-25 data and asked to predict <b>all 380 matches of 2025-26</b>, one at a time, with no knowledge of
+how they turned out.</p>
+<table class="mtable">
+  <caption>Out-of-sample results, 2025-26 season</caption>
+  <thead><tr><th scope="col">Forecaster</th><th scope="col">Matches called</th><th scope="col">RPS (lower is better)</th><th scope="col">Log-loss</th></tr></thead>
+  <tbody>
+    <tr class="hl"><td>NINETY+</td><td class="num">%.1f%%</td><td class="num">%.4f</td><td class="num">%.4f</td></tr>
+    %s
+  </tbody>
+</table>
+<p class="note">RPS (ranked probability score) is the right metric for football, because a 1X2 forecast is
+an ordered set of three outcomes and RPS penalises being confidently wrong about the shape of the
+match, not just the winner. Against the prior-season table — the obvious baseline of "pick whoever
+finished higher" — the model improves RPS by <b>%.1f%%</b>. Over a single season that is a real but
+modest edge: it is a better-than-average forecaster, not a clairvoyant.</p>
+<p>At the level of the whole table the picture is messier, and worth stating plainly: rank correlation
+with the actual final table was <b>%.2f</b>, average points error <b>±%.1f</b>, and the projected
+champion was <b>%s</b> rather than the actual <b>%s</b>. Predicting a 38-game table is harder than
+predicting matches, because small per-match errors compound.</p>
+
+<h2>What it cannot know</h2>
+<ul>
+  <li><b>Team news.</b> Injuries, suspensions and illness are invisible to it until they have already
+  affected results. A side missing its striker is not priced in.</li>
+  <li><b>Transfers and managerial change.</b> The model learns each squad's strength from matches
+  played. A January signing or a new manager is a different team from the one it has data on.</li>
+  <li><b>Motivation and context.</b> A dead rubber in May, a relegation six-pointer, a European tie on
+  the Thursday: none of it is in the data.</li>
+  <li><b>Refereeing and weather.</b> No model of a red card in the eighth minute or a waterlogged
+  pitch.</li>
+  <li><b>Everything after the last update.</b> The dataset is a snapshot. The header states its date,
+  and says so out loud when it is overdue.</li>
+</ul>
+
+<h2>Where the numbers come from</h2>
+<table class="mtable">
+  <caption>Data sources</caption>
+  <thead><tr><th scope="col">What</th><th scope="col">Source</th><th scope="col">Notes</th></tr></thead>
+  <tbody>
+    <tr><td>2026-27 fixture calendar</td><td>Official Premier League fixture release</td>
+      <td>All 380 fixtures, kick-off dates and times</td></tr>
+    <tr><td>2025-26 season (training)</td><td>Published match results and tables</td>
+      <td>Every result, plus goals for and against per club</td></tr>
+    <tr><td>2026-27 results so far</td><td>football-data.org API (free tier)</td>
+      <td>Refreshed weekly by the pipeline; the free tier is non-commercial use</td></tr>
+    <tr><td>Squads and awards</td><td>Publicly published squad and scorer records</td>
+      <td>Player-level projections need minutes, positions and current totals</td></tr>
+  </tbody>
+</table>
+<p class="note">No licensed expected-goals feed is used. xG is <i>modelled</i> — derived from the shot
+and result data the model already has — rather than bought. That is a deliberate trade: an unlicensed
+modelled xG is free and reproducible, and it is weaker than the real thing, which is one reason the
+accuracy above is 46%% rather than 55%%.</p>
+
+<h2>How to check the code, or report a bad result</h2>
+<p>The whole pipeline is open: the model, the backtest, the data build and this site. If a projection
+looks wrong, the useful report is the club, the fixture and the number you expected —
+<a href="{repo}/issues">open an issue</a> and it will get looked at. Corrections to the data are the
+most valuable kind, because every downstream number inherits them.</p>
+<p class="note">Predictions here are analysis for interest. They are not betting advice, and nothing on
+this site is a guarantee about a football match. If you are going to have a bet, do it somewhere that
+tells you the odds are against you — because they are.</p>
+""".replace("%%", "%%") % (
+        "{:,}".format(summary["meta"].get("n_simulations", 5000)),
+        m.get("accuracy", 0), m.get("rps", 0), m.get("log_loss", 0), base_rows,
+        skill.get("rps", 0), table.get("spearman_rank_correlation", 0), table.get("points_mae", 0),
+        _esc(table.get("projected_champion", "—")), _esc(table.get("actual_champion", "—")),
+    )
+    body = body.replace("{repo}", REPO_URL or "https://github.com")
+    # The literal %% escapes above are for the format string; the prose wants single percent signs.
+    body = body.replace("%%", "%")
+    return page("Method: how the NINETY+ Premier League model works, and how well it scores",
+                "The Dixon-Coles and Monte Carlo model behind NINETY+, its measured accuracy over a "
+                "full out-of-sample season, its data sources and its known blind spots.",
+                body, canonical="method.html",
+                jsonld={"@type": "Article", "headline": "How the NINETY+ model works",
+                        "about": "Premier League forecasting methodology"})
+
+
+def _privacy_page():
+    """The privacy note (P9.3). Written to be true of the software as it stands: no accounts, no
+    cookies, no third-party scripts. If analytics are ever added, this page has to change in the same
+    commit — a privacy page that describes a different site from the one being served is worse than
+    none, because it is a specific claim that happens to be false.
+    """
+    body = """
+<h1>Privacy</h1>
+<p class="lede">The short version: this site sets no cookies, runs no third-party scripts, has no
+accounts and no sign-in, and does not try to identify you.</p>
+
+<h2>What is stored on your device</h2>
+<p>Nothing persistent. The dashboard runs entirely in the page you loaded — the data is embedded in the
+HTML, and the model's offline engine runs in your browser. Your What-If settings live in the URL you
+share, not in a cookie or local storage. Reload the page and it starts fresh.</p>
+
+<h2>What the server sees</h2>
+<p>Any web server sees the requests made to it: the page you asked for, roughly when, and the IP address
+making the request. This one keeps a minimal access log for the same reason every server does — to spot
+breakage and abuse — and does not build profiles, sell data or share logs with anyone. The API endpoints
+that run simulations see only the simulation settings you send them.</p>
+
+<h2>Analytics</h2>
+<p>None are used on this deployment. No Google Analytics, no pixels, no advertising identifiers. If
+cookieless, aggregate counting is ever switched on (to answer "is anyone reading this?"), it will be a
+privacy-respecting counter that stores no personal data, and this page will say so before it happens.</p>
+
+<h2>Third parties</h2>
+<p>The fonts are embedded in the page rather than loaded from a font service, so viewing this site sends
+no request to Google Fonts or anyone else. The only outbound links are to the project's own source
+repository and to the data provider credited in the footer; following them takes you to their sites,
+under their privacy policies.</p>
+
+<h2>Children, and legal</h2>
+<p>Nothing here is directed at children, and nothing here is betting advice. If a deployment ever
+adds analytics, accounts or email, this page must be updated in the same change — and in that order,
+not afterwards.</p>
+
+<h2>Contact</h2>
+<p>Questions, corrections or a request to remove something: open an issue on the repository linked in the
+footer. If you are a rights holder with a concern about how club names, colours or publicly published
+statistics are used here, that link is the fastest route to a human.</p>
+"""
+    return page("Privacy — NINETY+", "No cookies, no trackers, no accounts. What NINETY+ does and does "
+                "not store, in plain language.", body, canonical="privacy.html")
+
+
 def build(summary=None):
     """Write every generated page, image and feed. Returns a list of (path, kind) that it wrote."""
     summary = summary or json.load(open(os.path.join(DATA, "predictions_2026_27_summary.json"),
@@ -447,6 +626,16 @@ def build(summary=None):
 </table></div>
 <p style="margin-top:18px"><a class="cta" href="index.html">Open the dashboard</a></p>
 """
+    # P9.2 / P9.3 — the pages a stranger needs. Regenerated with the numbers, not written once and left
+    # to rot: the method page quotes the backtest that the same build just produced.
+    _backtest = {}
+    _bt_path = os.path.join(DATA, "backtest_2025_26.json")
+    if os.path.exists(_bt_path):
+        with open(_bt_path, encoding="utf-8") as fh:
+            _backtest = json.load(fh)
+    w("method.html", _method_page(summary, _backtest))
+    w("privacy.html", _privacy_page())
+
     w("table.html", page("Projected Premier League table 2026–27 — NINETY+",
                          "The full projected final table: points, title probability and relegation "
                          "risk for all 20 clubs, from 5,000 simulated seasons.",
@@ -518,7 +707,8 @@ data from the official fixture list and football-data.org.</p>
     w("404.html", page("Not found — NINETY+", "That page isn't here. These are.", body))
 
     # ── discovery: sitemap and robots ────────────────────────────────────────────────────────────
-    urls = [("index.html", "1.0"), ("table.html", "0.9"), ("model.html", "0.6")]
+    urls = [("index.html", "1.0"), ("table.html", "0.9"), ("model.html", "0.6"),
+            ("method.html", "0.8"), ("privacy.html", "0.2")]
     urls += [(p, "0.7") for _gw, _d, p in gw_pages]
     urls += [(p, "0.6") for _t, p in club_pages]
     lastmod = _lastmod(meta.get("as_of_date", ""))

@@ -45,13 +45,18 @@ function outcomeOf(p){
   if(m === p.prob_away) return { key:"a", label:`${TEAM_LABEL[p.away] || p.away} win`, color:"var(--magi)", prob:p.prob_away };
   return { key:"d", label:"Draw", color:"var(--draw)", prob:p.prob_draw };
 }
-/* certainty tier — powers the "sense it without reading" chips */
+/* certainty tier — powers the "sense it without reading" chips.
+   P9.1: the words are the model's confidence, not a betting slip. "Banker" is bookmaker language for a
+   sure thing, which is a claim this model cannot make — it gets about half of individual matches right.
+   "Clear favourite" says the same thing about the probabilities without borrowing the bookie's voice.
+   P7.4: each tier also carries a one-letter mark, because a chip that only means "green" or "orange"
+   says nothing to a reader who cannot separate those two colours. */
 function tierOf(p){
   const m = Math.max(p.prob_home, p.prob_draw, p.prob_away);
-  if(m >= 65) return { cls:"banker", txt:"banker" };
-  if(m < 40) return { cls:"toss", txt:"toss-up" };
-  if(m >= 52) return { cls:"upset", txt:"edge" };
-  return { cls:"lean", txt:"lean" };
+  if(m >= 65) return { cls:"banker", txt:"clear favourite", mark:"F" };
+  if(m < 40) return { cls:"toss", txt:"toss-up", mark:"T" };
+  if(m >= 52) return { cls:"upset", txt:"edge", mark:"E" };
+  return { cls:"lean", txt:"lean", mark:"L" };
 }
 
 /* ─── club identity: inline SVG crests (no external assets) ─── */

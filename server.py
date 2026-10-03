@@ -840,7 +840,7 @@ class PLRequestHandler(BaseHTTPRequestHandler):
         # the console of a page that otherwise works. It was missing until a clean-room extraction
         # probed the links the generated pages actually advertise (tests/test_wave4_site.py).
         if (path in ("/table.html", "/model.html", "/404.html", "/sitemap.xml", "/apple-touch-icon.png",
-                     "/icon.svg", "/manifest.webmanifest")
+                     "/icon.svg", "/manifest.webmanifest", "/method.html", "/privacy.html")
                 or path.startswith(("/club/", "/gameweek/", "/icons/", "/og/"))):
             hit = self._static_file(path)
             if hit is not None:

@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Not found — NINETY+</title>
-<meta name="description" content="That page isn&#x27;t here. These are.">
+<title>Privacy — NINETY+</title>
+<meta name="description" content="No cookies, no trackers, no accounts. What NINETY+ does and does not store, in plain language.">
 <meta name="theme-color" content="#0B0F1A">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icons/favicon-32.png" sizes="32x32" type="image/png">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="NINETY+">
-<meta property="og:title" content="Not found — NINETY+">
-<meta property="og:description" content="That page isn&#x27;t here. These are.">
+<meta property="og:title" content="Privacy — NINETY+">
+<meta property="og:description" content="No cookies, no trackers, no accounts. What NINETY+ does and does not store, in plain language.">
 
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Not found — NINETY+">
-<meta name="twitter:description" content="That page isn&#x27;t here. These are.">
-
+<meta name="twitter:title" content="Privacy — NINETY+">
+<meta name="twitter:description" content="No cookies, no trackers, no accounts. What NINETY+ does and does not store, in plain language.">
+<link rel="canonical" href="privacy.html">
 <style>
 :root{color-scheme:dark}
 *{box-sizing:border-box}
@@ -81,17 +81,41 @@ ul.plain{padding-left:18px}ul.plain li{margin:4px 0}
 </header>
 <main class="wrap">
 
-<nav class="crumbs">Not found</nav>
-<h1>That page isn't here</h1>
-<p class="lede">Every prediction on this site lives at one of these:</p>
-<div class="card"><table>
-<tr><th>Page</th><th>What it shows</th></tr>
-<tr><td><a href="index.html">Dashboard</a></td><td>All six views, the What-If simulator, the model</td></tr>
-<tr><td><a href="table.html">Projected table</a></td><td>Where all 20 clubs finish, 5,000 seasons</td></tr>
-<tr><td><a href="club/arsenal.html">Club pages</a></td><td><code>/club/&#8203;&lt;name&gt;.html</code> — projection, fixtures, probabilities</td></tr>
-<tr><td><a href="gameweek/mw6.html">Gameweek pages</a></td><td><code>/gameweek/&#8203;mw&lt;n&gt;.html</code> — every fixture and pick</td></tr>
-<tr><td><a href="model.html">Model</a></td><td>Method, measured accuracy, limitations</td></tr>
-</table></div>
+<h1>Privacy</h1>
+<p class="lede">The short version: this site sets no cookies, runs no third-party scripts, has no
+accounts and no sign-in, and does not try to identify you.</p>
+
+<h2>What is stored on your device</h2>
+<p>Nothing persistent. The dashboard runs entirely in the page you loaded — the data is embedded in the
+HTML, and the model's offline engine runs in your browser. Your What-If settings live in the URL you
+share, not in a cookie or local storage. Reload the page and it starts fresh.</p>
+
+<h2>What the server sees</h2>
+<p>Any web server sees the requests made to it: the page you asked for, roughly when, and the IP address
+making the request. This one keeps a minimal access log for the same reason every server does — to spot
+breakage and abuse — and does not build profiles, sell data or share logs with anyone. The API endpoints
+that run simulations see only the simulation settings you send them.</p>
+
+<h2>Analytics</h2>
+<p>None are used on this deployment. No Google Analytics, no pixels, no advertising identifiers. If
+cookieless, aggregate counting is ever switched on (to answer "is anyone reading this?"), it will be a
+privacy-respecting counter that stores no personal data, and this page will say so before it happens.</p>
+
+<h2>Third parties</h2>
+<p>The fonts are embedded in the page rather than loaded from a font service, so viewing this site sends
+no request to Google Fonts or anyone else. The only outbound links are to the project's own source
+repository and to the data provider credited in the footer; following them takes you to their sites,
+under their privacy policies.</p>
+
+<h2>Children, and legal</h2>
+<p>Nothing here is directed at children, and nothing here is betting advice. If a deployment ever
+adds analytics, accounts or email, this page must be updated in the same change — and in that order,
+not afterwards.</p>
+
+<h2>Contact</h2>
+<p>Questions, corrections or a request to remove something: open an issue on the repository linked in the
+footer. If you are a rights holder with a concern about how club names, colours or publicly published
+statistics are used here, that link is the fastest route to a human.</p>
 
 <footer class="site">
   <p><a href="index.html">Open the interactive dashboard</a> — six views, a

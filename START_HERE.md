@@ -65,3 +65,10 @@ trusting a number. This is analysis, not betting advice.
 **Publishing or updating this?** [PUBLISH.md](PUBLISH.md) has the copy-paste commands for GitHub
 (including a free public URL via Pages), and [LICENSE](LICENSE) explains what the MIT licence does and
 does not cover — the code is yours to reuse, the football data is not ours to give away.
+
+## Two pages for a reader who has never seen this before
+
+Once the server is running, `http://localhost:8000/method.html` explains how the model works, what it
+scores on a season it has never seen, and where it fails. `http://localhost:8000/privacy.html` says what
+the site stores, which is nothing. Both are generated from the data at build time, like every other
+page in `static/`.

@@ -183,7 +183,7 @@ function fixtureCard(p, i, { compact = false } = {}){
   const top = (p.top_scorelines || [])[0] || {};
   const dateLabel = (p.dates || "").replace("-", "–");
   const tossCls = tier.cls === "toss" ? " tossup" : "";
-  return `<article class="fx rv${tossCls}" tabindex="0" role="button"
+  return `<div class="fx rv${tossCls}" tabindex="0" role="button"
       aria-label="${esc(TEAM_LABEL[hc])} v ${esc(TEAM_LABEL[ac])}: ${pct(p.prob_home)} home, ${pct(p.prob_draw)} draw, ${pct(p.prob_away)} away"
       data-i="${i}" data-home="${hc}" data-away="${ac}"
       data-wh="${p.prob_home}" data-wd="${p.prob_draw}" data-wa="${p.prob_away}"
@@ -192,7 +192,7 @@ function fixtureCard(p, i, { compact = false } = {}){
     <div class="top">
       <span class="when">${esc(dateLabel)}</span>
       <span class="xgtop">xG ${num1(p.lambda_home)}–${num1(p.lambda_away)}</span>
-      <span class="chip ${tier.cls}">${tier.txt}</span>
+      <span class="chip ${tier.cls}"><b class="mk" aria-hidden="true">${tier.mark}</b>${tier.txt}</span>
     </div>
     <div class="teams">
       <div class="side">${crest(hc, 30)}<div style="min-width:0">
@@ -203,17 +203,17 @@ function fixtureCard(p, i, { compact = false } = {}){
         <span class="nm">${esc(TEAM_LABEL[ac] || ac)}</span>
         <span class="sm">${esc((TEAM_BY_CODE[ac] || {}).manager || "")}</span></div>${crest(ac, 30)}</div>
     </div>
-    <div class="tri">
-      <i class="h"><span>${pct(p.prob_home)}</span></i>
-      <i class="d"><span class="lite">${pct(p.prob_draw)}</span></i>
-      <i class="a"><span>${pct(p.prob_away)}</span></i>
+    <div class="tri" role="img" aria-label="Home win ${pct(p.prob_home)}, draw ${pct(p.prob_draw)}, away win ${pct(p.prob_away)}">
+      <i class="h"><b class="sg" aria-hidden="true">H</b><span>${pct(p.prob_home)}</span></i>
+      <i class="d"><b class="sg" aria-hidden="true">D</b><span class="lite">${pct(p.prob_draw)}</span></i>
+      <i class="a"><b class="sg" aria-hidden="true">A</b><span>${pct(p.prob_away)}</span></i>
     </div>
     <div class="foot">
       <span>model call <b style="color:${o.color}; font-family:var(--f-disp); font-weight:700">${esc(o.label)}</b></span>
       ${top.score ? `<span class="dim">·</span><span class="xl">${top.score} <span class="dim">(${top.prob}%)</span></span>` : ""}
       <span class="go">duel →</span>
     </div>
-  </article>`;
+  </div>`;
 }
 function renderGW(){
   const fx = DATA.gw6_predictions || [];
@@ -321,8 +321,9 @@ function renderMarquee(){
         <div class="row" style="justify-content:space-between; font-size:11px" class="mut">
           <span class="mut">${esc(TEAM_LABEL[p.home])}</span><span class="mut">draw</span><span class="mut">${esc(TEAM_LABEL[p.away])}</span>
         </div>
-        <div class="tri" style="height:34px; margin-top:5px" data-wh="${p.prob_home}" data-wd="${p.prob_draw}" data-wa="${p.prob_away}">
-          <i class="h"><span>${pct(p.prob_home)}</span></i><i class="d"><span class="lite">${pct(p.prob_draw)}</span></i><i class="a"><span>${pct(p.prob_away)}</span></i>
+        <div class="tri" style="height:34px; margin-top:5px" data-wh="${p.prob_home}" data-wd="${p.prob_draw}" data-wa="${p.prob_away}"
+             role="img" aria-label="Home win ${pct(p.prob_home)}, draw ${pct(p.prob_draw)}, away win ${pct(p.prob_away)}">
+          <i class="h"><b class="sg" aria-hidden="true">H</b><span>${pct(p.prob_home)}</span></i><i class="d"><b class="sg" aria-hidden="true">D</b><span class="lite">${pct(p.prob_draw)}</span></i><i class="a"><b class="sg" aria-hidden="true">A</b><span>${pct(p.prob_away)}</span></i>
         </div>
       </div>
       <div class="row" style="margin-top:13px; gap:7px">${scores.map(s => `<span class="mkt">${s.score} <b>${s.prob}%</b></span>`).join("")}</div>
@@ -363,8 +364,8 @@ function renderTable(){
     : [...t].sort((a, b) => (b.pts_p90 - b.pts_p10) - (a.pts_p90 - a.pts_p10));
 
   $("fullTable").innerHTML = `<thead><tr>
-      <th style="width:34px">#</th><th>Club</th><th class="num">Now</th><th class="num">Projected</th>
-      <th class="num">80% range</th><th>Finish spread</th><th class="num">Title</th><th class="num">Top 4</th><th class="num">Down</th>
+      <th scope="col"style="width:34px">#</th><th scope="col">Club</th><th scope="col" class="num">Now</th><th scope="col" class="num">Projected</th>
+      <th scope="col" class="num">80% range</th><th scope="col">Finish spread</th><th scope="col" class="num">Title</th><th scope="col" class="num">Top 4</th><th scope="col" class="num">Down</th>
     </tr></thead><tbody>` + rows.map((r, i) => {
     const pos = t.indexOf(r) + 1;
     const spread = r.pts_p90 - r.pts_p10;
@@ -533,9 +534,9 @@ function renderAwards(){
       </div>
     </div>`).join("");
 
-  $("awardTable").innerHTML = `<thead><tr>
-      <th>#</th><th>Player</th><th class="num">Now</th><th class="num">Last season</th>
-      <th class="num">Projected</th><th class="num">Range</th><th class="num">Win prob</th><th style="width:18%">Chance</th>
+  $("awardTable").innerHTML = `<caption class="off">Player boards: projected goals, assists and clean sheets</caption><thead><tr>
+      <th scope="col">#</th><th scope="col">Player</th><th scope="col" class="num">Now</th><th scope="col" class="num">Last season</th>
+      <th scope="col" class="num">Projected</th><th scope="col" class="num">Range</th><th scope="col" class="num">Win prob</th><th scope="col"style="width:18%">Chance</th>
     </tr></thead><tbody>` + list.map((p, i) => {
     const p10 = p.goals_p10 ?? p.assists_p10 ?? p.cs_p10;
     const p90 = p.goals_p90 ?? p.assists_p90 ?? p.cs_p90;
@@ -788,6 +789,8 @@ function renderScenarioForm(){
               <div class="dim" style="font-size:10.5px">${esc(TEAM_LABEL[p.club])} · ${esc(p.pos)}</div></div></div>
             <div class="srow">
               <input class="slider inj" type="range" min="0" max="33" value="${SCENARIO.player_injuries[p.player_id] || 0}"
+                aria-label="Games out: ${esc(p.name)}"
+                aria-valuetext="${(SCENARIO.player_injuries[p.player_id] || 0) === 0 ? "available" : (SCENARIO.player_injuries[p.player_id] || 0) + " games out"}"
                 data-pid="${p.player_id}" data-name="${esc(p.name)}">
               <span class="val" id="inj_${p.player_id}">${SCENARIO.player_injuries[p.player_id] || 0}</span>
             </div>
@@ -922,8 +925,8 @@ function renderScenario(){
       Deltas below compare against the baseline run.
     </div>`;
 
-  $("scenTable").innerHTML = `<thead><tr><th>#</th><th>Club</th><th class="num">Scenario pts</th>
-      <th class="num">Δ pts</th><th class="num">Pos</th><th class="num">Δ</th><th class="num">Title</th><th class="num">Releg.</th></tr></thead><tbody>` +
+  $("scenTable").innerHTML = `<caption class="off">Scenario table: what the What-If settings do to each club</caption><thead><tr><th scope="col">#</th><th scope="col">Club</th><th scope="col" class="num">Scenario pts</th>
+      <th scope="col" class="num">Δ pts</th><th scope="col" class="num">Pos</th><th scope="col" class="num">Δ</th><th scope="col" class="num">Title</th><th scope="col" class="num">Releg.</th></tr></thead><tbody>` +
     [...s.table_projections].sort((x, y) => y.proj_pts - x.proj_pts).map((r, i) => {
       const d = r.proj_pts - bMap[r.code].proj_pts;
       return `<tr class="rv" style="--d:${Math.min(i*24,360)}ms">
@@ -958,7 +961,7 @@ function renderScenarioAwards(){
       Golden Boot contender ripple straight through these numbers.</div>`;
     if($("simMovers")) $("simMovers").innerHTML = `<div class="empty">No scenario yet — the top gainers and
       losers will appear here once you re-simulate.</div>`;
-    if($("scenTable")) $("scenTable").innerHTML = `<tbody><tr><td><div class="empty">
+    if($("scenTable")) $("scenTable").innerHTML = `<caption class="off">Scenario table: what the What-If settings do to each club</caption><tbody><tr><td><div class="empty">
       Baseline projections are on the Table tab. Run a scenario to compare against them here.</div></td></tr></tbody>`;
     return;
   }
@@ -1123,8 +1126,8 @@ function renderBacktest(){
   /* metrics table */
   const rowsM = [["This model", m, true]];
   Object.entries(b).forEach(([k, v]) => rowsM.push([k.replace(/_/g, " "), v, false]));
-  $("btMetrics").innerHTML = `<thead><tr><th>Forecaster</th><th class="num">Acc</th><th class="num">RPS ↓</th>
-      <th class="num">Brier ↓</th><th class="num">Log-loss ↓</th></tr></thead><tbody>` +
+  $("btMetrics").innerHTML = `<caption class="off">Backtest: the model against three baselines over the 2025-26 replay</caption><thead><tr><th scope="col">Forecaster</th><th scope="col" class="num">Acc</th><th scope="col" class="num">RPS ↓</th>
+      <th scope="col" class="num">Brier ↓</th><th scope="col" class="num">Log-loss ↓</th></tr></thead><tbody>` +
     rowsM.map(([n, mm, isM]) => `<tr style="${isM ? "background:rgba(0,224,138,.07)" : ""}">
       <td style="font-family:var(--f-disp);font-weight:${isM ? 800 : 500};color:${isM ? "var(--pitch)" : "var(--ink-2)"}">${n}</td>
       <td class="num"><b>${mm.accuracy}%</b></td><td class="num">${mm.rps}</td>
@@ -1202,7 +1205,7 @@ function renderAll(){
   renderHeader(); renderTicker(); renderHero(); renderHeadTiles(); renderGW(); renderRaceBars(); renderPulse();
   renderMarquee(); renderTable(); renderMarkets(); renderTop6Rings();
   renderAwardTiles(); renderAwards(); wireAwardSearch(); renderDuelSelects(); renderScenarioForm();
-  renderMetrics(); renderCharts(); renderBacktest(); renderArch(); renderLimits(); renderDataTab();
+  renderMetrics(); renderCharts(); renderBacktest(); renderArch(); renderLimits(); renderModelCard(); renderFreshness(); renderDataTab();
   renderScenarioAwards();
   animate(document);
   armGlow(document);
@@ -1222,6 +1225,87 @@ async function useServerPayload(){
     }
   }catch(e){}
 }
+/* ═══════════ DATA FRESHNESS (P9.4) ═══════════ */
+function renderFreshness(){
+  const host = $("freshness");
+  if(!host) return;
+  const asOf = (DATA.meta && DATA.meta.as_of_date) || "";
+  const m = String(asOf).match(/(\d{4})-(\d{2})-(\d{2})/);
+  if(!m){ host.innerHTML = ""; return; }
+  const stamped = new Date(+m[1], +m[2] - 1, +m[3]);
+  const today = new Date();
+  const days = Math.floor((new Date(today.getFullYear(), today.getMonth(), today.getDate()) - stamped) / 86400000);
+  // The pipeline runs weekly, so a gap of up to a week is normal and a fortnight is not. The point is
+  // not to alarm on schedule — it is to never quietly present month-old numbers as this week's.
+  const weekly = 8;
+  const stale = days > weekly;
+  const label = days <= 0 ? "updated today"
+    : days === 1 ? "updated yesterday"
+    : `data ${days} days old`;
+  host.className = "fresh" + (stale ? " stale" : "");
+  host.innerHTML = `<span class="dot" aria-hidden="true"></span>${esc(label)}`
+    + (stale ? ` <b>· the weekly update may have failed</b>` : "");
+  host.title = `Predictions built from results up to ${esc(String(asOf))}${stale
+    ? ". The weekly job should have refreshed this by now — treat the numbers as a snapshot, not the current state of the league."
+    : ". The pipeline refreshes after the last match of each gameweek."}`;
+}
+
+/* ═══════════ THE MODEL CARD (P9.1) ═══════════ */
+function renderModelCard(){
+  const host = $("modelCard");
+  if(!host) return;
+  const m = (DATA.backtest && DATA.backtest.model) || null;
+  const tl = (DATA.backtest && DATA.backtest.table_level) || null;
+  const base = (DATA.backtest && DATA.backtest.baselines && DATA.backtest.baselines["prior_season_table_favourite"]) || null;
+  const b = (DATA.backtest && DATA.backtest.baselines) || {};
+  const homeBase = b["home_win_always (PL base rates)"] || null;
+  const asOf = (DATA.meta && DATA.meta.as_of_date) || "unknown";
+  const sims = (DATA.meta && DATA.meta.n_simulations) || 0;
+  const skill = (DATA.backtest && DATA.backtest.skill_vs_prior_table) || null;
+
+  host.innerHTML = `
+    <p class="body">NINETY+ <b>is a statistical model, not a tipster</b>. It knows the results so far,
+    the strength of every squad, home advantage and the fixture list — nothing else. It has no access to
+    team news, injuries, transfer gossip or a manager's mood, and it cannot predict a bad afternoon.</p>
+
+    <div class="mcfacts">
+      <div><span class="k">What it is</span><b>Dixon-Coles scoreline model + gradient boosting</b>
+        <span class="sm">Goal expectations per fixture, then ${sims.toLocaleString()} simulated seasons.</span></div>
+      <div><span class="k">Measured on 2025-26</span>
+        <b>${m ? m.accuracy.toFixed(1) + "% of matches called" : "—"}</b>
+        <span class="sm">${m ? "Log-loss " + m.log_loss.toFixed(3) + " · Brier " + m.brier.toFixed(3) : ""}
+          ${skill ? " · RPS skill +" + skill.rps.toFixed(1) + "% vs the prior table" : ""}</span></div>
+      <div><span class="k">Where it does not help</span>
+        <b>Table position, not match results</b>
+        <span class="sm">${tl ? "Rank correlation " + tl.spearman_rank_correlation.toFixed(2) + " · points error ±" + tl.points_mae.toFixed(1) : ""}</span></div>
+      <div><span class="k">Updated</span><b>Weekly, after the last match of each gameweek</b>
+        <span class="sm">This build: ${esc(String(asOf))}</span></div>
+    </div>
+
+    <p class="disclaim"><b>Analysis, not betting advice.</b> Every number here is the output of a model
+    that gets roughly half of individual matches right — about ${homeBase ? (homeBase.accuracy || 0).toFixed(1) : "—"}% of
+    fixtures are won by the home side before anyone looks at the teams. Treat a 70% favourite as one
+    match in three going the other way, because that is what it means.</p>
+    <p class="sm dim">Wrong result? <a href="method.html" style="color:var(--accent);text-decoration:underline;text-underline-offset:2px">How the model is built</a>
+    explains the method and how to report a miss.</p>`;
+}
+
+function wireControlNames(){
+  /* P7.3: controls that are obvious on screen and anonymous to a screen reader. The simulation-size
+     select is the clearest case — it reads as "combo box" and nothing else, and it changes how long a
+     run takes, so its name has to say what it sets. */
+  const sim = $("simCount");
+  if(sim){
+    sim.setAttribute("aria-label", "Simulations per run");
+    const help = document.createElement("span");
+    help.id = "simCountHelp";
+    help.className = "off";
+    help.textContent = "More simulations make the probabilities steadier and the run slower.";
+    sim.setAttribute("aria-describedby", help.id);
+    sim.insertAdjacentElement("afterend", help);
+  }
+}
+
 function init(){
   document.querySelectorAll("nav.tabs button").forEach(b => b.onclick = () => switchTab(b.dataset.tab));
   document.querySelectorAll("[data-award]").forEach(b => b.onclick = () => { AWARD = b.dataset.award; renderAwards(); animate($("tab-awards")); });
@@ -1229,6 +1313,7 @@ function init(){
   $("fxHome").onchange = predictFixture; $("fxAway").onchange = predictFixture;
   $("runSim").onclick = runSim;
   $("resetScen").onclick = resetScenario;
+  wireControlNames();
   renderAll();
   if(typeof UX !== "undefined") UX.init();
   detectEngine().then(() => { if(ENGINE_MODE === "server"){ predictFixture(); useServerPayload(); } });
