@@ -208,16 +208,36 @@ const UX = (() => {
     Object.entries(SCENARIO.custom_scores).forEach(([k, v]) => { compact.c[k] = v; });
     return btoa(JSON.stringify(compact)).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
   }
+  /* A scenario encoded by either writer this page has ever had, or by a link someone else made.
+   *
+   * There are two writers, which is one too many, and they disagree: ux.js's shareScenario() emitted
+   * a bare base64 body, and share.js's SCENARIO_URL emits "v2-<base64>" with a version prefix. Both
+   * wire the same button, and share.js — loaded later — wins, so the link a reader actually copies
+   * carries the prefix. This reader used to understand only the bare form, which meant **every shared
+   * scenario link the button produced failed to open**, with a toast blaming the link.
+   *
+   * So: accept an optional version prefix, understand both the compact body (i/b/d/c) and the
+   * canonical one, and reject a version from the future rather than guessing at it. Everything is
+   * sanitised on the way out, whatever the shape.
+   */
   function decodeScenario(token){
-    const b64 = token.replace(/-/g, "+").replace(/_/g, "/");
+    let body = String(token || ""), version = 1;
+    const prefixed = body.match(/^v(\d+)-(.*)$/);
+    if(prefixed){
+      version = parseInt(prefixed[1], 10);
+      body = prefixed[2];
+      if(version > 2) throw new Error("this link was made by a newer version of NINETY+");
+    }
+    const b64 = body.replace(/-/g, "+").replace(/_/g, "/");
     const padded = b64 + "=".repeat((4 - b64.length % 4) % 4);
     const c = JSON.parse(decodeURIComponent(escape(atob(padded))));
-    return {
-      player_injuries: c.i || {},
-      team_boosts: Object.fromEntries(Object.entries(c.b || {}).map(([k, v]) => [k, { attack:v[0], defence:v[1] }])),
-      points_deductions: c.d || {},
-      custom_scores: c.c || {},
-    };
+    // Compact keys from a link, canonical keys from a saved payload — accept either.
+    return sanitizeScenario({
+      player_injuries: c.player_injuries || c.i,
+      team_boosts: c.team_boosts || c.b,
+      points_deductions: c.points_deductions || c.d,
+      custom_scores: c.custom_scores || c.c,
+    });
   }
   function applyScenarioFromHash(){
     const m = location.hash.match(/s=([A-Za-z0-9\-_]+)/);

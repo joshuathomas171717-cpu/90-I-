@@ -777,6 +777,19 @@ function renderDuelSelects(){
 }
 
 /* ═══════════ SCENARIO ═══════════ */
+/** A scenario value, safe to put in markup. Digits and a minus sign, nothing else.
+ *
+ * Belt and braces: core.js's sanitizeScenario is what stops a crafted share link from reaching the
+ * form at all, and this is what guarantees the form cannot emit anything but a number even if that
+ * ever fails. The bug being fixed here was an `<img onerror=...>` landing in a slider's value
+ * attribute, so these call sites do not get to trust their input any more.
+ */
+function scnNum(v){
+  const n = Math.round(Number(v));
+  if(!isFinite(n)) return 0;
+  return Math.max(-99, Math.min(99, n));
+}
+
 function renderScenarioForm(){
   const { teamsSorted, players } = scenarioInputTemplates();
   const boosted = SCENARIO.team_boosts, ded = SCENARIO.points_deductions;
@@ -793,11 +806,11 @@ function renderScenarioForm(){
               <div><div class="disp" style="font-size:13px">${esc(p.name)}</div>
               <div class="dim" style="font-size:10.5px">${esc(TEAM_LABEL[p.club])} · ${esc(p.pos)}</div></div></div>
             <div class="srow">
-              <input class="slider inj" type="range" min="0" max="33" value="${SCENARIO.player_injuries[p.player_id] || 0}"
+              <input class="slider inj" type="range" min="0" max="33" value="${scnNum(SCENARIO.player_injuries[p.player_id])}"
                 aria-label="Games out: ${esc(p.name)}"
-                aria-valuetext="${(SCENARIO.player_injuries[p.player_id] || 0) === 0 ? "available" : (SCENARIO.player_injuries[p.player_id] || 0) + " games out"}"
+                aria-valuetext="${scnNum(SCENARIO.player_injuries[p.player_id]) === 0 ? "available" : scnNum(SCENARIO.player_injuries[p.player_id]) + " games out"}"
                 data-pid="${p.player_id}" data-name="${esc(p.name)}">
-              <span class="val" id="inj_${p.player_id}">${SCENARIO.player_injuries[p.player_id] || 0}</span>
+              <span class="val" id="inj_${p.player_id}">${scnNum(SCENARIO.player_injuries[p.player_id])}</span>
             </div>
           </div>`).join("")}
       </div>
@@ -813,10 +826,10 @@ function renderScenarioForm(){
             <div class="row" style="gap:9px">${crest(t.code, 18)}
               <div class="disp" style="font-size:13px">${esc(t.short)}</div></div>
             <div>
-              <div class="srow form"><input class="slider atk" type="range" min="-25" max="25" value="${b.attack || 0}" data-code="${t.code}">
-                <span class="val" id="atk_${t.code}">${(b.attack || 0) > 0 ? "+" : ""}${b.attack || 0}%</span></div>
-              <div class="srow form" style="margin-top:7px"><input class="slider def" type="range" min="-25" max="25" value="${b.defence || 0}" data-code="${t.code}">
-                <span class="val" id="def_${t.code}">${(b.defence || 0) > 0 ? "+" : ""}${b.defence || 0}%</span></div>
+              <div class="srow form"><input class="slider atk" type="range" min="-25" max="25" value="${scnNum(b.attack)}" data-code="${t.code}">
+                <span class="val" id="atk_${t.code}">${scnNum(b.attack) > 0 ? "+" : ""}${scnNum(b.attack)}%</span></div>
+              <div class="srow form" style="margin-top:7px"><input class="slider def" type="range" min="-25" max="25" value="${scnNum(b.defence)}" data-code="${t.code}">
+                <span class="val" id="def_${t.code}">${scnNum(b.defence) > 0 ? "+" : ""}${scnNum(b.defence)}%</span></div>
             </div>
           </div>`;
         }).join("")}
@@ -830,8 +843,8 @@ function renderScenarioForm(){
         ${teamsSorted.map(t => `<div class="itemrow wide">
           <div class="row" style="gap:9px">${crest(t.code, 18)}<div class="disp" style="font-size:13px">${esc(t.short)}</div></div>
           <div class="srow">
-            <input class="slider ded" type="range" min="0" max="30" value="${ded[t.code] || 0}" data-code="${t.code}">
-            <span class="val" id="ded_${t.code}">−${ded[t.code] || 0}</span></div>
+            <input class="slider ded" type="range" min="0" max="30" value="${scnNum(ded[t.code])}" data-code="${t.code}">
+            <span class="val" id="ded_${t.code}">−${scnNum(ded[t.code])}</span></div>
         </div>`).join("")}
       </div>
     </details>
@@ -1412,10 +1425,10 @@ function renderSavedScenarios(){
     btn.onclick = () => {
       const entry = STORE.scenarios().filter(x => x.id === btn.dataset.load)[0];
       if(!entry) return;
-      SCENARIO = JSON.parse(JSON.stringify(entry.scenario));
-      ["player_injuries", "team_boosts", "points_deductions", "custom_scores"].forEach(k => {
-        if(!SCENARIO[k]) SCENARIO[k] = {};
-      });
+      // A saved scenario is one a link or a form put there earlier, so it is validated on the way
+      // back out of storage as well — a save made from a hostile link must not become a payload that
+      // fires on every subsequent visit.
+      SCENARIO = sanitizeScenario(entry.scenario);
       renderScenarioForm();
       toast(`Loaded "${entry.name}" — running it now.`);
       runSim();

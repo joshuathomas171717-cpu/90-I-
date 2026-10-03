@@ -35,9 +35,37 @@ def load_rewrites():
 REWRITES, CONFIG = load_rewrites()
 
 
+def _match_rules(path):
+    """Every vercel.json header rule that applies to a path, with Vercel's (.*) semantics."""
+    out = []
+    for rule in CONFIG.get("headers", []):
+        pattern = rule["source"]
+        if pattern == "/(.*)" or re.fullmatch(pattern.replace("(.*)", ".*").replace("/", r"\/"), path):
+            out.extend(rule["headers"])
+        else:
+            probe = re.sub(r"\(\.\*\)", ".*", pattern)
+            try:
+                if re.fullmatch(probe.lstrip("/"), path.lstrip("/")):
+                    out.extend(rule["headers"])
+            except re.error:
+                continue
+    return out
+
+
 class VercelLikeHandler(SimpleHTTPRequestHandler):
     def __init__(self, *a, **kw):
         super().__init__(*a, directory=STATIC, **kw)
+
+    def end_headers(self):
+        # The headers from vercel.json, applied here too. A CSP that breaks the page is worse than
+        # no CSP, and the only way to find that out before deploying is to serve the real rules.
+        seen = set()
+        for header in _match_rules(self.path.split("?")[0]):
+            if header["key"].lower() in seen:
+                continue
+            seen.add(header["key"].lower())
+            self.send_header(header["key"], header["value"])
+        super().end_headers()
 
     def translate_path(self, path):
         clean = path.split("?", 1)[0].split("#", 1)[0]

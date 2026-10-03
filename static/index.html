@@ -1562,6 +1562,87 @@ function SCENARIO_ACTIVE(){
          Object.values(SCENARIO.points_deductions).some(v => v > 0) ||
          Object.keys(SCENARIO.custom_scores).length > 0;
 }
+/* ═══════════ scenario validation ═══════════ */
+/*
+ * There are three ways a scenario can arrive from outside this page: a `#s=` share link, an entry
+ * in local storage, and — in future — a sync. All three are attacker-controlled in the sense that
+ * matters: anyone can put anything in a URL, and the page hands it straight to a form that renders
+ * it.
+ *
+ * It used to hand it over untouched, and that was a cross-site scripting bug. A link of the form
+ *
+ *     /whatif#s=<base64 of {"b":{"ARS":["<img src=x onerror=...>",0]}}>
+ *
+ * put that string into the Form-swings slider's `value="…"` attribute, broke out of the quotes and
+ * ran script on this origin. Injuries, deductions and boost values were all reachable the same way.
+ *
+ * So a scenario is now normalised at the boundary: four maps of numbers, keyed only by ids the page
+ * already knows. Anything else is dropped, not escaped — a scenario has no reason to contain a
+ * string, so the correct response to one is to discard it rather than to render it carefully.
+ *
+ * The form additionally coerces every value it prints (see `scnNum` in render.js). That second layer
+ * is deliberate redundancy: this function is the fix, and the coercion is what keeps a future bug
+ * here from becoming a future XSS.
+ */
+function scnInt(v, lo, hi){
+  const n = Math.round(Number(v));
+  if(!isFinite(n)) return 0;              // Number("") is 0, Number({}) is NaN, Number("12x") is NaN
+  return Math.max(lo, Math.min(hi, n));
+}
+
+function sanitizeScenario(raw){
+  const src = (raw && typeof raw === "object") ? raw : {};
+  const out = { player_injuries:{}, team_boosts:{}, points_deductions:{}, custom_scores:{} };
+
+  const known = {};
+  TEAMS_IN.forEach(t => { known[t.code] = true; });
+  const players = {};
+  SCEN_PLAYERS().forEach(p => { players[p.player_id] = true; });
+
+  const inj = (src.player_injuries && typeof src.player_injuries === "object") ? src.player_injuries : {};
+  Object.keys(inj).forEach(k => {
+    if(!players[k]) return;                                   // not a player of this league
+    const games = scnInt(inj[k], 0, 33);                      // 33 matches remain in the season
+    if(games > 0) out.player_injuries[k] = games;
+  });
+
+  const boosts = (src.team_boosts && typeof src.team_boosts === "object") ? src.team_boosts : {};
+  Object.keys(boosts).forEach(k => {
+    if(!known[k]) return;
+    const raw = boosts[k];
+    // Two shapes are legitimate here, and getting this wrong is how the first version of this
+    // function silently threw away every valid share link: the compact wire format in a link is
+    // [attack, defence], while SCENARIO holds {attack, defence} once it is in the page.
+    let attack = 0, defence = 0;
+    if(Array.isArray(raw)){
+      attack = scnInt(raw[0], -25, 25); defence = scnInt(raw[1], -25, 25);
+    } else if(raw && typeof raw === "object"){
+      attack = scnInt(raw.attack, -25, 25); defence = scnInt(raw.defence, -25, 25);
+    } else if(typeof raw === "number" || typeof raw === "string"){
+      attack = scnInt(raw, -25, 25);            // a bare number means "attack only"
+    }
+    if(attack || defence) out.team_boosts[k] = { attack:attack, defence:defence };
+  });
+
+  const ded = (src.points_deductions && typeof src.points_deductions === "object") ? src.points_deductions : {};
+  Object.keys(ded).forEach(k => {
+    if(!known[k]) return;
+    const pts = scnInt(ded[k], 0, 30);
+    if(pts > 0) out.points_deductions[k] = pts;
+  });
+
+  const forced = (src.custom_scores && typeof src.custom_scores === "object") ? src.custom_scores : {};
+  Object.keys(forced).forEach(k => {
+    const m = /^([A-Z]{2,4})-([A-Z]{2,4})$/.exec(k);          // the key is a fixture, not free text
+    if(!m || !known[m[1]] || !known[m[2]]) return;
+    const pair = forced[k];
+    if(!Array.isArray(pair) || pair.length < 2) return;
+    out.custom_scores[k] = [scnInt(pair[0], 0, 9), scnInt(pair[1], 0, 9)];
+  });
+
+  return out;
+}
+
 function setCustomScore(h, a){
   const key = h + "-" + a;
   const hg = +$("cs_h_" + h + a)?.value, ag = +$("cs_a_" + h + a)?.value;
@@ -2249,16 +2330,36 @@ const UX = (() => {
     Object.entries(SCENARIO.custom_scores).forEach(([k, v]) => { compact.c[k] = v; });
     return btoa(JSON.stringify(compact)).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
   }
+  /* A scenario encoded by either writer this page has ever had, or by a link someone else made.
+   *
+   * There are two writers, which is one too many, and they disagree: ux.js's shareScenario() emitted
+   * a bare base64 body, and share.js's SCENARIO_URL emits "v2-<base64>" with a version prefix. Both
+   * wire the same button, and share.js — loaded later — wins, so the link a reader actually copies
+   * carries the prefix. This reader used to understand only the bare form, which meant **every shared
+   * scenario link the button produced failed to open**, with a toast blaming the link.
+   *
+   * So: accept an optional version prefix, understand both the compact body (i/b/d/c) and the
+   * canonical one, and reject a version from the future rather than guessing at it. Everything is
+   * sanitised on the way out, whatever the shape.
+   */
   function decodeScenario(token){
-    const b64 = token.replace(/-/g, "+").replace(/_/g, "/");
+    let body = String(token || ""), version = 1;
+    const prefixed = body.match(/^v(\d+)-(.*)$/);
+    if(prefixed){
+      version = parseInt(prefixed[1], 10);
+      body = prefixed[2];
+      if(version > 2) throw new Error("this link was made by a newer version of NINETY+");
+    }
+    const b64 = body.replace(/-/g, "+").replace(/_/g, "/");
     const padded = b64 + "=".repeat((4 - b64.length % 4) % 4);
     const c = JSON.parse(decodeURIComponent(escape(atob(padded))));
-    return {
-      player_injuries: c.i || {},
-      team_boosts: Object.fromEntries(Object.entries(c.b || {}).map(([k, v]) => [k, { attack:v[0], defence:v[1] }])),
-      points_deductions: c.d || {},
-      custom_scores: c.c || {},
-    };
+    // Compact keys from a link, canonical keys from a saved payload — accept either.
+    return sanitizeScenario({
+      player_injuries: c.player_injuries || c.i,
+      team_boosts: c.team_boosts || c.b,
+      points_deductions: c.points_deductions || c.d,
+      custom_scores: c.custom_scores || c.c,
+    });
   }
   function applyScenarioFromHash(){
     const m = location.hash.match(/s=([A-Za-z0-9\-_]+)/);
@@ -3165,6 +3266,19 @@ function renderDuelSelects(){
 }
 
 /* ═══════════ SCENARIO ═══════════ */
+/** A scenario value, safe to put in markup. Digits and a minus sign, nothing else.
+ *
+ * Belt and braces: core.js's sanitizeScenario is what stops a crafted share link from reaching the
+ * form at all, and this is what guarantees the form cannot emit anything but a number even if that
+ * ever fails. The bug being fixed here was an `<img onerror=...>` landing in a slider's value
+ * attribute, so these call sites do not get to trust their input any more.
+ */
+function scnNum(v){
+  const n = Math.round(Number(v));
+  if(!isFinite(n)) return 0;
+  return Math.max(-99, Math.min(99, n));
+}
+
 function renderScenarioForm(){
   const { teamsSorted, players } = scenarioInputTemplates();
   const boosted = SCENARIO.team_boosts, ded = SCENARIO.points_deductions;
@@ -3181,11 +3295,11 @@ function renderScenarioForm(){
               <div><div class="disp" style="font-size:13px">${esc(p.name)}</div>
               <div class="dim" style="font-size:10.5px">${esc(TEAM_LABEL[p.club])} · ${esc(p.pos)}</div></div></div>
             <div class="srow">
-              <input class="slider inj" type="range" min="0" max="33" value="${SCENARIO.player_injuries[p.player_id] || 0}"
+              <input class="slider inj" type="range" min="0" max="33" value="${scnNum(SCENARIO.player_injuries[p.player_id])}"
                 aria-label="Games out: ${esc(p.name)}"
-                aria-valuetext="${(SCENARIO.player_injuries[p.player_id] || 0) === 0 ? "available" : (SCENARIO.player_injuries[p.player_id] || 0) + " games out"}"
+                aria-valuetext="${scnNum(SCENARIO.player_injuries[p.player_id]) === 0 ? "available" : scnNum(SCENARIO.player_injuries[p.player_id]) + " games out"}"
                 data-pid="${p.player_id}" data-name="${esc(p.name)}">
-              <span class="val" id="inj_${p.player_id}">${SCENARIO.player_injuries[p.player_id] || 0}</span>
+              <span class="val" id="inj_${p.player_id}">${scnNum(SCENARIO.player_injuries[p.player_id])}</span>
             </div>
           </div>`).join("")}
       </div>
@@ -3201,10 +3315,10 @@ function renderScenarioForm(){
             <div class="row" style="gap:9px">${crest(t.code, 18)}
               <div class="disp" style="font-size:13px">${esc(t.short)}</div></div>
             <div>
-              <div class="srow form"><input class="slider atk" type="range" min="-25" max="25" value="${b.attack || 0}" data-code="${t.code}">
-                <span class="val" id="atk_${t.code}">${(b.attack || 0) > 0 ? "+" : ""}${b.attack || 0}%</span></div>
-              <div class="srow form" style="margin-top:7px"><input class="slider def" type="range" min="-25" max="25" value="${b.defence || 0}" data-code="${t.code}">
-                <span class="val" id="def_${t.code}">${(b.defence || 0) > 0 ? "+" : ""}${b.defence || 0}%</span></div>
+              <div class="srow form"><input class="slider atk" type="range" min="-25" max="25" value="${scnNum(b.attack)}" data-code="${t.code}">
+                <span class="val" id="atk_${t.code}">${scnNum(b.attack) > 0 ? "+" : ""}${scnNum(b.attack)}%</span></div>
+              <div class="srow form" style="margin-top:7px"><input class="slider def" type="range" min="-25" max="25" value="${scnNum(b.defence)}" data-code="${t.code}">
+                <span class="val" id="def_${t.code}">${scnNum(b.defence) > 0 ? "+" : ""}${scnNum(b.defence)}%</span></div>
             </div>
           </div>`;
         }).join("")}
@@ -3218,8 +3332,8 @@ function renderScenarioForm(){
         ${teamsSorted.map(t => `<div class="itemrow wide">
           <div class="row" style="gap:9px">${crest(t.code, 18)}<div class="disp" style="font-size:13px">${esc(t.short)}</div></div>
           <div class="srow">
-            <input class="slider ded" type="range" min="0" max="30" value="${ded[t.code] || 0}" data-code="${t.code}">
-            <span class="val" id="ded_${t.code}">−${ded[t.code] || 0}</span></div>
+            <input class="slider ded" type="range" min="0" max="30" value="${scnNum(ded[t.code])}" data-code="${t.code}">
+            <span class="val" id="ded_${t.code}">−${scnNum(ded[t.code])}</span></div>
         </div>`).join("")}
       </div>
     </details>
@@ -3800,10 +3914,10 @@ function renderSavedScenarios(){
     btn.onclick = () => {
       const entry = STORE.scenarios().filter(x => x.id === btn.dataset.load)[0];
       if(!entry) return;
-      SCENARIO = JSON.parse(JSON.stringify(entry.scenario));
-      ["player_injuries", "team_boosts", "points_deductions", "custom_scores"].forEach(k => {
-        if(!SCENARIO[k]) SCENARIO[k] = {};
-      });
+      // A saved scenario is one a link or a form put there earlier, so it is validated on the way
+      // back out of storage as well — a save made from a hostile link must not become a payload that
+      // fires on every subsequent visit.
+      SCENARIO = sanitizeScenario(entry.scenario);
       renderScenarioForm();
       toast(`Loaded "${entry.name}" — running it now.`);
       runSim();
@@ -3991,12 +4105,11 @@ init();
       return {
         version: version,
         migrated: migrated,
-        scenario: {
-          player_injuries: c.i || {},
-          team_boosts: Object.fromEntries(Object.entries(c.b || {}).map(([k, v]) => [k, { attack:v[0], defence:v[1] }])),
-          points_deductions: c.d || {},
-          custom_scores: c.c || {},
-        },
+        // Same boundary as the #s= path in ux.js. Two decoders is one too many — but they exist, and
+        // both go through the same validator rather than each doing its own partial job.
+        scenario: sanitizeScenario({
+          player_injuries: c.i, team_boosts: c.b, points_deductions: c.d, custom_scores: c.c,
+        }),
       };
     },
 

@@ -293,6 +293,125 @@ def test_gitignore_covers_the_things_it_must():
         _check(entry in ignore, ".gitignore does not cover %s" % entry)
 
 
+def test_every_asset_the_page_references_is_tracked_by_git():
+    """The deploy is built from git, so an asset that is merely present on disk does not ship.
+
+    This is the regression for a real defect: a blanket `*.png` rule in .gitignore meant 65 files in
+    static/ — the 60 social cards in static/og/, the three PWA icons and apple-touch-icon.png — were
+    never committed. A clean clone simply did not have them, and Vercel has no build step to create
+    them, so the favicon, the manifest icons and every link preview would have 404'd in production.
+    It went unnoticed because the release zip is built from the filesystem, not from git.
+
+    So: ask git what it tracks, and require that every static subresource the page can reach is in
+    that list. `git ls-files` is authoritative in a way that reading the directory is not.
+    """
+    import subprocess
+    try:
+        tracked = subprocess.run(["git", "ls-files"], cwd=ROOT, capture_output=True, text=True,
+                                 check=True).stdout.split()
+    except (OSError, subprocess.CalledProcessError) as exc:      # pragma: no cover - environment
+        print("      (skipped: git is not usable here — %s)" % exc)
+        return
+    tracked = {t.replace("\\", "/") for t in tracked}
+    # `git ls-files` speaks repository paths ("static/og/site.png"); the page speaks site-root URLs
+    # ("og/site.png"), because on Vercel the contents of static/ are the site root.
+    tracked_from_root = {t[len("static/"):] for t in tracked if t.startswith("static/")}
+
+    page = _page()
+    referenced = set()
+    for match in re.finditer(r"""(?:src|href)=["']([^"'#?]+)["']""", page):
+        url = match.group(1)
+        if url.startswith(("http:", "https:", "data:", "mailto:", "//")) or url.startswith("#"):
+            continue
+        referenced.add(url.lstrip("/"))
+    for match in re.finditer(r"""(?:og:image|twitter:image)["']\s+content=["']([^"']+)["']""", page):
+        url = match.group(1)
+        if not url.startswith(("http:", "https:", "data:")):
+            referenced.add(url.lstrip("/"))
+
+    local = {u for u in referenced if not u.endswith(".html") and u not in ("", "./")}
+    missing = sorted(u for u in local
+                     if u.startswith(("og/", "icons/", "assets/")) or u in ("apple-touch-icon.png",
+                                                                            "manifest.webmanifest"))
+    absent = [u for u in missing if u not in tracked_from_root]
+    _check(not absent, "these static assets are referenced by the page but not tracked by git, so "
+                       "they will 404 on any deploy built from a clone: %s" % absent)
+
+    for name in ("static/og/site.png", "static/icons/favicon-32.png", "static/icons/icon-192.png",
+                 "static/icons/icon-512.png", "static/apple-touch-icon.png",
+                 "static/manifest.webmanifest"):
+        _check(name in tracked, "%s is not tracked by git — the deploy would ship without it"
+               % name)
+
+
+def test_gitignore_does_not_swallow_the_static_assets():
+    """The ignore rules have to be depth-aware. `*.png` is not the same rule as `/*.png`."""
+    ignore = _read(".gitignore")
+    rules = [ln.strip() for ln in ignore.splitlines() if ln.strip() and not ln.strip().startswith("#")]
+    for rule in rules:
+        if rule in ("*.png", "*.jpg", "*.svg", "*.webmanifest", "*.ico"):
+            raise AssertionError(
+                ".gitignore has the depth-less rule %r, which matches inside static/ and would "
+                "exclude the site's own images from the deploy. Anchor it with a leading slash if "
+                "the intent was the repository root." % rule)
+
+
+def test_scenario_input_is_sanitised_at_every_boundary():
+    """A crafted share link must not be able to put markup into the What-If form.
+
+    The attack was real and reproduced in a browser: `#s=<base64>` carrying
+    `{"b":{"ARS":["<img src=x onerror=...>",0]}}` executed script on this origin, because scenario
+    values were interpolated straight into `value="..."`. The fix is a single validator that returns
+    numbers keyed by ids the page already knows, applied wherever outside data enters.
+
+    This asserts the wiring, so deleting a call is a test failure rather than a silent reopening.
+    The browser-level proof lives in tests/a11y/xss.mjs, which is dev-only tooling.
+    """
+    core = _read("core.js", SRC)
+    _check("function sanitizeScenario(" in core, "core.js no longer defines sanitizeScenario()")
+    _check("function scnInt(" in core, "core.js no longer defines scnInt()")
+
+    for name in ("ux.js", "share.js", "render.js"):
+        body = _read(name, SRC)
+        _check("sanitizeScenario(" in _code_only(body),
+               "%s does not route external scenario data through sanitizeScenario()" % name)
+
+    # The form fields themselves must never interpolate a raw scenario value.
+    render = _code_only(_read("render.js", SRC))
+    for field in ("SCENARIO.player_injuries[p.player_id]", "b.attack", "b.defence", "ded[t.code]"):
+        for match in re.finditer(r'\$\{([^{}]*' + re.escape(field) + r'[^{}]*)\}', render):
+            expr = match.group(1)
+            _check("scnNum(" in expr,
+                   "render.js interpolates %r without scnNum(): ${%s}" % (field, expr.strip()))
+
+
+def test_a_shared_link_can_actually_be_read_back():
+    """The writer and the reader of `#s=` have to agree, or the Share button produces dead links.
+
+    They did not, and that is what shipped: share.js writes "v1-<base64>" while ux.js's reader
+    accepted only a bare base64 body — and share.js, loaded later, is the handler that ends up on the
+    Share button. Every link the button produced failed to open, with a toast blaming the link. The
+    reader takes an optional version prefix now.
+
+    The structural half is checked here because it is cheap; the behavioural proof — including that
+    the compact [attack, defence] a link carries and the {attack, defence} the page stores sanitise to
+    the same thing — is in
+    tests/test_wave4_site.py::test_a_share_link_survives_the_validator_in_both_wire_shapes.
+    """
+    ux = _code_only(_read("ux.js", SRC))
+    share = _code_only(_read("share.js", SRC))
+    code = _code_only(_read("core.js", SRC))
+
+    _check(re.search(r"/\^v\(\\d\+\)-", ux),
+           "ux.js's reader no longer accepts the 'v<n>-' prefix share.js writes, so shared links "
+           "would fail to open again")
+    _check(re.search(r"PREFIX\s*=\s*[\"']v[\"']", share),
+           "share.js no longer prefixes its tokens with a version")
+    _check(re.search(r"Array\.isArray\(raw\)", code),
+           "sanitizeScenario() does not accept the [attack, defence] wire shape, so a valid shared "
+           "link would be emptied on the way in")
+
+
 def test_no_api_key_is_committed():
     """A 32-character hex token assigned to something key-shaped, anywhere a human could read it.
 

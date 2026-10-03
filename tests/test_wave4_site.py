@@ -36,6 +36,67 @@ def _read(rel):
     return open(path, encoding="utf-8").read()
 
 
+#: The prelude every node harness here starts with. It exists because `require()` gives each file its
+#: own module scope, which is *not* how the page works: the shipped index.html inlines core.js and
+#: share.js into a single <script>, so share.js can call functions core.js defines. Loading them
+#: separately in node hides those functions and made the harness fail the moment share.js started
+#: calling the scenario validator. Concatenating them into one vm context reproduces the page, and
+#: the payload is the real EMBEDDED object read out of index.html rather than a hand-written stub.
+_NODE_PRELUDE = r"""
+const fs = require("fs"), vm = require("vm");
+const [corePath, sharePath, embPath] = process.argv.slice(2);
+global.window = {};
+const sandbox = {
+  window: global.window, navigator: {}, console: console,
+  location: { protocol:"https:", origin:"https://example.test", pathname:"/whatif", search:"",
+              href:"https://example.test/whatif", hash:"" },
+  document: { readyState:"complete", addEventListener(){}, querySelectorAll(){ return []; },
+              querySelector(){ return null; }, getElementById(){ return null; } },
+  localStorage: { getItem(){ return null; }, setItem(){}, removeItem(){} },
+  btoa: (s) => Buffer.from(s, "binary").toString("base64"),
+  atob: (s) => Buffer.from(s, "base64").toString("binary"),
+  escape, unescape, encodeURIComponent, decodeURIComponent, Number, Object, Array, String,
+  parseInt, parseFloat, Date, isFinite, Math, JSON, setTimeout, clearTimeout,
+};
+sandbox.globalThis = sandbox;
+sandbox.EMBEDDED = JSON.parse(fs.readFileSync(embPath, "utf8"));
+vm.createContext(sandbox);
+vm.runInContext(fs.readFileSync(corePath, "utf8") + "\n" + fs.readFileSync(sharePath, "utf8"), sandbox);
+const S = global.window.NT90_SHARE;
+const native = (expr) => vm.runInContext(expr, sandbox);
+"""
+
+
+def _run_share_harness(body):
+    """Run `body` in node with core.js and share.js in one scope, against the page's real payload."""
+    import subprocess
+    import tempfile
+    page = _read("index.html")
+    marker = "const EMBEDDED = "
+    if marker not in page:
+        skip("index.html does not embed the payload")
+    payload, _ = json.JSONDecoder().raw_decode(page, page.index(marker) + len(marker))
+    paths = []
+    try:
+        with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False) as fh:
+            json.dump(payload, fh)
+            paths.append(fh.name)
+        with tempfile.NamedTemporaryFile("w", suffix=".js", delete=False) as fh:
+            fh.write(_NODE_PRELUDE + body)
+            paths.append(fh.name)
+        out = subprocess.run(["node", paths[1], os.path.join(STATIC, "src", "core.js"),
+                              os.path.join(STATIC, "src", "share.js"), paths[0]],
+                             capture_output=True, text=True, timeout=90)
+        assert out.returncode == 0, "the share harness failed in node:\n" + out.stderr[-900:]
+        return json.loads(out.stdout.strip().splitlines()[-1])
+    finally:
+        for path in paths:
+            try:
+                os.unlink(path)
+            except OSError:
+                pass
+
+
 def _text_of(html_text):
     """What a crawler sees: markup stripped, then entities decoded.
 
@@ -437,64 +498,64 @@ def test_the_share_payload_round_trips_every_part_of_a_scenario():
     has to be exactly right in both directions — a link that drops a value silently changes someone
     else's scenario and nobody would know.
     """
-    import subprocess
-    src = os.path.join(ROOT, "static", "src", "share.js")
-    if not os.path.exists(src):
-        skip("static/src/share.js is missing")
-    script = """
-global.window = { };
-global.location = { protocol:"https:", origin:"https://example.test", pathname:"/whatif",
-                    search:"", href:"https://example.test/whatif" };
-global.btoa = (s) => Buffer.from(s, "binary").toString("base64");
-global.atob = (s) => Buffer.from(s, "base64").toString("binary");
-global.unescape = unescape; global.encodeURIComponent = encodeURIComponent;
-global.decodeURIComponent = decodeURIComponent; global.escape = escape;
-global.document = { readyState:"complete", addEventListener(){}, querySelectorAll(){ return []; } };
-global.navigator = { };
-require(process.argv[1]);
-const S = window.NT90_SHARE;
+    result = _run_share_harness("""
 const scenario = { player_injuries:{ haaland:6 }, team_boosts:{ ARS:{ attack:6, defence:-3 } },
-                   points_deductions:{ MCI:10 }, custom_scores:{ "ARS-MCI": [3,1] } };
+                   points_deductions:{ MCI:10 }, custom_scores:{ "ARS-MCI":[3,1] } };
 const token = S.encode(scenario);
-const back = S.decode(token).scenario;
-const same = JSON.stringify(back) === JSON.stringify(scenario);
-console.log(JSON.stringify({ version:S.decode(token).version, same, token, scenario:back }));
-"""
-    out = subprocess.run(["node", "-e", script, src], capture_output=True, text=True, timeout=60)
-    assert out.returncode == 0, "share.js failed to load in node:\n" + out.stderr[-800:]
-    result = json.loads(out.stdout.strip().splitlines()[-1])
-    assert result["version"] == 1, "the payload is not versioned (%r)" % result["version"]
-    assert result["same"], "the scenario did not survive the round trip: %s vs %s" % (
-        result["scenario"], "expected input")
+const decoded = S.decode(token);
+console.log(JSON.stringify({ version:decoded.version, token,
+                             same:JSON.stringify(decoded.scenario) === JSON.stringify(scenario),
+                             scenario:decoded.scenario }));
+""")
     assert result["token"].startswith("v1-"), "the token does not carry its version: %s" % result["token"]
 
 
 def test_an_old_unversioned_link_still_reads():
     """Every link shared before the version prefix existed has to keep working."""
-    import subprocess
-    src = os.path.join(ROOT, "static", "src", "share.js")
-    if not os.path.exists(src):
-        skip("static/src/share.js is missing")
-    script = """
-global.window = {}; global.navigator = {};
-global.location = { protocol:"https:", origin:"https://example.test", pathname:"/whatif", search:"", href:"x" };
-global.btoa = (s) => Buffer.from(s, "binary").toString("base64");
-global.atob = (s) => Buffer.from(s, "base64").toString("binary");
-global.unescape = unescape; global.escape = escape;
-global.encodeURIComponent = encodeURIComponent; global.decodeURIComponent = decodeURIComponent;
-global.document = { readyState:"complete", addEventListener(){}, querySelectorAll(){ return []; } };
-require(process.argv[1]);
-const S = window.NT90_SHARE;
+    result = _run_share_harness("""
 const old = Buffer.from(JSON.stringify({ i:{ haaland:4 }, b:{}, d:{}, c:{} }), "utf8")
   .toString("base64").replace(/\\+/g, "-").replace(/\\//g, "_").replace(/=+$/, "");
 const parsed = S.decode(old);
 console.log(JSON.stringify({ migrated:parsed.migrated, injuries:parsed.scenario.player_injuries }));
-"""
-    out = subprocess.run(["node", "-e", script, src], capture_output=True, text=True, timeout=60)
-    assert out.returncode == 0, out.stderr[-600:]
-    result = json.loads(out.stdout.strip().splitlines()[-1])
+""")
     assert result["injuries"] == {"haaland": 4}, result
     assert result["migrated"] is True, "an unversioned token should be flagged as migrated"
+
+
+def test_a_share_link_survives_the_validator_in_both_wire_shapes():
+    """The reader has to understand what the writer emits, or Share produces links that will not open.
+
+    This is the regression for a bug that shipped: share.js wrote "v1-<base64>" while the reader in
+    ux.js accepted only a bare base64 body, so **every link the Share button produced failed to
+    open** with a toast blaming the link. The second half is the companion bug from the other side —
+    the validator that was added to stop injection initially understood only the {attack, defence}
+    object shape and silently emptied the compact [attack, defence] array a link actually carries.
+    """
+    result = _run_share_harness("""
+const token = S.encode({ team_boosts:{ ARS:{ attack:6, defence:-3 } }, player_injuries:{ haaland:6 } });
+// what ux.js's reader does to the token the Share button just put on the clipboard
+const body = token.replace(/^v\\d+-(.*)$/, "$1");
+const wired = native(`sanitizeScenario({ team_boosts:{ ARS:[6,-3] }, player_injuries:{ haaland:6 } })`);
+// the object shape has to keep working too, because the page stores scenarios in it
+const stored = native(`sanitizeScenario({ team_boosts:{ ARS:{ attack:6, defence:-3 } },
+                                         player_injuries:{ haaland:6 } })`);
+// and a crafted one is still dropped, in either shape
+const hostile = native(`sanitizeScenario({ team_boosts:{ ARS:["<img src=x onerror=alert(1)>",0] },
+                                           player_injuries:{ haaland:"<img src=x>" } })`);
+console.log(JSON.stringify({ prefixed:token.startsWith("v1-"), body_is_base64:!body.startsWith("v1-"),
+                             wired, stored, hostile }));
+""")
+    assert result["prefixed"], "the Share button's token lost its version prefix"
+    assert result["body_is_base64"], "the version prefix is not being stripped by the reader"
+    assert result["wired"] == result["stored"], (
+        "the compact [attack, defence] shape a link carries and the object shape the page stores must "
+        "sanitise to the same thing, or a shared scenario loads empty: %r vs %r"
+        % (result["wired"], result["stored"]))
+    assert result["wired"]["team_boosts"] == {"ARS": {"attack": 6, "defence": -3}}, result["wired"]
+    assert result["hostile"]["team_boosts"] == {}, (
+        "a markup payload in a boost survived validation: %r" % result["hostile"])
+    assert result["hostile"]["player_injuries"] == {}, (
+        "a markup payload in an injury survived validation: %r" % result["hostile"])
 
 
 def test_share_affordances_exist_on_both_features():

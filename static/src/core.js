@@ -235,6 +235,87 @@ function SCENARIO_ACTIVE(){
          Object.values(SCENARIO.points_deductions).some(v => v > 0) ||
          Object.keys(SCENARIO.custom_scores).length > 0;
 }
+/* ═══════════ scenario validation ═══════════ */
+/*
+ * There are three ways a scenario can arrive from outside this page: a `#s=` share link, an entry
+ * in local storage, and — in future — a sync. All three are attacker-controlled in the sense that
+ * matters: anyone can put anything in a URL, and the page hands it straight to a form that renders
+ * it.
+ *
+ * It used to hand it over untouched, and that was a cross-site scripting bug. A link of the form
+ *
+ *     /whatif#s=<base64 of {"b":{"ARS":["<img src=x onerror=...>",0]}}>
+ *
+ * put that string into the Form-swings slider's `value="…"` attribute, broke out of the quotes and
+ * ran script on this origin. Injuries, deductions and boost values were all reachable the same way.
+ *
+ * So a scenario is now normalised at the boundary: four maps of numbers, keyed only by ids the page
+ * already knows. Anything else is dropped, not escaped — a scenario has no reason to contain a
+ * string, so the correct response to one is to discard it rather than to render it carefully.
+ *
+ * The form additionally coerces every value it prints (see `scnNum` in render.js). That second layer
+ * is deliberate redundancy: this function is the fix, and the coercion is what keeps a future bug
+ * here from becoming a future XSS.
+ */
+function scnInt(v, lo, hi){
+  const n = Math.round(Number(v));
+  if(!isFinite(n)) return 0;              // Number("") is 0, Number({}) is NaN, Number("12x") is NaN
+  return Math.max(lo, Math.min(hi, n));
+}
+
+function sanitizeScenario(raw){
+  const src = (raw && typeof raw === "object") ? raw : {};
+  const out = { player_injuries:{}, team_boosts:{}, points_deductions:{}, custom_scores:{} };
+
+  const known = {};
+  TEAMS_IN.forEach(t => { known[t.code] = true; });
+  const players = {};
+  SCEN_PLAYERS().forEach(p => { players[p.player_id] = true; });
+
+  const inj = (src.player_injuries && typeof src.player_injuries === "object") ? src.player_injuries : {};
+  Object.keys(inj).forEach(k => {
+    if(!players[k]) return;                                   // not a player of this league
+    const games = scnInt(inj[k], 0, 33);                      // 33 matches remain in the season
+    if(games > 0) out.player_injuries[k] = games;
+  });
+
+  const boosts = (src.team_boosts && typeof src.team_boosts === "object") ? src.team_boosts : {};
+  Object.keys(boosts).forEach(k => {
+    if(!known[k]) return;
+    const raw = boosts[k];
+    // Two shapes are legitimate here, and getting this wrong is how the first version of this
+    // function silently threw away every valid share link: the compact wire format in a link is
+    // [attack, defence], while SCENARIO holds {attack, defence} once it is in the page.
+    let attack = 0, defence = 0;
+    if(Array.isArray(raw)){
+      attack = scnInt(raw[0], -25, 25); defence = scnInt(raw[1], -25, 25);
+    } else if(raw && typeof raw === "object"){
+      attack = scnInt(raw.attack, -25, 25); defence = scnInt(raw.defence, -25, 25);
+    } else if(typeof raw === "number" || typeof raw === "string"){
+      attack = scnInt(raw, -25, 25);            // a bare number means "attack only"
+    }
+    if(attack || defence) out.team_boosts[k] = { attack:attack, defence:defence };
+  });
+
+  const ded = (src.points_deductions && typeof src.points_deductions === "object") ? src.points_deductions : {};
+  Object.keys(ded).forEach(k => {
+    if(!known[k]) return;
+    const pts = scnInt(ded[k], 0, 30);
+    if(pts > 0) out.points_deductions[k] = pts;
+  });
+
+  const forced = (src.custom_scores && typeof src.custom_scores === "object") ? src.custom_scores : {};
+  Object.keys(forced).forEach(k => {
+    const m = /^([A-Z]{2,4})-([A-Z]{2,4})$/.exec(k);          // the key is a fixture, not free text
+    if(!m || !known[m[1]] || !known[m[2]]) return;
+    const pair = forced[k];
+    if(!Array.isArray(pair) || pair.length < 2) return;
+    out.custom_scores[k] = [scnInt(pair[0], 0, 9), scnInt(pair[1], 0, 9)];
+  });
+
+  return out;
+}
+
 function setCustomScore(h, a){
   const key = h + "-" + a;
   const hg = +$("cs_h_" + h + a)?.value, ag = +$("cs_a_" + h + a)?.value;

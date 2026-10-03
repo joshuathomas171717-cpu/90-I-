@@ -29,9 +29,16 @@ data/provider_drop/
 
 # ── Local scratch ────────────────────────────────────────────────────────────
 _design/
-*.zip
-*.png
 .DS_Store
+
+# Archives and screenshots dropped in the repository root while working. The leading slash matters:
+# a bare `*.png` matches at every depth, which quietly excluded static/og/*.png, static/icons/*.png
+# and static/apple-touch-icon.png — 65 files the site needs and the repository did not have. Every
+# Vercel deploy is built from git, so those would have 404'd in production: no favicon, no PWA icons,
+# no link previews on any page. The zip looked fine because it is made from the filesystem.
+# tests/test_static_deploy.py now checks that every asset the page references is tracked.
+/*.zip
+/*.png
 
 # ── Vercel ───────────────────────────────────────────────────────────────────
 # The CLI writes .vercel/ when you link a checkout to a project. vercel.json is deliberately NOT

@@ -69,12 +69,11 @@
       return {
         version: version,
         migrated: migrated,
-        scenario: {
-          player_injuries: c.i || {},
-          team_boosts: Object.fromEntries(Object.entries(c.b || {}).map(([k, v]) => [k, { attack:v[0], defence:v[1] }])),
-          points_deductions: c.d || {},
-          custom_scores: c.c || {},
-        },
+        // Same boundary as the #s= path in ux.js. Two decoders is one too many — but they exist, and
+        // both go through the same validator rather than each doing its own partial job.
+        scenario: sanitizeScenario({
+          player_injuries: c.i, team_boosts: c.b, points_deductions: c.d, custom_scores: c.c,
+        }),
       };
     },
 
