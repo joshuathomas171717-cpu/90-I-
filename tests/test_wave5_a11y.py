@@ -296,8 +296,17 @@ def test_the_model_card_states_the_numbers_the_model_actually_produced():
     """The card reads its own figures out of the payload, so it cannot drift from the model."""
     render = _read("render.js")
     for needle in ("function renderModelCard", "Analysis, not betting advice",
-                   "DATA.backtest", "m.accuracy.toFixed", "simmulated".replace("mm", "m")):
+                   "const BT = BACKTEST", "m.accuracy.toFixed", "simulated seasons"):
         assert needle in render, "the model card lost %r" % needle
+    # The card must read the payload object that actually exists. An earlier version read
+    # `DATA.backtest`, which is undefined — the backtest is its own top-level object — and the card
+    # rendered em dashes where the accuracy should have been while every assertion above passed.
+    # Check the code, not the prose: the comment above the fix names the bug it fixed, and a naive
+    # substring check flagged that comment as the bug returning.
+    code = "\n".join(line for line in render.splitlines()
+                     if not line.strip().startswith(("//", "*", "/*")))
+    assert "DATA.backtest" not in code, (
+        "the model card is reading DATA.backtest again; the payload exposes the backtest as BACKTEST")
     assert "renderModelCard();" in render, "the model card is defined but never rendered"
     assert 'id="modelCard"' in _read("app.html"), "the model card has nowhere to render into"
 

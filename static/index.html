@@ -3289,14 +3289,18 @@ function renderFreshness(){
 function renderModelCard(){
   const host = $("modelCard");
   if(!host) return;
-  const m = (DATA.backtest && DATA.backtest.model) || null;
-  const tl = (DATA.backtest && DATA.backtest.table_level) || null;
-  const base = (DATA.backtest && DATA.backtest.baselines && DATA.backtest.baselines["prior_season_table_favourite"]) || null;
-  const b = (DATA.backtest && DATA.backtest.baselines) || {};
+  // `BT` is the backtest payload, defined at the top of this file as `const BT = BACKTEST`. The first
+  // version of this function read `DATA.backtest`, which does not exist — the payload carries the
+  // backtest as its own top-level object, not inside DATA — and the card rendered a set of em dashes
+  // where the accuracy should be. A test that asserted `"DATA.backtest" in source` passed anyway,
+  // because it was checking that the wrong code was present rather than that the right numbers were.
+  const m = (BT && BT.model) || null;
+  const tl = (BT && BT.table_level) || null;
+  const b = (BT && BT.baselines) || {};
   const homeBase = b["home_win_always (PL base rates)"] || null;
   const asOf = (DATA.meta && DATA.meta.as_of_date) || "unknown";
   const sims = (DATA.meta && DATA.meta.n_simulations) || 0;
-  const skill = (DATA.backtest && DATA.backtest.skill_vs_prior_table) || null;
+  const skill = (BT && BT.skill_vs_prior_table) || null;
 
   host.innerHTML = `
     <p class="body">NINETY+ <b>is a statistical model, not a tipster</b>. It knows the results so far,
