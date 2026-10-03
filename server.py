@@ -704,6 +704,9 @@ class PLRequestHandler(BaseHTTPRequestHandler):
         ".xml": "application/xml; charset=utf-8", ".txt": "text/plain; charset=utf-8",
         ".svg": "image/svg+xml", ".png": "image/png", ".ico": "image/x-icon",
         ".woff2": "font/woff2", ".webmanifest": "application/manifest+json",
+        # P8.3: the calendar feeds. "text/calendar" is the registered type; a browser offered this
+        # download will hand it to whatever calendar app is registered for .ics.
+        ".ics": "text/calendar; charset=utf-8",
     }
 
     def _static_file(self, path):
@@ -733,6 +736,14 @@ class PLRequestHandler(BaseHTTPRequestHandler):
         full, ctype = hit
         with open(full, "rb") as fh:
             blob = fh.read()
+        if path.endswith(".ics"):
+            # Calendar clients (and iOS/macOS in particular) can police how often a subscription is
+            # refetched, so this one is not given a five-minute browser cache — a subscriber should
+            # get the build they just asked for.
+            return self._send(code, blob, ctype,
+                              {"Cache-Control": "public, max-age=60, must-revalidate",
+                               "X-Engine": HOST_STATE.status()["engine"]},
+                              head_only=head_only)
         # These are rebuilt whenever the model is, so they are cacheable but must revalidate cheaply.
         return self._send(code, blob, ctype,
                           {"Cache-Control": "public, max-age=300", "X-Engine": HOST_STATE.status()["engine"]},
@@ -840,8 +851,9 @@ class PLRequestHandler(BaseHTTPRequestHandler):
         # the console of a page that otherwise works. It was missing until a clean-room extraction
         # probed the links the generated pages actually advertise (tests/test_wave4_site.py).
         if (path in ("/table.html", "/model.html", "/404.html", "/sitemap.xml", "/apple-touch-icon.png",
-                     "/icon.svg", "/manifest.webmanifest", "/method.html", "/privacy.html")
-                or path.startswith(("/club/", "/gameweek/", "/icons/", "/og/"))):
+                     "/icon.svg", "/manifest.webmanifest", "/method.html", "/privacy.html",
+                     "/calendar.html")
+                or path.startswith(("/club/", "/gameweek/", "/icons/", "/og/", "/calendar/"))):
             hit = self._static_file(path)
             if hit is not None:
                 self._route = "static"

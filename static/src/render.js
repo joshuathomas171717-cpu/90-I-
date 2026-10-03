@@ -229,6 +229,8 @@ function renderGW(){
     el.onkeydown = (ev) => { if(ev.key === "Enter" || ev.key === " "){ ev.preventDefault(); open(); } };
   });
   if(fx.length) $("gwLegend").textContent = `${fx.length} fixtures · MW${NEXT_GW}`;
+  // The grid was just rewritten, so the marks and the filter have to be reapplied to the new cards.
+  renderFollowState();
 }
 
 /* ═══════════ RACE + PULSE ═══════════ */
@@ -374,6 +376,7 @@ function renderTable(){
       <td>
         <div class="row" style="gap:9px; flex-wrap:nowrap">
           ${crest(r.code, 20)}
+          ${starButton(r.code, r.short)}
           <div style="min-width:0">
             <div class="disp" style="font-size:14px; white-space:nowrap">${esc(r.short)}${deltaTag(r.current_pos, pos)}</div>
             <div class="dim" style="font-size:10.5px; white-space:nowrap">${esc(r.manager)}</div>
@@ -400,6 +403,8 @@ function renderTable(){
   s1.onclick = () => { TBL_SORT = "pts"; renderTable(); paint(); animate($("tab-table")); };
   s2.onclick = () => { TBL_SORT = "rib"; renderTable(); paint(); animate($("tab-table")); };
   paint();
+  wireStars($("fullTable"));
+  renderFollowState();
 }
 function ribbon(dist){
   const N = dist.length || 20;
@@ -1250,6 +1255,207 @@ function renderFreshness(){
     : ". The pipeline refreshes after the last match of each gameweek."}`;
 }
 
+/* ═══════════ FOLLOW YOUR CLUBS, AND WHAT YOU SAVED (P8.1, P8.2) ═══════════
+   All of this is local: the store keeps a small blob in this browser and sends nothing anywhere.
+   The rule the whole feature follows is that a reader who has never starred anything must not notice
+   it exists — no empty panels, no "0 clubs followed" chrome, no filter that hides the fixtures they
+   came to see. */
+
+const STORE = (typeof window !== "undefined" && window.NT90_STORE) || null;
+let MINE_ONLY = false;
+
+function followedClubs(){
+  return STORE ? STORE.favourites() : [];
+}
+
+function starButton(code, label){
+  const on = followedClubs().indexOf(code) !== -1;
+  return `<button class="star${on ? " on" : ""}" data-follow="${code}"
+      aria-pressed="${on ? "true" : "false"}"
+      aria-label="${on ? "Stop following" : "Follow"} ${esc(label)}"
+      title="${on ? "Stop following" : "Follow"} ${esc(label)}"><span aria-hidden="true">${on ? "★" : "☆"}</span></button>`;
+}
+
+function wireStars(root){
+  (root || document).querySelectorAll("[data-follow]").forEach(btn => {
+    btn.onclick = (e) => {
+      e.stopPropagation();               // the star sits inside a row that is itself clickable
+      e.preventDefault();
+      if(!STORE) return;
+      STORE.toggleFavourite(btn.dataset.follow);
+      const now = STORE.follows(btn.dataset.follow);
+      renderFollowState();
+      toast(`${TEAM_LABEL[btn.dataset.follow] || btn.dataset.follow} ${now ? "followed" : "unfollowed"}` +
+            (now ? " — their fixtures are marked on the Matchweek view." : "."));
+    };
+  });
+}
+
+/* Everything that depends on who the reader follows, in one place: the stars, the gameweek marks,
+   the filter button and the personalised note. Called on every change rather than patched piecemeal,
+   so the four can never disagree about what is followed. */
+function renderFollowState(){
+  const mine = followedClubs();
+  document.querySelectorAll("[data-follow]").forEach(btn => {
+    const on = mine.indexOf(btn.dataset.follow) !== -1;
+    const label = TEAM_LABEL[btn.dataset.follow] || btn.dataset.follow;
+    btn.classList.toggle("on", on);
+    btn.setAttribute("aria-pressed", on ? "true" : "false");
+    btn.setAttribute("aria-label", (on ? "Stop following " : "Follow ") + label);
+    btn.title = (on ? "Stop following " : "Follow ") + label;
+    const glyph = btn.querySelector("span");
+    if(glyph) glyph.textContent = on ? "★" : "☆";
+  });
+
+  const toggle = $("myClubsToggle");
+  if(toggle){
+    toggle.hidden = mine.length === 0 && !MINE_ONLY;
+    toggle.classList.toggle("on", MINE_ONLY);
+    toggle.setAttribute("aria-pressed", MINE_ONLY ? "true" : "false");
+    toggle.innerHTML = (MINE_ONLY ? "★ My clubs only" : "☆ My clubs") +
+      ` <span class="k" aria-hidden="true">${mine.length}</span>`;
+    toggle.title = mine.length
+      ? (MINE_ONLY ? "Show every fixture again" : `Show only the ${mine.length} club${mine.length === 1 ? "" : "s"} you follow`)
+      : "Star clubs on the Table view to filter this gameweek";
+  }
+
+  // The fixture cards: mark the ones involving a followed club, and hide the rest when filtering.
+  const grid = $("gwGrid");
+  if(grid){
+    let shown = 0;
+    grid.querySelectorAll(".fx").forEach(card => {
+      const involves = mine.indexOf(card.dataset.home) !== -1 || mine.indexOf(card.dataset.away) !== -1;
+      card.classList.toggle("mine", involves);
+      const hide = MINE_ONLY && !involves;
+      card.hidden = hide;
+      if(!hide) shown++;
+    });
+    const note = $("gwMineNote");
+    if(note){
+      if(mine.length === 0){
+        note.hidden = true;
+      } else {
+        note.hidden = false;
+        const total = (DATA.gw6_predictions || []).length;
+        note.innerHTML = MINE_ONLY
+          ? `Showing <b>${shown}</b> of ${total} fixtures — the ${mine.length} club${mine.length === 1 ? "" : "s"} you follow.
+             <button class="linkbtn" id="mineShowAll">Show all</button>`
+          : `${mine.map(c => esc(TEAM_LABEL[c] || c)).join(", ")} — followed, so their fixtures are marked.
+             <button class="linkbtn" id="mineOnlyBtn">Show only mine</button>`;
+        const off = $("mineShowAll"), on = $("mineOnlyBtn");
+        if(off) off.onclick = () => { MINE_ONLY = false; renderFollowState(); };
+        if(on) on.onclick = () => { MINE_ONLY = true; renderFollowState(); };
+      }
+    }
+  }
+
+  // The standings carry a "followed" tint, so the table answers "where are my clubs" at a glance.
+  document.querySelectorAll("#fullTable tr[data-code]").forEach(tr => {
+    tr.classList.toggle("mine", mine.indexOf(tr.dataset.code) !== -1);
+  });
+}
+
+/* ── saved scenarios (P8.2) ──────────────────────────────────────────────────────────────────── */
+function scenarioSummary(sc){
+  const s = sc || {};
+  const parts = [];
+  const inj = Object.values(s.player_injuries || {}).filter(v => v > 0).length;
+  const form = Object.values(s.team_boosts || {}).filter(b => b && (b.attack || b.defence)).length;
+  const ded = Object.values(s.points_deductions || {}).filter(v => v > 0).length;
+  const forced = Object.keys(s.custom_scores || {}).length;
+  if(inj) parts.push(`${inj} injured`);
+  if(form) parts.push(`${form} form change${form === 1 ? "" : "s"}`);
+  if(ded) parts.push(`${ded} deduction${ded === 1 ? "" : "s"}`);
+  if(forced) parts.push(`${forced} forced result${forced === 1 ? "" : "s"}`);
+  return parts.length ? parts.join(" · ") : "empty scenario";
+}
+
+function shortWhen(iso){
+  const d = new Date(iso);
+  if(isNaN(d.getTime())) return "earlier";
+  const days = Math.floor((Date.now() - d.getTime()) / 86400000);
+  if(days <= 0) return "today";
+  if(days === 1) return "yesterday";
+  if(days < 30) return `${days} days ago`;
+  return d.toISOString().slice(0, 10);
+}
+
+function renderSavedScenarios(){
+  const host = $("savedList");
+  if(!host || !STORE) return;
+  const list = STORE.scenarios();
+  const state = $("storeState");
+  if(state){
+    // Say plainly when nothing is being kept: a reader who saves something and finds it gone later
+    // deserves to have been told at the time.
+    state.textContent = STORE.degraded() ? "not saved on this device" : "saved in this browser";
+    state.className = "chip lean" + (STORE.degraded() ? " warn" : "");
+    state.title = STORE.degraded()
+      ? "This browser is not letting the page store data (private mode, a full quota, or a sandboxed preview), so saves last until you close the tab."
+      : "Stored in this browser's local storage. Nothing is sent to a server.";
+  }
+  if(!list.length){
+    host.innerHTML = `<div class="note">Nothing saved yet. Build a scenario above, name it, and hit
+      <b>Save current</b> — it will be waiting here next time you open this page.</div>`;
+    return;
+  }
+  host.innerHTML = list.map((e, i) => `
+    <div class="saverow rv" style="--d:${Math.min(i * 40, 240)}ms">
+      <div class="grow">
+        <div class="disp" style="font-size:13.5px">${esc(e.name)}</div>
+        <div class="dim" style="font-size:10.5px">${esc(scenarioSummary(e.scenario))} · saved ${esc(shortWhen(e.saved))}</div>
+      </div>
+      <button class="btn sm" data-load="${e.id}">Load</button>
+      <button class="btn sm" data-del="${e.id}" aria-label="Delete ${esc(e.name)}">Delete</button>
+    </div>`).join("");
+  host.querySelectorAll("[data-load]").forEach(btn => {
+    btn.onclick = () => {
+      const entry = STORE.scenarios().filter(x => x.id === btn.dataset.load)[0];
+      if(!entry) return;
+      SCENARIO = JSON.parse(JSON.stringify(entry.scenario));
+      ["player_injuries", "team_boosts", "points_deductions", "custom_scores"].forEach(k => {
+        if(!SCENARIO[k]) SCENARIO[k] = {};
+      });
+      renderScenarioForm();
+      toast(`Loaded "${entry.name}" — running it now.`);
+      runSim();
+    };
+  });
+  host.querySelectorAll("[data-del]").forEach(btn => {
+    btn.onclick = () => {
+      STORE.deleteScenario(btn.dataset.del);
+      renderSavedScenarios();
+      toast("Scenario deleted.");
+    };
+  });
+}
+
+function wireSavedScenarios(){
+  const save = $("saveScen");
+  if(save && STORE){
+    save.onclick = () => {
+      if(!SCENARIO_ACTIVE()){ toast("Nothing to save yet — change an injury, a form slider or a result first."); return; }
+      const nameField = $("scenName");
+      const entry = STORE.saveScenario(nameField.value, SCENARIO);
+      nameField.value = "";
+      renderSavedScenarios();
+      toast(STORE.degraded()
+        ? `"${entry.name}" saved for this session — this browser is not storing data.`
+        : `Saved "${entry.name}".`);
+    };
+  }
+  const forget = $("forgetAll");
+  if(forget) forget.onclick = () => {
+    if(STORE) STORE.clear();
+    MINE_ONLY = false;
+    renderSavedScenarios();
+    renderFollowState();
+    toast("Cleared everything saved on this device — followed clubs and scenarios.");
+  };
+  const toggle = $("myClubsToggle");
+  if(toggle) toggle.onclick = () => { MINE_ONLY = !MINE_ONLY; renderFollowState(); };
+}
+
 /* ═══════════ THE MODEL CARD (P9.1) ═══════════ */
 function renderModelCard(){
   const host = $("modelCard");
@@ -1318,7 +1524,9 @@ function init(){
   $("runSim").onclick = runSim;
   $("resetScen").onclick = resetScenario;
   wireControlNames();
+  wireSavedScenarios();
   renderAll();
+  renderSavedScenarios();
   if(typeof UX !== "undefined") UX.init();
   detectEngine().then(() => { if(ENGINE_MODE === "server"){ predictFixture(); useServerPayload(); } });
 }

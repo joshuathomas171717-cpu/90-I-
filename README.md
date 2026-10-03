@@ -65,6 +65,9 @@ deploy, and as generated HTML on a static host:
 | `/club/arsenal` | the app, opened on the table with Arsenal's row highlighted |
 | `/gameweek/mw6.html` | **generated page** — every fixture, probability and pick as text |
 | `/club/arsenal.html`, `/table.html`, `/model.html` | generated pages |
+| `/calendar.html` | **generated page** — subscribe to the fixtures as an iCal feed |
+| `/calendar/league.ics` | the whole league, one all-day event per matchweek window |
+| `/calendar/ars.ics` | one club's remaining fixtures (also `.ics` for all 20 clubs) |
 | `/sitemap.xml`, `/robots.txt`, `/og/*.png`, `/icons/*` | discovery and identity |
 
 Build the whole site with `python3 site_pages.py` (it runs as part of `run_all.py`). Set
@@ -222,6 +225,24 @@ That is the point of showing it: this is a **pre-season, cold-start** replay, wh
 
 ---
 
+## What the dashboard remembers (Wave 6)
+
+Three things are kept **in this browser** — the clubs you star, the What-If scenarios you save, and
+the view you were last looking at. All of it lives under one namespaced local-storage key
+(`nt90:state`) with a schema version and an ordered migration table, so a future release reads what
+an older one wrote instead of corrupting it. There is no account, no email, no cookie and no
+server-side memory of who you are; `static/src/store.js` is about 200 lines and is the whole of it.
+
+Two failure paths get explicit treatment, because both are normal rather than exotic:
+
+* **Storage that throws** — private windows, a full quota, and sandboxed preview iframes (including
+  the one this project is previewed in). The store falls back to memory and the UI says the data will
+  not be kept, rather than dying on load.
+* **A blob from a newer release than the build reading it** — read-only. Writes still apply for the
+  session but never touch the stored blob, so an older tab cannot destroy fields it has never heard of.
+
+The calendar feeds (`/calendar/`) need none of that: a subscription URL is the whole of the state.
+
 ## The interface — six views
 
 - **Matchweek** — a decisive hero ("Title race down to 1.2 points"), the headline awards, then every MW6 fixture as a card: club-coloured crests and rim glow, a three-way probability bar that fills on reveal, a certainty chip (*banker* / *edge* / *lean* / *toss-up*) so you can read the shape of a gameweek without reading a number, most likely scoreline and xG. A **Model pulse** panel shows the out-of-sample record as a tick strip where every correct call lights up. Clicking any card opens it in the Duel.
@@ -245,6 +266,8 @@ ninety-plus-pl-predictor/
 ├── build_dashboard.py         # compiles payload + static/src/* into the single-file dashboard
 ├── check_page_current.py      # gate: is the published page the page the committed data describes?
 ├── site_pages.py              # real HTML, sitemap, robots, 404 and every preview card (Wave 4)
+├── feeds.py                   # iCal feeds: one per club + the league (named feeds.py, not
+│                              #   calendar.py — see the note at the top of the file)
 ├── og_image.py                # 1200x630 PNG cards with no browser and no Pillow — stdlib only
 ├── server.py                  # threaded HTTP server: JSON API, /healthz + /readyz, background warm-up
 ├── Dockerfile                 # two-stage image, non-root, pre-warms the model cache at build time

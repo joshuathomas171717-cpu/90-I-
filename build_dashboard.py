@@ -115,8 +115,8 @@ payload = json_safe({
 })
 
 parts = {p: open(os.path.join(SRC, p), encoding="utf-8").read()
-         for p in ("fonts.css", "theme.css", "app.html", "core.js", "motion.js", "ux.js", "render.js",
-                   "share.js", "router.js")}
+         for p in ("fonts.css", "theme.css", "app.html", "core.js", "motion.js", "ux.js", "store.js",
+                   "render.js", "share.js", "router.js")}
 
 # ── identity, previews and structured data for the app page itself (P5.1, P5.2) ────────────────
 # Everything here is relative on purpose: the same file has to work from GitHub Pages under /90-I-/,
@@ -193,6 +193,7 @@ html = f"""<!DOCTYPE html>
 {parts['app.html']}
 <script>
 const EMBEDDED = {json.dumps(payload, separators=(",", ":"), allow_nan=False)};
+{parts['store.js']}
 {parts['core.js']}
 {parts['motion.js']}
 {parts['ux.js']}

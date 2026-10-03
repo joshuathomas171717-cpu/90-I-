@@ -66,6 +66,12 @@ jobs:
       # The crawlable pages, preview cards, icons and sitemap are generated from the same data. They
       # are committed, but rebuilding them here means the deployed site can never be a mixture of a
       # fresh dashboard and week-old club pages.
+      # The calendar feeds are generated from the same projections, and calendar.html links to every
+      # one of them. Building the page without the feeds would publish twenty-one subscribe links that
+      # 404 — which is why this step exists in this workflow and not only in run_all.py.
+      - name: Rebuild the calendar feeds
+        run: python3 feeds.py
+
       - name: Rebuild the crawlable pages and previews
         run: python3 site_pages.py
 

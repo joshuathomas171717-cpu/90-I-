@@ -27,6 +27,7 @@ STEPS = [
     # makes the checks mean something: nothing downstream of a test can be published unverified,
     # because run_all exits non-zero and CI goes red on the first failure either way.
     ("build_dashboard.py", "rebuilding static/index.html"),
+    ("feeds.py", "writing the calendar feeds (league + one per club)"),
     ("site_pages.py", "writing crawlable pages, icons, previews and the sitemap"),
     ("tests/run_tests.py", "verifying invariants, golden snapshots, the generated site and portability"),
     # Last, because it can only be answered once the page has been rebuilt: does the page carry the

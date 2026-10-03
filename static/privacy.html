@@ -86,9 +86,17 @@ ul.plain{padding-left:18px}ul.plain li{margin:4px 0}
 accounts and no sign-in, and does not try to identify you.</p>
 
 <h2>What is stored on your device</h2>
-<p>Nothing persistent. The dashboard runs entirely in the page you loaded — the data is embedded in the
-HTML, and the model's offline engine runs in your browser. Your What-If settings live in the URL you
-share, not in a cookie or local storage. Reload the page and it starts fresh.</p>
+<p>The dashboard runs entirely in the page you loaded — the data is embedded in the HTML and the
+model's offline engine runs in your browser. Nothing about you is sent anywhere to make it work.</p>
+<p>Three things you do are remembered <b>in this browser</b>, using local storage, so that the page
+is still yours when you come back: the clubs you follow, the What-If scenarios you save, and the view
+you were last looking at. That is all of it — no cookie is set, nothing is sent to the server, and
+there is no identifier that follows you between sites. Your What-If settings also live in the URL you
+share if you use the share button, which is a link rather than storage.</p>
+<p>You can clear all three with <b>Forget everything</b> in the What-If panel, or erase them the
+usual way by clearing site data. If your browser blocks local storage — private windows and some
+embedded frames do — the dashboard says so and keeps your session in memory instead: everything still
+works, but it will not survive a reload.</p>
 
 <h2>What the server sees</h2>
 <p>Any web server sees the requests made to it: the page you asked for, roughly when, and the IP address

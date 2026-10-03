@@ -355,6 +355,109 @@ tells you the odds are against you — because they are.</p>
                         "about": "Premier League forecasting methodology"})
 
 
+def _calendar_page(summary):
+    """P8.3: the page that makes the feeds findable.
+
+    A calendar feed nobody can discover is not a feature. This lists every subscription with a
+    subscribe link, the raw URL to paste into a calendar app by hand, and — the part that matters —
+    an honest note that the Premier League's own kick-off times are not in this dataset, so the feed
+    puts one all-day entry against each matchweek window instead of inventing ten Saturday 15:00s.
+    """
+    import feeds as _feeds
+
+    teams = {t["code"]: t for t in summary["table_projections"]}
+    fixtures = _feeds.load_fixtures()
+    league = _feeds.build(summary, fixtures)
+    events = league.count("BEGIN:VEVENT")
+    codes = sorted({f["home"] for f in fixtures} | {f["away"] for f in fixtures},
+                   key=lambda c: teams.get(c, {}).get("name", c))
+
+    def sub_row(code):
+        team = teams.get(code, {})
+        name = team.get("name", code)
+        short = team.get("short", name)
+        color = team.get("primary_color", "#2dd4bf")
+        slug = _feeds.club_slug(code)
+        n = _feeds.build(summary, fixtures, club=code).count("BEGIN:VEVENT")
+        return """
+<a class="cal" href="/calendar/%s.ics" style="--c:%s">
+  <span class="dot" style="background:%s"></span>
+  <span class="nm">%s</span>
+  <span class="ct">%d matchweeks</span>
+  <span class="go">subscribe →</span>
+</a>""" % (slug, color, color, _esc(name), n)
+
+    # NB: this body is %-formatted at the end, so a literal percent sign has to be written %% —
+    # `border-radius:50%` in the CSS below is what raised "unsupported format character ';'".
+    body = """
+<style>
+  .cal{display:flex;align-items:center;gap:11px;padding:11px 13px;border:1px solid #202a3d;
+       border-radius:12px;background:#111726;color:inherit;transition:border-color .15s,transform .15s}
+  .cal:hover{text-decoration:none;border-color:var(--c,#2dd4bf);transform:translateY(-1px)}
+  .cal .dot{width:9px;height:9px;border-radius:999px;flex:0 0 auto}
+  .cal .nm{font-weight:600}
+  .cal .ct{color:#8b98b3;font-size:12.5px;margin-left:auto;white-space:nowrap}
+  .cal .go{color:#6ee7ff;font-size:12.5px;white-space:nowrap}
+  .cal .dot,.cal .go{flex:0 0 auto}
+  a.big{display:block;padding:18px;background:linear-gradient(135deg,#122033,#0e1626);
+        border:1px solid #24405c;border-radius:16px;color:inherit;margin:20px 0 26px}
+  a.big:hover{text-decoration:none;border-color:#3d6f96;transform:translateY(-1px)}
+  a.big .t{display:block;font-size:19px;font-weight:700}
+  a.big .s{display:block;color:#9fb0cc;font-size:13.5px;margin-top:3px}
+  a.big .go{display:inline-block;margin-top:11px;color:#6ee7ff;font-weight:600}
+  .note{border-left:3px solid #fbbf24;background:#1b1607;padding:13px 15px;border-radius:0 10px 10px 0;
+        font-size:14px;color:#e8dfc6;margin:18px 0}
+  h2{margin:30px 0 12px;font-size:18px}
+  pre{background:#0e1421;border:1px solid #202a3d;border-radius:10px;padding:11px 13px;overflow-x:auto;
+      font-size:13px;color:#c7d3e8}
+</style>
+<h1 style="margin:0 0 6px">Fixtures in your calendar</h1>
+<p class="lede">Subscribe once and every remaining matchweek appears in whatever calendar app you
+already use — with the model's probabilities written into each entry. No account, no email, no
+tracking; the URL below is the whole subscription.</p>
+
+<div class="note">
+  <b>Read this before you subscribe.</b> The Premier League publishes each matchweek as a window
+  — “10–12 October 2026” — and confirms exact kick-off times only when television picks its slots.
+  This project has the windows, not the slots, so each entry is an <b>all-day event covering the
+  window</b> rather than a guess at the exact time. A calendar that confidently says Saturday 15:00
+  for ten fixtures would be wrong for the two or three that move to Sunday. Entries are updated in
+  place — each one has a stable identity — so re-subscribing refines them instead of duplicating them.
+</div>
+
+<a class="big" href="/calendar/league.ics">
+  <span class="t">The whole league</span>
+  <span class="s">%d matchweeks · every remaining fixture, %d still to play</span>
+  <span class="go">Subscribe →</span>
+</a>
+
+<h2>Or follow one club</h2>
+<div class="grid">%s</div>
+
+<h2>Adding it by hand</h2>
+<p class="small muted">Google Calendar, Outlook, Fantastical and Apple Calendar all accept a
+subscription URL rather than a downloaded file. Paste this one:</p>
+<pre>%s</pre>
+<p class="small muted">The path is what a calendar app refetches when it refreshes. How often that
+happens is up to your app rather than us — Apple Calendar is typically daily, and Google can be a
+day slower.</p>
+
+<h2>What is in each entry</h2>
+<p class="small muted">The fixtures in that matchweek with the model's home/draw/away probabilities
+and its single most likely scoreline — for one club only, in a club feed — plus a link back to the
+matchweek page. Entries are marked <b>free</b> rather than busy, so subscribing will not block
+anything in your calendar.</p>
+""" % (events, len(fixtures), "".join(sub_row(c) for c in codes),
+       (SITE_URL + "/calendar/league.ics") if SITE_URL else
+       "/calendar/league.ics  (relative — no NT90_SITE_URL at build time, so prepend your own origin)")
+
+    return page("Premier League 2026–27 fixtures in your calendar — NINETY+",
+                "Subscribe to the remaining 2026–27 Premier League fixtures as a calendar feed — the "
+                "whole league or a single club, with the model's probabilities in every entry.",
+                body, jsonld={"@type": "WebPage", "name": "Calendar feeds",
+                              "about": "Premier League fixture calendar subscriptions"})
+
+
 def _privacy_page():
     """The privacy note (P9.3). Written to be true of the software as it stands: no accounts, no
     cookies, no third-party scripts. If analytics are ever added, this page has to change in the same
@@ -367,9 +470,17 @@ def _privacy_page():
 accounts and no sign-in, and does not try to identify you.</p>
 
 <h2>What is stored on your device</h2>
-<p>Nothing persistent. The dashboard runs entirely in the page you loaded — the data is embedded in the
-HTML, and the model's offline engine runs in your browser. Your What-If settings live in the URL you
-share, not in a cookie or local storage. Reload the page and it starts fresh.</p>
+<p>The dashboard runs entirely in the page you loaded — the data is embedded in the HTML and the
+model's offline engine runs in your browser. Nothing about you is sent anywhere to make it work.</p>
+<p>Three things you do are remembered <b>in this browser</b>, using local storage, so that the page
+is still yours when you come back: the clubs you follow, the What-If scenarios you save, and the view
+you were last looking at. That is all of it — no cookie is set, nothing is sent to the server, and
+there is no identifier that follows you between sites. Your What-If settings also live in the URL you
+share if you use the share button, which is a link rather than storage.</p>
+<p>You can clear all three with <b>Forget everything</b> in the What-If panel, or erase them the
+usual way by clearing site data. If your browser blocks local storage — private windows and some
+embedded frames do — the dashboard says so and keeps your session in memory instead: everything still
+works, but it will not survive a reload.</p>
 
 <h2>What the server sees</h2>
 <p>Any web server sees the requests made to it: the page you asked for, roughly when, and the IP address
@@ -635,6 +746,7 @@ def build(summary=None):
             _backtest = json.load(fh)
     w("method.html", _method_page(summary, _backtest))
     w("privacy.html", _privacy_page())
+    w("calendar.html", _calendar_page(summary))
 
     w("table.html", page("Projected Premier League table 2026–27 — NINETY+",
                          "The full projected final table: points, title probability and relegation "
@@ -708,7 +820,7 @@ data from the official fixture list and football-data.org.</p>
 
     # ── discovery: sitemap and robots ────────────────────────────────────────────────────────────
     urls = [("index.html", "1.0"), ("table.html", "0.9"), ("model.html", "0.6"),
-            ("method.html", "0.8"), ("privacy.html", "0.2")]
+            ("method.html", "0.8"), ("calendar.html", "0.7"), ("privacy.html", "0.2")]
     urls += [(p, "0.7") for _gw, _d, p in gw_pages]
     urls += [(p, "0.6") for _t, p in club_pages]
     lastmod = _lastmod(meta.get("as_of_date", ""))
