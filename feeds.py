@@ -78,26 +78,51 @@ def _fold(line, limit=75):
 
 
 def parse_window(text):
-    """'10-12 October 2026' -> (date(2026,10,10), date(2026,10,13)) — the end is exclusive, as iCal
-    all-day events require. Handles '24-25 October 2026' and a window that crosses a month."""
+    """A published matchweek window -> (start, end), where the end is exclusive as iCal requires.
+
+    Three shapes appear in the 2026-27 calendar and all three have to work:
+
+        '10-12 October 2026'            -> 10 Oct  .. 13 Oct
+        '24-25 October 2026'            -> 24 Oct  .. 26 Oct
+        '31 October - 2 November 2026'  -> 31 Oct  .. 3 Nov      (month boundary)
+
+    That last one was missing for a while, and it cost a whole matchweek: matchweek 9 simply did not
+    appear in the feed, because the parser returned None for it and the caller skipped the window.
+    A test asserted "32 events" with a comment doing the arithmetic as 38-6, which is 33 — so the test
+    had the bug written into it, which is the same failure as asserting a wrong string is present.
+    Now the count is derived from the calendar, not from a number typed into the test.
+    """
     text = str(text or "").strip()
-    m = re.match(r"^(\d{1,2})(?:\s*[-–]\s*(\d{1,2}))?\s+([A-Za-z]+)\s+(\d{4})$", text)
-    if not m:
-        return None, None
-    start_day, end_day, month_name, year = m.groups()
-    month = MONTHS.get(month_name.capitalize())
-    if not month:
-        return None, None
-    start = datetime.date(int(year), month, int(start_day))
-    if end_day:
-        end = datetime.date(int(year), month, int(end_day))
-    else:
-        end = start
-    if end < start:                      # a window that runs into the next month
-        month = month % 12 + 1
-        year = int(year) + (1 if month == 1 else 0)
-        end = datetime.date(year, month, int(end_day))
-    return start, end + datetime.timedelta(days=1)
+
+    def month_of(name):
+        return MONTHS.get(name.capitalize())
+
+    # ── one month: '10-12 October 2026' / '24-25 October 2026' / '1 May 2027'
+    m = re.fullmatch(r"(\d{1,2})\s*(?:[-\u2013]\s*(\d{1,2}))?\s+([A-Za-z]+)\s+(\d{4})", text)
+    if m:
+        start_day, end_day, month_name, year = m.groups()
+        month = month_of(month_name)
+        if not month:
+            return None, None
+        start = datetime.date(int(year), month, int(start_day))
+        end = datetime.date(int(year), month, int(end_day)) if end_day else start
+        return start, end + datetime.timedelta(days=1)
+
+    # ── across a month boundary: '31 October - 2 November 2026'
+    m = re.fullmatch(r"(\d{1,2})\s+([A-Za-z]+)\s*[-\u2013]\s*(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})", text)
+    if m:
+        start_day, start_month, end_day, end_month, year = m.groups()
+        sm, em = month_of(start_month), month_of(end_month)
+        if not sm or not em:
+            return None, None
+        year = int(year)
+        # The year printed is the one the window ends in, so a window that wraps past New Year
+        # (not this season, but the next one any day now) starts in the previous December.
+        start = datetime.date(year - 1 if sm > em else year, sm, int(start_day))
+        end = datetime.date(year, em, int(end_day))
+        return start, end + datetime.timedelta(days=1)
+
+    return None, None
 
 
 def club_labels(summary):

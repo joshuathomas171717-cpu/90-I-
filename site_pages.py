@@ -391,14 +391,16 @@ def _calendar_page(summary):
     # `border-radius:50%` in the CSS below is what raised "unsupported format character ';'".
     body = """
 <style>
-  .cal{display:flex;align-items:center;gap:11px;padding:11px 13px;border:1px solid #202a3d;
-       border-radius:12px;background:#111726;color:inherit;transition:border-color .15s,transform .15s}
+  /* Two rows per card — the club on top, the size underneath — because a single row does not fit a
+     grid column: it clipped both the matchweek count and the subscribe link on the live page. */
+  .cal{display:grid;grid-template-columns:auto minmax(0,1fr);gap:1px 10px;align-items:center;
+       padding:11px 13px;border:1px solid #202a3d;border-radius:12px;background:#111726;
+       color:inherit;transition:border-color .15s,transform .15s}
   .cal:hover{text-decoration:none;border-color:var(--c,#2dd4bf);transform:translateY(-1px)}
-  .cal .dot{width:9px;height:9px;border-radius:999px;flex:0 0 auto}
-  .cal .nm{font-weight:600}
-  .cal .ct{color:#8b98b3;font-size:12.5px;margin-left:auto;white-space:nowrap}
-  .cal .go{color:#6ee7ff;font-size:12.5px;white-space:nowrap}
-  .cal .dot,.cal .go{flex:0 0 auto}
+  .cal .dot{grid-row:1/span 2;width:9px;height:9px;border-radius:999px}
+  .cal .nm{font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .cal .ct{grid-column:2;color:#8b98b3;font-size:12px}
+  .cal .go{grid-column:2;color:#6ee7ff;font-size:12.5px;white-space:nowrap}
   a.big{display:block;padding:18px;background:linear-gradient(135deg,#122033,#0e1626);
         border:1px solid #24405c;border-radius:16px;color:inherit;margin:20px 0 26px}
   a.big:hover{text-decoration:none;border-color:#3d6f96;transform:translateY(-1px)}

@@ -239,13 +239,20 @@ def validate_official_fixtures():
             cal_pairs[(h, a)] = mw
 
     missing = remaining_pairs - set(cal_pairs)
-    assert len(missing) == 10, f"expected exactly 10 pairings left for MW37, got {len(missing)}"
+    # This call has to be repeatable. It is not only used once: the derivation writes MW37 into the
+    # module-level FIXTURES_2026_27, so a second call in the same process — a test module calling it,
+    # or a script validating twice — used to find nothing missing and assert "expected exactly 10
+    # pairings left, got 0". Running the same check twice should be a no-op, not a failure.
+    if 37 in FIXTURES_2026_27:
+        mw37 = FIXTURES_2026_27[37][1]
+    else:
+        assert len(missing) == 10, f"expected exactly 10 pairings left for MW37, got {len(missing)}"
 
-    # Matchweek 37 = the 10 pairings left over, sorted by home club
-    mw37 = sorted(missing, key=lambda p: p[0])
-    clubs37 = [c for fx in mw37 for c in fx]
-    assert len(set(clubs37)) == 20, "MW37 derivation repeats a club"
-    FIXTURES_2026_27[37] = ("23 May 2027", mw37)
+        # Matchweek 37 = the 10 pairings left over, sorted by home club
+        mw37 = sorted(missing, key=lambda p: p[0])
+        clubs37 = [c for fx in mw37 for c in fx]
+        assert len(set(clubs37)) == 20, "MW37 derivation repeats a club"
+        FIXTURES_2026_27[37] = ("23 May 2027", mw37)
 
     covered = played_pairs | set(cal_pairs) | set(mw37)
     assert covered == full_schedule and len(covered) == 380, "calendar does not cover all 380 fixtures"

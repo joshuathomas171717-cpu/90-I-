@@ -54,6 +54,21 @@ TRANSP:TRANSPARENT
 SEQUENCE:0
 END:VEVENT
 BEGIN:VEVENT
+UID:nt90-cov-2026-27-mw9@ninety-plus
+DTSTAMP:20260821T000000Z
+DTSTART;VALUE=DATE:20261031
+DTEND;VALUE=DATE:20261103
+SUMMARY:Matchweek 9 · vs Sunderland (H) · 29.8% Coventry win · most like
+ ly 1-1
+DESCRIPTION:Coventry City vs Sunderland — 29.8% home · 29.3% draw · 40.
+ 9% away (most likely 1-1)\n\nProjections from NINETY+ — a statistical mo
+ del with measured accuracy of about 46% on individual matches. Analysis\, 
+ not betting advice.
+URL:gameweek/mw9.html
+TRANSP:TRANSPARENT
+SEQUENCE:0
+END:VEVENT
+BEGIN:VEVENT
 UID:nt90-cov-2026-27-mw10@ninety-plus
 DTSTAMP:20260821T000000Z
 DTSTART;VALUE=DATE:20261107

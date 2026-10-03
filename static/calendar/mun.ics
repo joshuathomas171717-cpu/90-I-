@@ -54,6 +54,21 @@ TRANSP:TRANSPARENT
 SEQUENCE:0
 END:VEVENT
 BEGIN:VEVENT
+UID:nt90-mun-2026-27-mw9@ninety-plus
+DTSTAMP:20260821T000000Z
+DTSTART;VALUE=DATE:20261031
+DTEND;VALUE=DATE:20261103
+SUMMARY:Matchweek 9 · vs Chelsea (A) · 31.5% Man Utd win · most likely 1
+ -1
+DESCRIPTION:Chelsea vs Manchester United — 43.9% home · 24.7% draw · 31
+ .5% away (most likely 1-1)\n\nProjections from NINETY+ — a statistical m
+ odel with measured accuracy of about 46% on individual matches. Analysis\,
+  not betting advice.
+URL:gameweek/mw9.html
+TRANSP:TRANSPARENT
+SEQUENCE:0
+END:VEVENT
+BEGIN:VEVENT
 UID:nt90-mun-2026-27-mw10@ninety-plus
 DTSTAMP:20260821T000000Z
 DTSTART;VALUE=DATE:20261107

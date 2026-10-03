@@ -54,6 +54,21 @@ TRANSP:TRANSPARENT
 SEQUENCE:0
 END:VEVENT
 BEGIN:VEVENT
+UID:nt90-bou-2026-27-mw9@ninety-plus
+DTSTAMP:20260821T000000Z
+DTSTART;VALUE=DATE:20261031
+DTEND;VALUE=DATE:20261103
+SUMMARY:Matchweek 9 · vs Leeds United (H) · 35.5% Bournemouth win · most
+  likely 1-1
+DESCRIPTION:Bournemouth vs Leeds United — 35.5% home · 29.1% draw · 35.
+ 4% away (most likely 1-1)\n\nProjections from NINETY+ — a statistical mo
+ del with measured accuracy of about 46% on individual matches. Analysis\, 
+ not betting advice.
+URL:gameweek/mw9.html
+TRANSP:TRANSPARENT
+SEQUENCE:0
+END:VEVENT
+BEGIN:VEVENT
 UID:nt90-bou-2026-27-mw10@ninety-plus
 DTSTAMP:20260821T000000Z
 DTSTART;VALUE=DATE:20261107

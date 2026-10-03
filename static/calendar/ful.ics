@@ -54,6 +54,21 @@ TRANSP:TRANSPARENT
 SEQUENCE:0
 END:VEVENT
 BEGIN:VEVENT
+UID:nt90-ful-2026-27-mw9@ninety-plus
+DTSTAMP:20260821T000000Z
+DTSTART;VALUE=DATE:20261031
+DTEND;VALUE=DATE:20261103
+SUMMARY:Matchweek 9 · vs Aston Villa (A) · 24.5% Fulham win · most likel
+ y 1-1
+DESCRIPTION:Aston Villa vs Fulham — 49.1% home · 26.4% draw · 24.5% awa
+ y (most likely 1-1)\n\nProjections from NINETY+ — a statistical model wi
+ th measured accuracy of about 46% on individual matches. Analysis\, not be
+ tting advice.
+URL:gameweek/mw9.html
+TRANSP:TRANSPARENT
+SEQUENCE:0
+END:VEVENT
+BEGIN:VEVENT
 UID:nt90-ful-2026-27-mw10@ninety-plus
 DTSTAMP:20260821T000000Z
 DTSTART;VALUE=DATE:20261107

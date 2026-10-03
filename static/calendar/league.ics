@@ -84,6 +84,31 @@ TRANSP:TRANSPARENT
 SEQUENCE:0
 END:VEVENT
 BEGIN:VEVENT
+UID:nt90-2026-27-mw9@ninety-plus
+DTSTAMP:20260821T000000Z
+DTSTART;VALUE=DATE:20261031
+DTEND;VALUE=DATE:20261103
+SUMMARY:Matchweek 9 · 10 fixtures
+DESCRIPTION:10 fixtures in this matchweek.\n\nManchester City vs Brighton &
+  Hove Albion — 55% home · 23.4% draw · 21.7% away (most likely 1-1)\nB
+ rentford vs Nottingham Forest — 51% home · 27.2% draw · 21.8% away (mo
+ st likely 1-1)\nAston Villa vs Fulham — 49.1% home · 26.4% draw · 24.5
+ % away (most likely 1-1)\nChelsea vs Manchester United — 43.9% home · 2
+ 4.7% draw · 31.5% away (most likely 1-1)\nHull City vs Ipswich Town — 4
+ 3.4% home · 28.8% draw · 27.8% away (most likely 1-1)\nTottenham Hotspur
+  vs Crystal Palace — 41.8% home · 27.3% draw · 30.9% away (most likely
+  1-1)\nNewcastle United vs Everton — 38.9% home · 28.3% draw · 32.8% a
+ way (most likely 1-1)\nBournemouth vs Leeds United — 35.5% home · 29.1%
+  draw · 35.4% away (most likely 1-1)\nLiverpool vs Arsenal — 33.6% home
+  · 29.5% draw · 36.9% away (most likely 1-1)\nCoventry City vs Sunderlan
+ d — 29.8% home · 29.3% draw · 40.9% away (most likely 1-1)\n\nProjecti
+ ons from NINETY+ — a statistical model with measured accuracy of about 4
+ 6% on individual matches. Analysis\, not betting advice.
+URL:gameweek/mw9.html
+TRANSP:TRANSPARENT
+SEQUENCE:0
+END:VEVENT
+BEGIN:VEVENT
 UID:nt90-2026-27-mw10@ninety-plus
 DTSTAMP:20260821T000000Z
 DTSTART;VALUE=DATE:20261107

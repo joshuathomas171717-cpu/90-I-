@@ -54,6 +54,21 @@ TRANSP:TRANSPARENT
 SEQUENCE:0
 END:VEVENT
 BEGIN:VEVENT
+UID:nt90-hul-2026-27-mw9@ninety-plus
+DTSTAMP:20260821T000000Z
+DTSTART;VALUE=DATE:20261031
+DTEND;VALUE=DATE:20261103
+SUMMARY:Matchweek 9 · vs Ipswich Town (H) · 43.4% Hull City win · most l
+ ikely 1-1
+DESCRIPTION:Hull City vs Ipswich Town — 43.4% home · 28.8% draw · 27.8%
+  away (most likely 1-1)\n\nProjections from NINETY+ — a statistical mode
+ l with measured accuracy of about 46% on individual matches. Analysis\, no
+ t betting advice.
+URL:gameweek/mw9.html
+TRANSP:TRANSPARENT
+SEQUENCE:0
+END:VEVENT
+BEGIN:VEVENT
 UID:nt90-hul-2026-27-mw10@ninety-plus
 DTSTAMP:20260821T000000Z
 DTSTART;VALUE=DATE:20261107

@@ -54,6 +54,21 @@ TRANSP:TRANSPARENT
 SEQUENCE:0
 END:VEVENT
 BEGIN:VEVENT
+UID:nt90-cry-2026-27-mw9@ninety-plus
+DTSTAMP:20260821T000000Z
+DTSTART;VALUE=DATE:20261031
+DTEND;VALUE=DATE:20261103
+SUMMARY:Matchweek 9 · vs Tottenham Hotspur (A) · 30.9% Crystal Palace win
+  · most likely 1-1
+DESCRIPTION:Tottenham Hotspur vs Crystal Palace — 41.8% home · 27.3% dra
+ w · 30.9% away (most likely 1-1)\n\nProjections from NINETY+ — a statis
+ tical model with measured accuracy of about 46% on individual matches. Ana
+ lysis\, not betting advice.
+URL:gameweek/mw9.html
+TRANSP:TRANSPARENT
+SEQUENCE:0
+END:VEVENT
+BEGIN:VEVENT
 UID:nt90-cry-2026-27-mw10@ninety-plus
 DTSTAMP:20260821T000000Z
 DTSTART;VALUE=DATE:20261107

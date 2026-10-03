@@ -54,6 +54,21 @@ TRANSP:TRANSPARENT
 SEQUENCE:0
 END:VEVENT
 BEGIN:VEVENT
+UID:nt90-bre-2026-27-mw9@ninety-plus
+DTSTAMP:20260821T000000Z
+DTSTART;VALUE=DATE:20261031
+DTEND;VALUE=DATE:20261103
+SUMMARY:Matchweek 9 · vs Nottingham Forest (H) · 51% Brentford win · mos
+ t likely 1-1
+DESCRIPTION:Brentford vs Nottingham Forest — 51% home · 27.2% draw · 21
+ .8% away (most likely 1-1)\n\nProjections from NINETY+ — a statistical m
+ odel with measured accuracy of about 46% on individual matches. Analysis\,
+  not betting advice.
+URL:gameweek/mw9.html
+TRANSP:TRANSPARENT
+SEQUENCE:0
+END:VEVENT
+BEGIN:VEVENT
 UID:nt90-bre-2026-27-mw10@ninety-plus
 DTSTAMP:20260821T000000Z
 DTSTART;VALUE=DATE:20261107

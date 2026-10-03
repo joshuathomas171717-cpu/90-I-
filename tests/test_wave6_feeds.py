@@ -84,6 +84,21 @@ def _league():
     return feeds.build(_summary(), _fixtures(), site_url="https://example.test")
 
 
+def _calendar_matchweeks():
+    """Every matchweek the official calendar knows about, MW37 included.
+
+    Matchweek 37 is not written out in fixtures_official.py: the file derives it by elimination
+    because it is the one week the published list left to work out. That derivation happens inside
+    validate_official_fixtures(), which the pipeline runs as its own step — a separate process — so a
+    module that merely imports FIXTURES_2026_27 sees 32 keys where the built feed has 33. Calling the
+    validator here reproduces what the pipeline does; feeds.py copes either way, because it falls back
+    to the projected-fixtures table when a window is absent.
+    """
+    import fixtures_official
+    fixtures_official.validate_official_fixtures()
+    return sorted(fixtures_official.FIXTURES_2026_27)
+
+
 # ════════════════════════════════════════════════════════════════════════════════════════════════════
 #  The document
 # ════════════════════════════════════════════════════════════════════════════════════════════════════
@@ -99,8 +114,22 @@ def test_league_feed_parses_as_a_calendar():
 
 
 def test_every_remaining_matchweek_becomes_one_event():
+    """One event per matchweek, and *no gaps*.
+
+    The count is derived from the official calendar rather than typed in here. An earlier version
+    asserted 32 with the comment "MW6..MW37 is 32 windows" — the arithmetic was wrong (38-6+1 is 33)
+    and, worse, the feed genuinely had 32: matchweek 9's window spans a month boundary, the parser
+    could not read it, and the caller skipped it silently. A test that hard-codes the number its buggy
+    code produces will always pass.
+    """
+    expected = _calendar_matchweeks()
     events = parse_ics(_league())[0]["_children"]
-    _check(len(events) == 32, "MW6..MW37 is 32 windows; got %d" % len(events))
+    _check(len(events) == len(expected),
+           "expected %d matchweek events (MW%d-MW%d), got %d"
+           % (len(expected), expected[0], expected[-1], len(events)))
+    seen = sorted(int(re.search(r"Matchweek (\d+)", e["SUMMARY"]).group(1)) for e in events)
+    _check(seen == expected, "matchweeks missing from the feed: %s"
+           % [g for g in expected if g not in seen])
     titles = []
     for ev in events:
         _check(ev["_type"] == "VEVENT", "child is not a VEVENT")
@@ -215,10 +244,31 @@ def test_the_feeds_written_to_disk_match_the_builder():
                "%s on disk is stale — the build did not rerun feeds.py" % name)
 
 
-def test_parse_window_handles_the_shapes_in_the_calendar():
+def test_parse_window_handles_every_shape_in_the_calendar():
+    """Every window string the official calendar actually contains, not a shape I imagined.
+
+    The month-boundary case is here because it shipped broken: '31 October - 2 November 2026' parsed
+    to None, and a None window is skipped rather than raised, so matchweek 9 was quietly absent from
+    every feed.
+    """
+    from fixtures_official import FIXTURES_2026_27
+    _calendar_matchweeks()          # the same derivation, for the reason described above
+    checked = 0
+    for _mw, (window, _fixtures) in sorted(FIXTURES_2026_27.items()):
+        start, end = feeds.parse_window(window)
+        _check(start is not None, "the calendar contains a window this parser cannot read: %r" % window)
+        _check(end > start, "%r produced an empty or reversed window" % window)
+        checked += 1
+    _check(checked == 33, "expected 33 matchweek windows, checked %d" % checked)
+
     start, end = feeds.parse_window("10-12 October 2026")
     _check((start, end) == (datetime.date(2026, 10, 10), datetime.date(2026, 10, 13)),
            "10-12 October should be the 10th to the 13th (exclusive end)")
+    start, end = feeds.parse_window("31 October - 2 November 2026")
+    _check((start, end) == (datetime.date(2026, 10, 31), datetime.date(2026, 11, 3)),
+           "a window across a month boundary: %s -> %s" % (start, end))
+    start, end = feeds.parse_window("1 May 2027")
+    _check((end - start).days == 1, "a single named day is a one-day window")
     start, end = feeds.parse_window("24-25 October 2026")
     _check((end - start).days == 2, "a two-day window is two days long")
     _check(feeds.parse_window("nonsense")[0] is None, "rubbish should return None, not raise")
