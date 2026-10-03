@@ -117,6 +117,12 @@ def test_readme_tells_visitors_to_cd_into_a_folder_that_exists():
     assert found, "README has no `cd` line — the quick start should start by telling you where to be"
     folder = os.path.basename(ROOT.rstrip(os.sep))
     acceptable = {folder, PROJECT_NAME}
+    # The folder a `git clone` of this README's own clone line would create. This is the name a
+    # visitor actually ends up standing in — the repository is 90-I- even though the project inside
+    # it is NINETY+ — and the quick start has to tell them to cd into it.
+    clone = re.search(r"git clone\s+(\S+)", readme)
+    if clone:
+        acceptable.add(os.path.basename(clone.group(1)).removesuffix(".git"))
     for target in found:
         assert target in acceptable, (
             "README says `cd %s`, which is neither the checked-out folder (%s) nor the project name "
@@ -146,13 +152,18 @@ def test_attribution_appears_where_it_can_be_seen():
 #  4. CI and the scheduled job are wired
 # ════════════════════════════════════════════════════════════════════════════
 def test_the_workflows_exist_and_do_what_they_claim():
-    for name in ("ci.yml", "weekly.yml", "pages.yml"):
+    for name in ("ci.yml", "weekly-update.yml", "pages.yml"):
         path = os.path.join(GITHUB, name)
         assert os.path.exists(path), "missing .github/workflows/%s" % name
         text = open(path, encoding="utf-8").read()
         assert "runs-on: ubuntu-latest" in text, "%s does not run anywhere" % name
-    weekly = open(os.path.join(GITHUB, "weekly.yml"), encoding="utf-8").read()
+    weekly = open(os.path.join(GITHUB, "weekly-update.yml"), encoding="utf-8").read()
     assert "schedule:" in weekly and "cron:" in weekly, "the weekly job is not scheduled"
+    assert "workflow_dispatch:" in weekly, "the weekly job needs a manual trigger too"
+    # Renamed from weekly.yml rather than added alongside it: two crons on the same schedule would
+    # race each other and commit the same refresh twice.
+    assert not os.path.exists(os.path.join(GITHUB, "weekly.yml")), \
+        "weekly.yml and weekly-update.yml would both fire on the same cron"
     pages = open(os.path.join(GITHUB, "pages.yml"), encoding="utf-8").read()
     # a commit made with GITHUB_TOKEN does not trigger other workflows — the weekly refresh has to
     # wake the deploy explicitly, or the live site silently waits for the next human push

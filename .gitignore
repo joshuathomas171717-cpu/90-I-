@@ -32,3 +32,8 @@ _design/
 *.zip
 *.png
 .DS_Store
+
+# ── Vercel ───────────────────────────────────────────────────────────────────
+# The CLI writes .vercel/ when you link a checkout to a project. vercel.json is deliberately NOT
+# ignored: it is the deployment configuration and belongs in the repository.
+.vercel/

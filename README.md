@@ -8,8 +8,8 @@ pipeline that predicts the **2026–27 Premier League season** from live state (
 ## Quick start
 
 ```bash
-cd ninety-plus-pl-predictor      # or whatever this repo is called where you cloned it
-                                # (the GitHub repo is github.com/joshuathomas171717-cpu/90-I-)
+git clone https://github.com/joshuathomas171717-cpu/90-I-.git
+cd 90-I-                         # the repo is called 90-I-; the project inside it is NINETY+
 
 # everything in one command (data gate → calendar validation → datasets → models → backtest → dashboard)
 python3 run_all.py
@@ -30,13 +30,47 @@ the stored table reproduced from the results) before anything downstream runs. `
 artifact cache and trains from scratch; `server.py --preload` builds the engine before opening the port. Deployment (Docker, Fly.io, Render, logs, rollback, uptime
 checks) is documented in [DEPLOY.md](DEPLOY.md).
 
-Publishing it, or keeping a deployed copy current for free, is covered in
-[PUBLISH.md](PUBLISH.md) — including a static GitHub Pages URL and the scheduled weekly refresh.
+## Deploy to Vercel
+
+The dashboard is a single self-contained HTML file, so the deployed site is just `static/` served as
+files — no build step, no server, no database, no accounts. `vercel.json` says so:
+
+```json
+{ "buildCommand": null, "installCommand": null, "outputDirectory": "static" }
+```
+
+1. Sign in at [vercel.com](https://vercel.com) **with GitHub** (Hobby plan — free, and personal /
+   non-commercial, which is what this is).
+2. **Add New… → Project**, then **Import Git Repository** and pick `90-I-`. If it is not listed,
+   click *Adjust GitHub App Permissions* and grant access to the repository.
+3. Vercel reads `vercel.json` and fills the form in for you. Check that it says **Framework Preset:
+   Other**, **Build Command: empty**, **Output Directory: `static`**, **Root Directory: `./`**.
+4. **Deploy.** The first build takes a few seconds; every later push to `main` redeploys itself.
+
+That is the whole setup. There are no environment variables to add — the page carries its own data.
+
+**Optional, and worth doing:** set the deployed URL back into the project so the pages describe
+themselves correctly. Add a repository *variable* (Settings → Secrets and variables → Actions →
+Variables) named `NT90_SITE_URL` with the value `https://YOUR-PROJECT.vercel.app`. The weekly job and
+the Pages build both read it, and every generated page then carries an absolute canonical and an
+absolute `og:image`. Without it, canonicals stay relative — the site works, but link previews on
+Twitter/Discord/Slack show a blank card, because they will not resolve a relative image URL.
+
+**What changes on a static host, honestly.** There is no Python behind it, so the What-If tab runs
+the in-browser engine instead of the API. It is the same 330 fixtures and the same inputs, and the
+two engines agree closely — measured on an identical scenario, title probability differs by a median
+of 0 and a mean of 0.1 points across the 20 clubs — but the in-browser run is capped at 3,000
+seasons per press rather than 10,000. The header chip reads *offline preview* and the What-If panel
+says the same thing next to the button.
+
+Deploying the container instead (for the live API) is in [DEPLOY.md](DEPLOY.md); GitHub Pages is in
+[PUBLISH.md](PUBLISH.md). The scheduled weekly refresh that keeps a deployed copy current is
+[`.github/workflows/weekly-update.yml`](.github/workflows/weekly-update.yml).
 
 ### Tests
 
 ```bash
-python3 tests/run_tests.py      # 112 checks, no test dependencies at all — open this one by name
+python3 tests/run_tests.py      # 188 checks, no test dependencies at all — open this one by name
 pytest -m "not slow"            # the same suite under pytest, if you prefer it (requirements-dev.txt)
 ```
 

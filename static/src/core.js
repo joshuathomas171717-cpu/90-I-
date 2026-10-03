@@ -188,9 +188,18 @@ async function detectEngine(){
 }
 function paintMode(){
   const el = $("modeChip"); if(!el) return;
-  el.innerHTML = ENGINE_MODE === "server"
-    ? `<span class="dot"></span> live engine`
-    : `<span class="dot" style="background:var(--gold)"></span> offline preview`;
+  const offline = ENGINE_MODE !== "server";
+  el.innerHTML = offline
+    ? `<span class="dot" style="background:var(--gold)"></span> offline preview`
+    : `<span class="dot"></span> live engine`;
+  el.title = offline
+    ? "No API behind this deployment — the model runs in your browser"
+    : "Served by the Python API on this host";
+  // The What-If tab says the same thing in its own words, where a reader who is about to press
+  // "Re-simulate season" will actually see it. A header chip alone is easy to miss, and "why is
+  // this page not talking to a server?" deserves an answer next to the button that would use one.
+  const note = $("engineNote");
+  if(note) note.hidden = !offline;
 }
 
 async function predictFixture(){
@@ -417,8 +426,13 @@ function localSimulate(scenario, nSims){
   }).sort((x, y) => y.proj_cs - x.proj_cs || y.golden_glove_prob - x.golden_glove_prob);
 
   return {
-    meta:{ season:"2026–27 Premier League", as_of_date:"2026-10-02 (Matchweek 5 Complete)", n_simulations:nSims,
-           runtime_ms:0, scenario_active:true, client_fallback:true },
+    // The date comes from the payload, never from a literal. This read "2026-10-02 (Matchweek 5
+    // Complete)" — written by hand when the client engine was built, and one day behind the data it
+    // was simulating. On a static deployment this is the *only* engine, so every What-If run
+    // reported a vintage the rest of the page contradicted.
+    meta:{ season:"2026–27 Premier League",
+           as_of_date:(DATA.meta && DATA.meta.as_of_date) || "",
+           n_simulations:nSims, runtime_ms:0, scenario_active:true, client_fallback:true },
     headline_predictions:{ champion:tableRows[0], runner_up:tableRows[1], golden_boot:gbSorted[0], playmaker:playmaker[0],
                            golden_glove:goldenGlove[0], poty:potySorted[0] },
     table_projections:tableRows, golden_boot_race:gbSorted.slice(0, 18), playmaker_race:playmaker.slice(0, 18),
@@ -446,7 +460,12 @@ async function runSim(){
   if(!res){
     await new Promise(r => setTimeout(r, 30));
     res = localSimulate(SCENARIO, Math.min(n, 3000));
-    toast("Server not reachable — ran the client-side structural Monte Carlo instead.", 4200);
+    // Two different situations, two different sentences. A static deployment has no server to
+    // reach, which is not a fault and must not read like one; a server we were talking to a moment
+    // ago and cannot reach now is a real failure worth naming.
+    toast(ENGINE_MODE === "server"
+      ? "The API stopped responding mid-run — ran the in-browser engine instead."
+      : "Ran the in-browser engine — this deployment has no server behind it.", 4200);
   }
   SIM_RESULT = res;
   renderScenario(); renderScenarioAwards();

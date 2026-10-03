@@ -202,6 +202,14 @@
           Every change here re-simulates all 330 remaining fixtures. Injuries reduce a club's attacking
           output and Elo; form sliders scale attack and defence; points deductions are applied directly.
         </div>
+        <div class="note" id="engineNote" style="margin-bottom:14px" hidden>
+          <b>Offline preview.</b> This copy is served as a static site, so there is no Python API behind
+          it — the simulator runs in your browser instead, re-simulating the same 330 fixtures from the
+          same inputs. The two engines agree closely but not exactly: measured on the same scenario,
+          title probability differs by a median of 0 and a mean of 0.1 points. The in-browser run is
+          capped at 3,000 seasons per press rather than 10,000, and the numbers land a second or two
+          sooner. Nothing is broken and nothing is missing — this is the design of the static build.
+        </div>
         <div class="presets" id="presets"></div>
         <div class="stack" id="scenarioForm"></div>
         <div class="row" style="margin-top:16px">

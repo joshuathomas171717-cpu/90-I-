@@ -1,0 +1,51 @@
+{
+  "buildCommand": null,
+  "installCommand": null,
+  "outputDirectory": "static",
+  "trailingSlash": false,
+  "cleanUrls": false,
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+      ]
+    },
+    {
+      "source": "/index.html",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+      ]
+    },
+    {
+      "source": "/(.*).html",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+      ]
+    },
+    {
+      "source": "/calendar/(.*)",
+      "headers": [
+        { "key": "Content-Type", "value": "text/calendar; charset=utf-8" },
+        { "key": "Cache-Control", "value": "public, max-age=300, must-revalidate" }
+      ]
+    },
+    {
+      "source": "/(.*).(png|svg|ico|webmanifest|webp)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=3600" }
+      ]
+    }
+  ],
+  "rewrites": [
+    { "source": "/matchweek", "destination": "/index.html" },
+    { "source": "/table", "destination": "/index.html" },
+    { "source": "/awards", "destination": "/index.html" },
+    { "source": "/duel", "destination": "/index.html" },
+    { "source": "/whatif", "destination": "/index.html" },
+    { "source": "/model", "destination": "/index.html" },
+    { "source": "/gameweek/:gw", "destination": "/index.html" },
+    { "source": "/club/:slug", "destination": "/index.html" }
+  ]
+}

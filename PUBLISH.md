@@ -56,12 +56,15 @@ personal repository reserved to `GITHUB_TOKEN` it is not, which is why the click
 
 **One honest caveat:** Pages serves a static file, so there is no Python API behind it. The dashboard
 detects that and falls back to its in-browser engine — everything still works, but the What-If tab
-runs the client-side Monte Carlo rather than the server one, and the header says "offline model"
-instead of "live engine". For a first public version that is the right trade: no server, no bill, no
-cold start.
+runs the client-side Monte Carlo rather than the server one, and the header chip says "offline
+preview" instead of "live engine" (the What-If panel says the same thing next to the button). For a
+first public version that is the right trade: no server, no bill, no cold start.
 
-To get the live engine as well, deploy the container (`DEPLOY.md` §5 Fly.io or §6 Render), then set
-`NT90_API_BASE` in the page build to that URL — see the note at the bottom of DEPLOY.md.
+To get the live engine as well, deploy the container (`DEPLOY.md` §5 Fly.io or §6 Render) and serve
+the page from that same origin. Be aware of what is *not* possible: the page probes `api/baseline`
+and `api/simulate` on its own origin, and there is no build flag to point it at another host. This
+paragraph used to claim `NT90_API_BASE` did that; no such variable exists anywhere in the code.
+Serving the page and the API from one origin is the only supported arrangement.
 
 ## 4. Keep it current, for free
 

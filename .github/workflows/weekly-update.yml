@@ -1,18 +1,25 @@
-# Weekly data refresh (P2.4).
+# Weekly data refresh (P2.4) and the site rebuild that keeps Vercel current.
 #
 # Runs the same job you would run by hand — fetch, validate, promote, rebuild, snapshot, score — and
-# only commits when the validation gate passes. GitHub Actions cron is free for public repos and
-# outlives any sandbox, which is why the weekly job lives here rather than on a laptop.
+# commits only when everything passed. GitHub Actions cron is free for public repos and outlives any
+# sandbox, which is why the weekly job lives here rather than on a laptop.
 #
-# Cron is UTC. Matchweeks end Sunday evening/Monday; Mon 06:00 UTC is comfortably after the last
-# fixture and before anyone looks at the table over breakfast in the UK.
+# This file was called weekly.yml. It was renamed, not duplicated: a second weekly workflow on the
+# same cron would have raced this one and produced two commits an hour apart over the same data.
 #
 #   Actions -> "Weekly update" -> Run workflow      to trigger a dry run by hand
+#
+# The provider decides itself, in this order (see sources/__init__.py):
+#   1. the `provider` input, if you typed one;
+#   2. football-data.org, if any of the key secrets below is set;
+#   3. the local snapshot — the repository's own CSVs — so the job still runs with no account at all.
 name: Weekly update
 
 on:
   schedule:
-    - cron: "0 6 * * 1"          # every Monday, 06:00 UTC
+    # Cron is UTC. Matchweeks end Sunday evening/Monday; Mon 06:00 UTC is comfortably after the last
+    # fixture and before anyone looks at the table over breakfast in the UK.
+    - cron: "0 6 * * 1"
   workflow_dispatch:
     inputs:
       dry_run:
@@ -20,7 +27,7 @@ on:
         type: boolean
         default: true
       provider:
-        description: "Provider name (blank = auto)"
+        description: "Provider name (blank = auto: key if present, else local)"
         type: string
         default: ""
 
@@ -36,6 +43,21 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
+    env:
+      # Any one of these works; the free football-data.org key is the first. Set it under
+      # Settings -> Secrets and variables -> Actions -> New repository secret. With none set, the
+      # job does not fail — it falls back to the local provider and says so in the log.
+      FOOTBALL_DATA_KEY: ${{ secrets.FOOTBALL_DATA_KEY }}
+      FOOTBALL_DATA_ORG_TOKEN: ${{ secrets.FOOTBALL_DATA_ORG_TOKEN }}
+      FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
+      NT90_SOURCE: ${{ inputs.provider }}
+      # Canonical/OG URLs baked into the generated pages. Set the repository variable
+      # NT90_SITE_URL (Settings -> Secrets and variables -> Actions -> Variables) to the deployed
+      # origin, e.g. https://ninety-plus.vercel.app, and every page gets an absolute canonical.
+      # Left unset, canonicals stay relative — which works, but no crawler can read a relative
+      # og:image, so link previews fall back to nothing.
+      NT90_SITE_URL: ${{ vars.NT90_SITE_URL }}
+
     steps:
       - uses: actions/checkout@v4
 
@@ -47,27 +69,39 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      - name: Which provider will this run use?
+        run: |
+          if [ -n "$FOOTBALL_DATA_KEY$FOOTBALL_DATA_ORG_TOKEN$FOOTBALL_DATA_API_KEY" ]; then
+            echo "A football-data.org key is present — using the live provider."
+          else
+            echo "No provider key is set. Falling back to the local snapshot provider:"
+            echo "the job still runs, validates and rebuilds, but it takes its results from the"
+            echo "repository's own CSVs rather than from the API. That is the designed fallback"
+            echo "(sources/__init__.py), not a failure."
+          fi
+          echo "site_url=${NT90_SITE_URL:-<unset: relative canonicals>}"
+
       - name: Validate the checked-in dataset before touching anything
         run: python3 validate_data.py
 
       - name: Weekly job (dry run)
         if: github.event_name == 'workflow_dispatch' && inputs.dry_run
-        env:
-          FOOTBALL_DATA_ORG_TOKEN: ${{ secrets.FOOTBALL_DATA_ORG_TOKEN }}
-          NT90_SOURCE: ${{ inputs.provider }}
         run: python3 update_week.py --dry-run
 
       - name: Weekly job
         if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && !inputs.dry_run)
-        env:
-          FOOTBALL_DATA_ORG_TOKEN: ${{ secrets.FOOTBALL_DATA_ORG_TOKEN }}
-          NT90_SOURCE: ${{ inputs.provider }}
         # The job itself refuses to promote a dataset that fails validation, so a bad pull leaves the
-        # repository untouched and this step exits non-zero — which is the alert.
+        # repository untouched and this step exits non-zero — which is the alert. With no key set it
+        # goes through the same steps against the local provider and promotes nothing new.
         run: python3 update_week.py
 
+      # The gate. Nothing below this line runs unless the whole suite passes, which is what makes
+      # "commits data/ and static/ only when the tests pass" true rather than aspirational.
       - name: Test gate
         run: python3 tests/run_tests.py
+
+      - name: Confirm the page is serving the same vintage as the data
+        run: python3 check_page_current.py
 
       # This job rebuilds everything on a runner whose numpy/scipy/scikit-learn are not the ones the
       # committed numbers were produced with, so when no new results arrived the *projections* still
@@ -88,9 +122,9 @@ jobs:
           git show HEAD:static/index.html > /tmp/committed_index.html
           if python3 check_page_current.py --against /tmp/committed_index.html; then
             # Everything derived is put back together. `static/` now covers the crawlable pages,
-            # the preview cards and the icons as well as the dashboard, and all of them are written
-            # from the same numbers — reverting one without the others would leave the repository
-            # holding a page that contradicts its own data, which the page check then rejects.
+            # the preview cards, the icons and the calendar feeds, and all of them are written from
+            # the same numbers — reverting one without the others would leave the repository holding
+            # a page that contradicts its own data, which the page check then rejects.
             # Source data (matches, fixtures, teams, players) is deliberately NOT in this list: it is
             # what the job exists to update, and the gate above only passes when it did not change.
             git checkout -- static \
@@ -105,19 +139,21 @@ jobs:
             echo "The rebuild genuinely moved — it will be committed."
           fi
 
-      - name: Commit the refreshed dataset
+      - name: Commit the refreshed dataset and the rebuilt site
         if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && !inputs.dry_run)
         run: |
           git config user.name  "ninety-plus-bot"
           git config user.email "bot@users.noreply.github.com"
-          # static/ is the whole generated site: the dashboard, the crawlable pages, the preview
-          # cards and the icons. Adding the directory keeps them in step with the data.
+          # data/ and static/ only. static/ is the whole generated site — the dashboard, the
+          # crawlable pages, the preview cards, the icons and the calendar feeds — so adding the
+          # directory keeps every one of them in step with the data it was built from.
           git add data/ static/
           if git diff --cached --quiet; then
-            echo "No changes — the model already reflects the latest results."
+            echo "No changes — the model already reflects the latest results, and Vercel has nothing to redeploy."
           else
             git commit -m "chore(data): weekly refresh $(date -u +%Y-%m-%d)"
             git push
+            echo "Pushed. Vercel redeploys automatically on a push to the production branch."
           fi
 
       - name: Upload the audit trail

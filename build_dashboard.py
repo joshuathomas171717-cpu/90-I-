@@ -124,13 +124,33 @@ parts = {p: open(os.path.join(SRC, p), encoding="utf-8").read()
 # canonical and og:url to absolute when a build knows its own host — social platforms ignore a
 # relative og:url, but a canonical is resolved against the page, so relative is honest and portable.
 _site_url = (os.environ.get("NT90_SITE_URL") or "").rstrip("/")
+
+
+def _abs(path):
+    """Absolute URL when the build knows its host, otherwise the relative path.
+
+    og:image and twitter:image have to be absolute — both Facebook and Twitter discard a relative
+    one, so a link preview shows a blank card — while a canonical is resolved against the page URL
+    by every crawler, so relative is honest there and keeps the file portable. Before this existed,
+    every one of these was emitted relative, which meant previews silently never rendered.
+    """
+    return ("%s/%s" % (_site_url, path.lstrip("/"))) if _site_url else path
+
+
 _canonical = (_site_url + "/") if _site_url else "./"
 _og_url = (_site_url + "/") if _site_url else ""
+# A placeholder rather than nothing: left unset, the tags say so in the markup, so the next person
+# to view-source sees why their preview is blank instead of hunting for a missing tag.
+_canonical_note = ("" if _site_url else
+                   "<!-- canonical and og:image are relative: set NT90_SITE_URL at build time "
+                   "(e.g. NT90_SITE_URL=https://example.vercel.app python3 build_dashboard.py) to "
+                   "make them absolute. Social platforms ignore a relative og:image. -->")
 _champion = max(summary["table_projections"], key=lambda t: t.get("title_prob", 0))
 _runner = sorted(summary["table_projections"], key=lambda t: -t.get("title_prob", 0))[1]
 _head_meta = f"""<meta name="description" content="Machine-learning predictions for the 2026–27 Premier League: title race, relegation, Golden Boot, assists, clean sheets and every remaining fixture.">
 <meta name="theme-color" content="#0B0F1A">
 <meta name="color-scheme" content="dark">
+{_canonical_note}
 <link rel="canonical" href="{_canonical}">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="icon" href="icons/favicon-32.png" sizes="32x32" type="image/png">
@@ -140,7 +160,7 @@ _head_meta = f"""<meta name="description" content="Machine-learning predictions 
 <meta property="og:site_name" content="NINETY+">
 <meta property="og:title" content="Premier League 2026–27 predictions — NINETY+">
 <meta property="og:description" content="{_champion['name']} to win the league at {_champion['title_prob']:.0f}%, projected {_champion['proj_pts']:.0f} points. {summary['ml_metrics']['remaining_fixtures']} fixtures simulated 5,000 times.">
-<meta property="og:image" content="og/site.png">
+<meta property="og:image" content="{_abs('og/site.png')}">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="NINETY+ — {_champion['name']} projected to win the 2026-27 Premier League">
@@ -148,7 +168,7 @@ _head_meta = f"""<meta name="description" content="Machine-learning predictions 
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Premier League 2026–27 predictions — NINETY+">
 <meta name="twitter:description" content="{_champion['name']} to win the league at {_champion['title_prob']:.0f}%, projected {_champion['proj_pts']:.0f} points.">
-<meta name="twitter:image" content="og/site.png">"""
+<meta name="twitter:image" content="{_abs('og/site.png')}">"""
 
 def _jsonld_blocks():
     """WebSite + Dataset + the club list. Enough for a search engine to know what this is."""
