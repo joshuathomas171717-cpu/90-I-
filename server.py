@@ -850,10 +850,20 @@ class PLRequestHandler(BaseHTTPRequestHandler):
         # <head> links it, so a browser fetches it on first load and a 404 there is a visible error in
         # the console of a page that otherwise works. It was missing until a clean-room extraction
         # probed the links the generated pages actually advertise (tests/test_wave4_site.py).
-        if (path in ("/table.html", "/model.html", "/404.html", "/sitemap.xml", "/apple-touch-icon.png",
-                     "/icon.svg", "/manifest.webmanifest", "/method.html", "/privacy.html",
-                     "/calendar.html")
-                or path.startswith(("/club/", "/gameweek/", "/icons/", "/og/", "/calendar/"))):
+        # This used to be a hand-written tuple of every generated page, which meant a page could exist
+        # on disk, deploy fine on Vercel (which serves static/ directly) and 404 on the local server and
+        # in the container — /receipts.html, /changelog.html and /ledger.json did exactly that when they
+        # were added. The rule is derived now: anything publishable that exists under static/ is served,
+        # so a new generated page works everywhere the moment site_pages.py writes it.
+        #
+        # What has to keep winning: the app's own routes below, so /table is the dashboard and
+        # /table.html is the crawlable page even though both exist. The extensions are listed rather
+        # than accepting anything, so a stray .md or .py in the build output stays private.
+        PUBLIC_SUFFIXES = (".html", ".xml", ".txt", ".json", ".svg", ".png", ".ico", ".webmanifest",
+                           ".ics", ".css", ".js")
+        if (path not in ("", "/index.html")
+                and path.lower().endswith(PUBLIC_SUFFIXES)
+                and self._static_file(path) is not None):
             hit = self._static_file(path)
             if hit is not None:
                 self._route = "static"

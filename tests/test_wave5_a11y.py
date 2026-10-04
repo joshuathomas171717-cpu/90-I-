@@ -445,10 +445,21 @@ def test_the_api_reports_the_same_vintage_as_the_page():
 
 
 def test_the_server_serves_the_trust_pages():
-    """The route allowlist is explicit; a page that exists on disk but is not routed is a 404."""
+    """The trust pages are reachable, and the rule that makes them reachable is not a hand-kept list.
+
+    This used to grep server.py for two literal paths — which tested that the list had been edited,
+    not that the pages were served, and it would have passed for a page that was listed but missing
+    from disk. The list is gone: the server now serves anything publishable that exists under static/,
+    so this asserts the rule that replaced it. Reachability itself is proved against a running server
+    in tests/test_wave4_site.py, which walks every generated file rather than trusting a list.
+    """
     server = open(os.path.join(ROOT, "server.py"), encoding="utf-8").read()
-    for route in ("/method.html", "/privacy.html"):
-        assert route in server, "%s is not in the server's route allowlist" % route
+    assert "PUBLIC_SUFFIXES" in server and "self._static_file(path) is not None" in server, (
+        "server.py no longer derives its static routes from disk; a new generated page would 404 "
+        "locally and in the container while working on Vercel")
+    for page in ("method.html", "privacy.html", "receipts.html", "changelog.html"):
+        assert os.path.exists(os.path.join(ROOT, "static", page)), \
+            "static/%s is missing, so the trust pages are incomplete" % page
 
 
 # ════════════════════════════════════════════════════════════════════════════════════════════════════

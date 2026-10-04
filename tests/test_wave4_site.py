@@ -435,6 +435,26 @@ def test_the_app_routes_are_served_the_dashboard_but_the_pages_are_served_as_pag
         assert code == 200 and b"const EMBEDDED" not in body, "/club/arsenal.html served the app"
         assert b"Projected points" in body, "/club/arsenal.html is not the club page"
 
+        # 3b. every page the build wrote is reachable — derived from disk, not hand-listed.
+        # server.py used to carry a tuple of generated pages, so a new page could exist, deploy on
+        # Vercel (which serves static/ directly) and 404 locally and in the container. /receipts.html,
+        # /changelog.html and /ledger.json did exactly that. This walks what site_pages.py actually
+        # produced, so the next new page fails here instead of in front of a reader.
+        generated = []
+        for base, _dirs, files in os.walk(STATIC):
+            for name in files:
+                if not name.endswith((".html", ".xml", ".json")):
+                    continue
+                rel = os.path.relpath(os.path.join(base, name), STATIC).replace(os.sep, "/")
+                if rel in ("index.html",):
+                    continue                     # the app shell opens on /, checked above
+                generated.append(rel)
+        assert generated, "nothing generated to check — did site_pages.py run?"
+        for rel in sorted(generated):
+            code, ctype, body = get("/" + rel)
+            assert code == 200, "/%s is on disk but the local server returned %s" % (rel, code)
+            assert body, "/%s served an empty body" % rel
+
         # 4. assets
         for asset, kind in (("/sitemap.xml", b"<?xml"), ("/icon.svg", b"<svg"),
                             ("/apple-touch-icon.png", b"\x89PNG"), ("/og/site.png", b"\x89PNG"),
