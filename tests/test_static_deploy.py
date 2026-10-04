@@ -249,6 +249,60 @@ def test_vercel_config_points_at_the_static_directory_with_no_build():
     _check(cfg.get("installCommand") in (None, ""), "there is nothing to install on Vercel")
 
 
+def test_vercel_config_selects_no_framework():
+    """The deploy broke because Vercel decided this was a Python app. `framework: null` prevents it.
+
+    The failing build log read:
+
+        Running "vercel build"
+        WARNING! Internal rewrites in backend framework projects ...
+        Error: Found server.py but it does not export a top-level "app", "application", or
+               "handler" variable
+
+    Vercel picks a framework by inspecting the repository root, and `server.py` is one of the six
+    filenames it treats as a Python entrypoint (app.py, index.py, server.py, main.py, wsgi.py,
+    asgi.py). Ours is the optional local dev server, so the build tried to load it as a serverless
+    handler and failed. The framework preset also outranks this file's own settings, and the warning
+    is the same mis-detection: in a "backend framework project" an internal rewrite is resolved
+    against the rewritten destination path rather than the real URL.
+
+    `framework: null` is the documented way to say "no framework is selected", and it is what keeps
+    outputDirectory: static in charge. This test is here because the failure mode is silent and
+    deferred — the config looks harmless, and the breakage only appears on someone else's deploy.
+    """
+    cfg = json.loads(_read("vercel.json", ROOT))
+
+    _check("framework" in cfg,
+           "vercel.json does not set \"framework\", so Vercel auto-detects one from the repository "
+           "root — a root server.py makes it build this as a Python app and the deploy fails with "
+           "\"Found server.py but it does not export a top-level app/application/handler\"")
+    _check(cfg["framework"] is None,
+           'vercel.json sets "framework": %r; it must be null (no framework) for the static build '
+           "to be used" % (cfg["framework"],))
+
+
+def test_no_root_file_looks_like_a_serverless_entrypoint():
+    """If a Python entrypoint must exist at the root, it has to survive being loaded as one.
+
+    Vercel scans for app.py, index.py, server.py, main.py, wsgi.py and asgi.py at the repository
+    root (and inside a root src/ or app/). `framework: null` is what actually stops the detection,
+    so this is the belt to that braces: it flags the day a new root file re-introduces the hazard,
+    and it checks the one file we do have — server.py — declares no handler, so nobody is misled
+    into thinking it is one.
+    """
+    entrypoints = [n for n in ("app.py", "index.py", "server.py", "main.py", "wsgi.py", "asgi.py")
+                   if os.path.exists(os.path.join(ROOT, n))]
+    _check(entrypoints == ["server.py"],
+           "an unexpected root file matches Vercel's Python entrypoint list: %s — see "
+           "https://vercel.com/docs/functions/runtimes/python; \"framework\": null is what keeps "
+           "the static build, but a new entrypoint needs its own check" % entrypoints)
+
+    server = _read("server.py", ROOT)
+    _check("def handler(" not in server and "def application(" not in server,
+           "server.py now defines a `handler`/`application`, so it looks like a Vercel Function "
+           "entrypoint rather than the local dev server it is meant to stay")
+
+
 def test_vercel_config_caches_html_shortly_and_assets_longer():
     cfg = json.loads(_read("vercel.json", ROOT))
     by_source = {}
