@@ -156,6 +156,19 @@ jobs:
             echo "Pushed. Vercel redeploys automatically on a push to the production branch."
           fi
 
+      # ── did the update actually reach the site? ────────────────────────────────────────────────────
+      # Everything above proves the repository is correct. None of it proves the *deployment* changed,
+      # and that is the gap an owner actually worries about: the job goes green, GitHub looks right, and
+      # the live site is still serving last week. So the last step fetches production, reads what it
+      # says about itself, and compares it with the data this run just committed. Vercel needs a minute,
+      # so the tool waits — and if it never matches, this step goes red and names the field that differs.
+      - name: Confirm the deployment is serving this commit
+        if: always() && (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && !inputs.dry_run))
+        run: >-
+          python3 tools/verify_deployment.py
+          --url "${{ vars.NT90_SITE_URL || 'https://90plus-cyan.vercel.app/' }}"
+          --retries 6 --wait 30
+
       - name: Upload the audit trail
         if: always()
         uses: actions/upload-artifact@v4

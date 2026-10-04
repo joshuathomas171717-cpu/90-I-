@@ -11,6 +11,31 @@ ones you do not have.
 
 ---
 
+## v2.2 — 5 October 2026
+
+**Model** — unchanged from v2.1. No inputs, weights or hyperparameters moved, and the measured figures
+below are the ones that still apply.
+
+**Site** — the page now judges its own freshness instead of reporting an age it cannot explain. It ships
+the fixture calendar, so it knows whether its numbers predate a gameweek that has already been played,
+and when they do it says so in the header and names the missing gameweek rather than presenting old
+numbers with confidence. Alongside it: `check_live.py`, a command anyone can run against the deployed
+site that reconciles it with the calendar and verifies the published ledger's hash chain as a reader
+receives it; `docs/operations.md`, a runbook for what breaks and what to do about it; and the weekly job
+now confirms its own deployment landed.
+
+**Groundwork, not yet visible** — player data: a competition-strength table covering 22 competitions with
+its sensitivity measured, a per-player form table that builds with no account at all (league minutes
+only, and labelled as such), and a dated availability capture stored inside each gameweek's snapshot.
+None of it changes a prediction yet; that is gated behind a backtest in the next phase, and the changelog
+will say what it measured when it runs.
+
+**Measured** — 46.3% 1X2 · RPS 0.2184 · rank correlation 0.566 on the blind 2025-26 replay.
+**Delta vs v2.1** — 0.0 points, 0.0000 RPS. Site work, no model change. The player groundwork has no
+delta here because it has not been allowed to touch a prediction yet.
+
+---
+
 ## v2.1 — 4 October 2026
 
 **Model** — unchanged from v2.0. No inputs, weights or hyperparameters moved, so the measured

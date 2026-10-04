@@ -1,0 +1,80 @@
+# Is the deployed site current? — the weekly watchdog.
+#
+# The weekly job refreshes the data and now proves its own deployment landed. This is the other half:
+# a check that runs whether or not the job ran, whether or not anyone pushed, and without needing
+# anyone to remember. It exists because of the failure the project is built around —
+#
+#     the job runs green, promotes nothing, and the live site keeps serving its old vintage while
+#     looking perfectly confident
+#
+# — which is invisible from the repository and visible only by asking the deployment. So it asks, once
+# a week, and says so out loud when the answer is no. It also runs by hand:
+#
+#     Actions -> "Site is current" -> Run workflow
+#
+# Two hours after the weekly job, so the check sees the result of the refresh rather than racing it.
+# It spends no quota, holds no secret, and reads nothing but the public site: the same command anyone
+# can run themselves is the one that runs here.
+name: Site is current
+
+on:
+  schedule:
+    - cron: "0 8 * * 1"          # Mondays 08:00 UTC — two hours after the weekly refresh
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: site-current
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # check_live.py is stdlib-only on purpose: the watchdog cannot be broken by a dependency problem,
+      # and the command in CI is exactly the command in the README.
+      - name: Is the deployed site current?
+        id: live
+        run: |
+          set +e
+          python3 check_live.py --url "${{ vars.NT90_SITE_URL || 'https://90plus-cyan.vercel.app/' }}"
+          code=$?
+          echo "exit=$code" >> "$GITHUB_OUTPUT"
+          set -e
+          case "$code" in
+            0) echo "The deployed site is current." ;;
+            2) echo "::warning::The site could not be read at all — that is a hosting problem, not a data one." ;;
+            3) echo "::error::The deployed ledger no longer verifies. See docs/operations.md section 2 before touching anything: this is the one failure that cannot be fixed by re-running a job." ;;
+          esac
+          exit $code
+
+      # The failure that is nobody's fault and still has to be said out loud: the data is behind because
+      # no new results arrived. Spell out the two-minute fix rather than leaving a red X unexplained.
+      - name: Explain a stale site
+        if: steps.live.outputs.exit == '1'
+        run: |
+          echo "::error::The deployed site is behind the fixture calendar — it does not include a gameweek"
+          echo "::error::that has already been played. Nothing is broken: the weekly job needs new results"
+          echo "::error::to publish, and it has two ways to get them."
+          echo ""
+          echo "Pick one:"
+          echo "  1. Set FOOTBALL_DATA_KEY (free, no card, 2 minutes):"
+          echo "     https://www.football-data.org/client/register"
+          echo "     Settings -> Secrets and variables -> Actions -> New repository secret"
+          echo "  2. Drop results into data/provider_drop/ and push — see docs/operations.md section 1."
+          echo ""
+          echo "Until then the site's own header says 'out of date' and names the missing gameweek, which"
+          echo "is the honest state. This workflow exists so that nobody has to notice it by accident."
+
+      - name: Verify the deployment matches the default branch
+        if: always() && steps.live.outputs.exit == '0'
+        run: python3 tools/verify_deployment.py --url "${{ vars.NT90_SITE_URL || 'https://90plus-cyan.vercel.app/' }}"
