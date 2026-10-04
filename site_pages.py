@@ -108,6 +108,43 @@ footer.site{border-top:1px solid #232b42;margin-top:40px;padding-top:18px;color:
 .fixture .pick{color:#6ee7ff;font-weight:700;font-size:13px}
 .fixture .score{color:#8E9BB8;font-size:13px}
 ul.plain{padding-left:18px}ul.plain li{margin:4px 0}
+
+  /* ── receipts page (P10.3) ─────────────────────────────────────────────── */
+  .cards{display:flex;flex-wrap:wrap;gap:12px;margin:18px 0}
+  .cards .card{flex:1 1 150px;margin:0;text-align:center}
+  .cards .card b{display:block;font-size:26px;color:#EAF0FF;font-variant-numeric:tabular-nums}
+  .cards .card span{font-size:12px;color:#8E9BB8;letter-spacing:.03em;text-transform:uppercase}
+  .rbar{display:inline-flex;height:8px;width:132px;border-radius:4px;overflow:hidden;background:#1B2336}
+  .rbar i{display:block;height:100%}
+  .rbar i.h{background:#22D3EE}.rbar i.d{background:#64748B}.rbar i.a{background:#A855F7}
+  .ticks{display:flex;flex-wrap:wrap;gap:2px;margin:10px 0 4px}
+  .ticks i{width:7px;height:20px;border-radius:2px;display:block}
+  .ticks i.hit{background:#22D3EE}
+  .ticks i.miss{background:#7F1D4D;height:9px;align-self:flex-end}
+  .hit{color:#22D3EE;font-weight:600}
+  .miss{color:#F472B6;font-weight:600}
+  pre{background:#0E1424;border:1px solid #1E2537;border-radius:10px;padding:12px 14px;overflow-x:auto}
+  pre code{color:#B9C6E4;font-size:12.5px}
+  td code{color:#B9C6E4;font-size:12px}
+  .changelog .card{margin:0 0 14px}
+  .changelog h3{margin:0 0 10px;color:#EAF0FF;font-size:17px}
+  .changelog p{margin:8px 0;line-height:1.65}
+  .changelog .measured{color:#22D3EE;font-weight:600}
+  .changelog .delta{color:#F4B860;font-weight:600}
+  .changelog .bullet{color:#B9C6E4}
+  td.fb{white-space:nowrap}
+  /* The receipts tables are wide by design (seven columns). On a phone they must scroll rather than
+     stretch the page: a horizontally-scrolling table is usable, a page that pans sideways is not. */
+  .tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 0 4px}
+  .tbl{min-width:620px}
+  .tbl td:nth-last-child(2),.tbl td:last-child{white-space:nowrap}
+  td.fb button{background:#141B2C;color:#8E9BB8;border:1px solid #232C42;border-radius:6px;
+    width:26px;height:24px;cursor:pointer;font-size:12px;transition:all .15s ease}
+  td.fb button:hover{color:#EAF0FF;border-color:#3A4763}
+  td.fb button.on{background:#22D3EE;color:#08111C;border-color:#22D3EE;font-weight:700}
+  td.fb button[data-vote="bad"].on{background:#F472B6;border-color:#F472B6}
+  td.fb a.send{margin-left:6px;color:#5C6884;font-size:11px;text-decoration:underline}
+  td.fb a.send:hover{color:#22D3EE}
 """
 
 
@@ -460,6 +497,304 @@ anything in your calendar.</p>
                               "about": "Premier League fixture calendar subscriptions"})
 
 
+def _changelog_page(markdown):
+    """P10.1 — the changelog page, generated from CHANGELOG.md so the two cannot disagree.
+
+    The .md is the source of truth (it is what a contributor edits and what renders on GitHub); this
+    turns it into the site's own page without a markdown dependency, because the suite runs on a bare
+    interpreter and a second copy of the entries would eventually be edited in one place only.
+
+    Two things learned from looking at the first render, both fixed here: the document preamble was
+    being emitted as body text *in addition to* the page's own lede (it says the same thing twice), so
+    parsing starts at the first release heading; and because the prose is wrapped across lines, each
+    line was becoming its own paragraph, which broke sentences mid-clause. Lines are joined now.
+    """
+    import html as _html
+
+    def inline(text):
+        text = _html.escape(text)
+        text = re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", text)
+        text = re.sub(r"`(.+?)`", r"<code>\1</code>", text)
+        text = re.sub(r"(?<![\w*])\*([^*]+?)\*(?![\w*])", r"<i>\1</i>", text)
+        text = re.sub(r"\[([^\]]+)\]\(([^)]+)\)", r'<a href="\2">\1</a>', text)
+        return text
+
+    # Everything before the first release belongs to the file's own preamble, which the page states
+    # in its lede: emitting both would say the same thing twice in slightly different words.
+    lines = markdown.splitlines()
+    first_release = next((i for i, l in enumerate(lines) if l.startswith("## ")), 0)
+
+    out, open_release, paragraph = [], False, []
+
+    def flush():
+        if paragraph:
+            out.append("<p>%s</p>" % inline(" ".join(paragraph)))
+            del paragraph[:]
+
+    for raw in lines[first_release:]:
+        line = raw.rstrip()
+        if line.startswith("## "):
+            flush()
+            if open_release:
+                out.append("</div>")
+            out.append('<div class="card"><h3>%s</h3>' % _html.escape(line[3:].strip()))
+            open_release = True
+        elif line.startswith("---"):
+            flush()
+        elif not line.strip():
+            flush()                       # a blank line ends the paragraph; a wrapped one does not
+        elif line.startswith("**Measured"):
+            flush()
+            out.append('<p class="measured">%s</p>' % inline(line))
+        elif line.startswith("**Delta"):
+            flush()
+            out.append('<p class="muted delta">%s</p>' % inline(line))
+        elif line.startswith("- "):
+            flush()
+            out.append('<p class="bullet">%s</p>' % inline(line[2:]))
+        else:
+            paragraph.append(line.strip())
+    flush()
+    if open_release:
+        out.append("</div>")
+
+    body = ('<nav class="crumbs"><a href="index.html">Dashboard</a> \u203a Changelog</nav>\n'
+            '<h1>Every version, and what it actually did to accuracy</h1>'
+            '<p class="lede">A delta appears against a version only where a blind replay was run for '
+            'it. Where a change was not measured separately, the entry says so: an estimate presented '
+            'as a result is worse than no number at all. This page is generated from '
+            '<code>CHANGELOG.md</code> in the repository, which is the file a contributor edits.</p>'
+            '<div class="changelog">' + "\n".join(out) + "</div>")
+    return body
+
+
+def _issue_url(gameweek, pred, call, lock):
+    """A pre-filled GitHub issue for one fixture, so an objection lands somewhere it gets read.
+
+    The body carries what the page showed \u2014 the call, the probabilities, the lock hash \u2014 so
+    the review does not have to guess which published version was being looked at. No token and no API
+    call: this is a link a human chooses to follow, which is the only kind of "send" this site can
+    honestly offer without a server.
+    """
+    import urllib.parse
+    title = "[review] MW%d %s v %s \u2014 %s" % (gameweek, pred["home"], pred["away"], call)
+    body = ("**Fixture** MW%d: %s v %s\n\n"
+            "**The call**: %s (home %.1f%% / draw %.1f%% / away %.1f%%), most likely score %s\n\n"
+            "**Locked**: %s, sha256 `%s`\n\n"
+            "**Why I think this one is wrong**: \n\n"
+            "<!-- The lock hash is here so the review can tell which published version you were looking "
+            "at. -->") % (
+        gameweek, pred["home"], pred["away"], call, pred["prob_home"], pred["prob_draw"],
+        pred["prob_away"], (pred.get("top_scorelines") or [{}])[0].get("score", "-"),
+        str(lock.get("locked_at") or "?")[:10], lock.get("content_hash", "")[:16])
+    return ("https://github.com/joshuathomas171717-cpu/90-I-/issues/new?labels=review&title=%s&body=%s"
+            % (urllib.parse.quote(title), urllib.parse.quote(body)))
+
+
+def _receipts_page(ledger, backtest):
+    """P10.3 — every call on the record: what was predicted before kickoff, what actually happened.
+
+    This page exists to be checked rather than believed. Three things it must never do: show a
+    prediction that was not published before the match, hide the misses, or present the 2025-26
+    replay as though it were a live record. The live ledger and the replay are labelled separately
+    and never blended, and where the ledger has nothing scored yet it says so instead of padding.
+
+    The 2025-26 replay has no gameweek column in its source data, so it is charted in fixture-list
+    order over 380 matches — not as gameweeks, which would be a number this file cannot actually
+    support.
+    """
+    locks = ledger.get("locks", [])
+    entries = {e.get("gameweek"): e for e in ledger.get("entries", [])}
+    summary = ledger.get("summary", {})
+    bits = []
+
+    def _call(pred):
+        """The model's pick, in words. The argmax of the three probabilities, as the ledger scores it."""
+        home, draw, away = pred["prob_home"], pred["prob_draw"], pred["prob_away"]
+        best = max((home, "home"), (draw, "draw"), (away, "away"))
+        if best[1] == "home":
+            return pred["home_name"] + " win"
+        if best[1] == "away":
+            return pred["away_name"] + " win"
+        return "Draw"
+
+    def _prob_bar(pred):
+        return ('<span class="rbar" title="home %.1f%% · draw %.1f%% · away %.1f%%">'
+                '<i class="h" style="width:%.1f%%"></i><i class="d" style="width:%.1f%%"></i>'
+                '<i class="a" style="width:%.1f%%"></i></span>'
+                % (pred["prob_home"], pred["prob_draw"], pred["prob_away"],
+                   pred["prob_home"], pred["prob_draw"], pred["prob_away"]))
+
+    bits.append("""
+<nav class="crumbs"><a href="index.html">Dashboard</a> › Receipts</nav>
+<h1>Every call, on the record</h1>
+<p class="lede">A prediction site can regenerate last week's forecast once the results are in, and
+nobody would ever see it happen. So each gameweek's predictions are <b>hashed when they are
+published</b>, scored only after the matches, and added to a ledger that is append-only: nothing is
+overwritten, and re-scoring a gameweek leaves the old numbers in the audit trail. You do not have to
+take any of that on trust — the file is in the repository and one command re-checks every hash.</p>""")
+
+    # ── the live ledger ──────────────────────────────────────────────────────────────────────────────
+    scored_weeks = len(entries)
+    bits.append('<h2>The live ledger — 2026–27</h2>')
+    bits.append('<div class="cards">'
+                '<div class="card"><b>%d</b><span>gameweek%s locked</span></div>'
+                '<div class="card"><b>%d</b><span>scored so far</span></div>'
+                '<div class="card"><b>%s</b><span>season accuracy</span></div>'
+                '<div class="card"><b>%s</b><span>mean RPS</span></div></div>'
+                % (len(locks), "" if len(locks) == 1 else "s", scored_weeks,
+                   ("%.1f%%" % summary["accuracy_pct"]) if summary.get("accuracy_pct") else "—",
+                   ("%.4f" % summary["mean_rps"]) if summary.get("mean_rps") else "—"))
+
+    if not locks:
+        bits.append('<p class="muted">No gameweek has been locked yet. The ledger opens at the next '
+                    'snapshot, and this page will fill in from there.</p>')
+
+    for lock in sorted(locks, key=lambda l: l["gameweek"]):
+        gw = lock["gameweek"]
+        entry = entries.get(gw)
+        snap_path = os.path.join(DATA, "snapshots", lock.get("snapshot", ""))
+        predictions = []
+        if os.path.exists(snap_path):
+            with open(snap_path, encoding="utf-8") as fh:
+                predictions = json.load(fh).get("predictions", [])
+
+        verdict = ("scored — %d/%d correct, mean RPS %.4f"
+                   % (entry["hits"], entry["matches"], entry["mean_rps"])) if entry else \
+                  "locked, not yet scored — the matches have not been played"
+        bits.append('<div class="card"><h3>Matchweek %d</h3>'
+                    '<p class="muted">Predictions generated <b>%s</b> · locked <b>%s</b> · '
+                    'sha256 <code>%s</code><br>%s</p>'
+                    % (gw, _esc(str(lock.get("generated") or "?")[:10]),
+                       _esc(str(lock.get("locked_at") or "?")[:10]),
+                       _esc(lock["content_hash"][:16] + "…"), verdict))
+        if predictions:
+            bits.append('<div class="tablewrap"><table class="tbl"><tr><th>Fixture</th><th>Our call</th><th>Score</th>'
+                        '<th>Home / draw / away</th><th>Actual</th><th></th><th>Your verdict</th></tr>')
+            rows = {r["home"] + "-" + r["away"]: r for r in (entry or {}).get("rows", [])}
+            for pred in predictions:
+                row = rows.get(pred["home"] + "-" + pred["away"])
+                actual = (row["actual_score"] + " " + row["actual"]) if row else "not played"
+                if row:
+                    mark = ('<span class="hit">correct</span>' if row["hit"]
+                            else '<span class="miss">missed</span>')
+                    mark += ' <span class="muted">RPS %.3f</span>' % row["rps"]
+                else:
+                    mark = ""
+                ref = "gw%d-%s-%s" % (gw, pred["home"], pred["away"])
+                bits.append(
+                    '<tr><td>%s v %s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td>'
+                    '<td class="fb" data-ref="%s">'
+                    '<button type="button" data-vote="good" title="This call was reasonable">&#10003;</button>'
+                    '<button type="button" data-vote="bad" title="This call looks wrong">&#10007;</button>'
+                    '<a class="send" href="%s" target="_blank" rel="noopener" title="Open a pre-filled '
+                    'review issue for this fixture">send</a></td></tr>'
+                    % (_esc(pred["home_name"]), _esc(pred["away_name"]), _esc(_call(pred)),
+                       _esc((pred.get("top_scorelines") or [{}])[0].get("score", "\u2014")),
+                       _prob_bar(pred), _esc(actual), mark, ref,
+                       _issue_url(gw, pred, _call(pred), lock)))
+            bits.append("</table></div>")
+        bits.append("</div>")
+
+    # ── the 2025-26 replay, clearly not the live record ──────────────────────────────────────────────
+    preds = backtest.get("predictions") or []
+    if preds:
+        hits = [1 if p.get("hit") else 0 for p in preds]
+        ticks = "".join('<i class="%s" title="%s v %s — %s"></i>'
+                        % ("hit" if h else "miss", _esc(p["home"]), _esc(p["away"]),
+                           _esc(p.get("score", "")))
+                        for p, h in zip(preds, hits))
+        milestones = []
+        for n in (40, 80, 120, 160, 200, 240, 280, 320, 380):
+            window, running = hits[:n], sum(hits[:n]) / n * 100
+            milestones.append("<tr><td>first %d</td><td>%.1f%%</td></tr>" % (n, running))
+        baselines = backtest.get("baselines", {})
+        base_rows = "".join("<tr><td>%s</td><td>%s</td><td>%s</td></tr>"
+                            % (_esc(name), "%.1f%%" % b["accuracy"], "%.4f" % b["rps"])
+                            for name, b in sorted(baselines.items(), key=lambda kv: kv[1]["rps"]))
+        meta = backtest.get("meta", {})
+        model = backtest.get("model", {})
+        bits.append("""
+<h2>The 2025–26 replay — a backtest, not a live record</h2>
+<p class="lede">This is a different kind of evidence and it is labelled as such: the model was fitted
+on <b>%s</b>, then replayed across all 380 matches of 2025–26. Every one of those calls was made
+before that season was played. It is not the ledger — the ledger above is the only live record.</p>
+<p>The fixtures are in the order the source file lists them, not grouped into gameweeks: that file has
+no gameweek column, and inventing one would be exactly the kind of tidy-up this page exists to avoid.</p>
+<div class="card"><h3>380 calls, misses included</h3><div class="ticks">%s</div>
+<p class="muted">%d correct of %d (%.1f%%). Tall ticks are hits, short are misses; hover for the
+fixture and scoreline.</p></div>
+<div class="tablewrap"><table class="tbl"><tr><th></th><th>Accuracy</th><th>RPS (lower is better)</th></tr>
+<tr><td><b>NINETY+ model</b></td><td><b>%.1f%%</b></td><td><b>%.4f</b></td></tr>
+%s</table></div>
+<div class="tablewrap"><table class="tbl"><tr><th>Running accuracy</th><th></th></tr>%s</table></div>"""
+                    % (_esc(meta.get("information_used", "2024–25 and earlier")),
+                       ticks, sum(hits), len(hits), sum(hits) / len(hits) * 100,
+                       model.get("accuracy", 0.0), model.get("rps", 0.0),
+                       base_rows, "".join(milestones)))
+
+    # ── how to check it ──────────────────────────────────────────────────────────────────────────────
+    bits.append("""
+<h2>Check it yourself</h2>
+<p>The ledger, the published snapshots and the code that verifies them are all in the repository.
+Nothing here needs an account:</p>
+<pre><code>python3 score_ledger.py --verify     # re-hash every lock against the published snapshot
+python3 score_ledger.py --json       # the raw ledger, as published</code></pre>
+<p><code>--verify</code> recomputes two things and fails loudly on either: the SHA-256 recorded when
+each gameweek was locked, against the predictions in the snapshot file today, and a hash chain over
+every write to the ledger, so an edited or deleted record cannot pass. A mismatch means the
+predictions or the record changed after publication — which is the one thing this page promises
+cannot happen quietly.</p>
+<p><a href="ledger.json">ledger.json</a> is the same file the page above was generated from, served
+so you can compare it with what it says.</p>
+
+<h2>Was this call good? — and where your answer goes</h2>
+<p>Two honest options, because this site has no server, no accounts and no analytics. The buttons on
+each row record your verdict <b>in this browser only</b>: nothing is transmitted, and clearing your
+site data removes it. <b>send</b> opens a pre-filled review issue on GitHub, which is where the weekly
+review actually lives. Nothing leaves the page unless you click that link.</p>
+<p class="muted" id="fbSummary">No verdicts recorded yet.</p>
+<p>Aggregation is the part a static site cannot honestly fake, so it happens where you can see it:
+<a href="https://github.com/joshuathomas171717-cpu/90-I-/tree/main/docs/reviews">docs/reviews/</a>
+holds one review per gameweek — what the ledger shows, which misses were noise and which look
+systematic, and what changed as a result. The cadence and the checklist live in that folder.</p>
+
+<script>
+/* P10.4 — per-fixture reactions, local by design: localStorage only, no fetch, no beacon, nothing
+   leaving the browser unless the reader clicks "send". A reaction that quietly phoned home would
+   contradict the privacy note on a site whose whole point is that it does not track anyone. */
+(function(){
+  var KEY = "nt90:feedback", box = {};
+  try { box = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch(e){ box = {}; }
+  function save(){ try { localStorage.setItem(KEY, JSON.stringify(box)); } catch(e){} }
+  function summary(){
+    var v = Object.keys(box).map(function(k){ return box[k]; });
+    var good = v.filter(function(x){ return x === "good"; }).length;
+    var bad  = v.filter(function(x){ return x === "bad"; }).length;
+    var el = document.getElementById("fbSummary");
+    if(el) el.textContent = (good + bad)
+      ? ("Recorded in this browser: " + good + " flagged reasonable, " + bad + " flagged questionable. "
+         + "Nothing has been sent — use \u201csend\u201d on a row to put one in the review.")
+      : "No verdicts recorded yet.";
+  }
+  document.querySelectorAll(".fb button").forEach(function(btn){
+    var cell = btn.parentNode, ref = cell.getAttribute("data-ref");
+    if(box[ref] === btn.getAttribute("data-vote")) btn.classList.add("on");
+    btn.addEventListener("click", function(){
+      var vote = btn.getAttribute("data-vote");
+      if(box[ref] === vote){ delete box[ref]; } else { box[ref] = vote; }
+      save();
+      cell.querySelectorAll("button").forEach(function(b){ b.classList.remove("on"); });
+      if(box[ref]) btn.classList.add("on");
+      summary();
+    });
+  });
+  summary();
+})();
+</script>""")
+    return "\n".join(bits)
+
+
 def _privacy_page():
     """The privacy note (P9.3). Written to be true of the software as it stands: no accounts, no
     cookies, no third-party scripts. If analytics are ever added, this page has to change in the same
@@ -747,6 +1082,28 @@ def build(summary=None):
         with open(_bt_path, encoding="utf-8") as fh:
             _backtest = json.load(fh)
     w("method.html", _method_page(summary, _backtest))
+    _ledger = {}
+    _ledger_path = os.path.join(DATA, "ledger_2026_27.json")
+    if os.path.exists(_ledger_path):
+        with open(_ledger_path, encoding="utf-8") as fh:
+            _ledger = json.load(fh)
+    _changelog_md = ""
+    _changelog_path = os.path.join(BASE, "CHANGELOG.md")
+    if os.path.exists(_changelog_path):
+        with open(_changelog_path, encoding="utf-8") as fh:
+            _changelog_md = fh.read()
+    w("changelog.html", page("Changelog \u2014 what changed, and what it did to accuracy",
+                             "Every version of the NINETY+ model and site: what changed, when, and "
+                             "the measured accuracy delta where one exists.",
+                             _changelog_page(_changelog_md), depth=0, canonical="changelog.html",
+                             jsonld={"@type": "WebPage", "name": "NINETY+ changelog"}))
+    w("receipts.html", page("Receipts \u2014 every NINETY+ call, before and after",
+                            "What was predicted before kickoff, what actually happened, and how to "
+                            "re-check the record yourself.",
+                            _receipts_page(_ledger, _backtest), depth=0, canonical="receipts.html",
+                            jsonld={"@type": "WebPage", "name": "The NINETY+ prediction ledger"}))
+    # Published as data as well as as a page, so the page's claims can be checked against the file.
+    w("ledger.json", json.dumps(_ledger, indent=2) + "\n", "data")
     w("privacy.html", _privacy_page())
     w("calendar.html", _calendar_page(summary))
 

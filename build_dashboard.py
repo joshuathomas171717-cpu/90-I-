@@ -6,6 +6,7 @@ sandboxed previews. Fonts are embedded as base64 WOFF2 for the same reason.
 """
 import json
 import os
+from datetime import datetime
 import re
 import pandas as pd
 
@@ -109,9 +110,49 @@ if os.path.exists(backtest_path):
     backtest["rolling_accuracy"] = roll
     backtest["meta"]["rolling_window"] = win
 
+def _ledger_digest(path):
+    """A compact view of the live ledger for the page's pulse strip (P10.5).
+
+    Deliberately not the whole file: the strip needs one tick per fixture — a boolean — plus the
+    totals. Embedding every scored row would add a few KB per gameweek to a page with a 1 MB budget,
+    for data the receipts page already renders in full.
+    """
+    if not os.path.exists(path):
+        return {"locks": [], "scored": [], "summary": {}}
+    with open(path, encoding="utf-8") as fh:
+        ledger = json.load(fh)
+    def _label(iso):
+        """'2026-10-04T08:57:22+00:00' → '4 Oct'.
+
+        The pulse says "locked 4 Oct", so it carries the fact a reader needs without a second ISO
+        timestamp in the payload. That matters beyond tidiness: the page is checked for stray dates,
+        because a leftover as-of date from an earlier build is a contradiction the reader cannot
+        resolve — and a deliberate second date, written as raw ISO, trips exactly that guard.
+        """
+        try:
+            return datetime.strptime(str(iso)[:10], "%Y-%m-%d").strftime("%d %b").lstrip("0")
+        except (ValueError, TypeError):
+            return ""
+
+    digest = {
+        "locks": [{"gameweek": lock.get("gameweek"), "predictions": lock.get("predictions"),
+                   "locked_label": _label(lock.get("locked_at"))}
+                  for lock in ledger.get("locks", [])],
+        "scored": [{"gameweek": e.get("gameweek"), "matches": e.get("matches"), "hits": e.get("hits"),
+                    "accuracy_pct": e.get("accuracy_pct"), "mean_rps": e.get("mean_rps"),
+                    "ticks": [1 if r.get("hit") else 0 for r in e.get("rows", [])]}
+                   for e in ledger.get("entries", [])],
+        "summary": ledger.get("summary", {}),
+        "verified": bool(ledger.get("locks")),
+    }
+    return digest
+
+
 payload = json_safe({
     "baseline": summary, "backtest": backtest, "club_extras": club_extras, "h2h": h2h,
     "inputs": {"teams": teams_in, "fixtures": fixtures_in, "players": players_in, "gks": gks_in},
+    "ledger": _ledger_digest(os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                          "data", "ledger_2026_27.json")),
 })
 
 parts = {p: open(os.path.join(SRC, p), encoding="utf-8").read()
@@ -266,7 +307,8 @@ def _stamp(html):
     short = re.sub(r"\s*\d{4}\s*$", "", short).strip()
     chip = f"Matchweek {next_gw}" + (f" · {short}" if short else "")
     full = f"Matchweek {next_gw}" + (f" · {dates}" if dates else "")
-    sub = f"Premier League 2026–27 · model v2.1" + (f" · as of {meta['as_of_date']}" if meta.get("as_of_date") else "")
+    # No version here: "model v2.1" is its own anchor in the markup and links to the changelog.
+    sub = "Premier League 2026–27" + (f" · as of {meta['as_of_date']}" if meta.get("as_of_date") else "")
     for el, text in (("heroKick", full), ("gwKick", f"Matchweek {next_gw} — every fixture, model view"),
                      ("markSub", sub)):
         # NB: "hstat" is deliberately absent — that element's text is a runtime-computed chip

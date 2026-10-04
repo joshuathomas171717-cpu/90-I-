@@ -94,69 +94,22 @@ def build_merged(root=DATA_DIR, fetched=None):
 
 
 # ════════════════════════════════════════════════════════════════════════════
-#  scoring — the public record (P2.6)
+#  scoring + the public record — implemented in score_ledger.py (P10.2)
 # ════════════════════════════════════════════════════════════════════════════
-def score_prediction(probs, actual):
-    """(hit, rps) for one match. probs = {"home","draw","away"} in %, actual in {"H","D","A"}."""
-    p = [probs["home"] / 100.0, probs["draw"] / 100.0, probs["away"] / 100.0]
-    total = sum(p) or 1.0
-    p = [x / total for x in p]
-    order = {"H": 0, "D": 1, "A": 2}
-    hit = max(range(3), key=lambda i: p[i]) == order[actual]     # argmax over [home, draw, away]
-    cumulative_p = [p[0], p[0] + p[1]]
-    actual_vec = [1.0 if order[actual] == 0 else 0.0, 1.0 if order[actual] <= 1 else 0.0]
-    rps = 0.5 * sum((cp - ca) ** 2 for cp, ca in zip(cumulative_p, actual_vec))
-    return hit, round(rps, 4)
+# One implementation, because two would eventually disagree about what a hit is. The ledger now
+# hashes what was published, chains every write, and can be re-checked by a stranger
+# (`python3 score_ledger.py --verify`), which is the whole point of publishing it.
+import score_ledger as _ledger                                          # noqa: E402
 
-
-def score_gameweek(predictions, results):
-    """Score a published set of predictions against the results that have since arrived."""
-    by_key = {(r["home"], r["away"]): r for r in results}
-    rows, hits = [], 0
-    for pred in predictions:
-        actual = by_key.get((pred["home"], pred["away"]))
-        if not actual:
-            continue
-        hg, ag = int(actual["home_goals"]), int(actual["away_goals"])
-        hit, rps = score_prediction(
-            {"home": pred["prob_home"], "draw": pred["prob_draw"], "away": pred["prob_away"]},
-            outcome_of(hg, ag))
-        hits += 1 if hit else 0
-        rows.append({"home": pred["home"], "away": pred["away"],
-                     "predicted": {"home": pred["prob_home"], "draw": pred["prob_draw"], "away": pred["prob_away"]},
-                     "predicted_score": (pred.get("top_scorelines") or [{}])[0].get("score"),
-                     "actual": outcome_of(hg, ag), "actual_score": "%d-%d" % (hg, ag),
-                     "hit": hit, "rps": rps})
-    if not rows:
-        return None
-    return {"matches": len(rows), "hits": hits, "accuracy_pct": round(hits / len(rows) * 100, 1),
-            "mean_rps": round(sum(r["rps"] for r in rows) / len(rows), 4), "rows": rows}
+score_prediction = _ledger.score_prediction
+score_gameweek = _ledger.score_gameweek
+lock_gameweek = _ledger.lock_gameweek
+score_and_append = _ledger.score_and_append
 
 
 def append_ledger(entry, path=LEDGER_PATH):
-    """Append a gameweek to the public record. Idempotent: re-running a week replaces its entry."""
-    if os.path.exists(path):
-        with open(path, encoding="utf-8") as fh:
-            ledger = json.load(fh)
-    else:
-        ledger = {"season": "2026-27", "note": "Predictions published before a gameweek, scored after it. "
-                                              "Entries are added by update_week.py, never edited by hand.",
-                  "entries": []}
-    ledger["entries"] = [e for e in ledger["entries"] if e.get("gameweek") != entry["gameweek"]]
-    ledger["entries"].append(entry)
-    ledger["entries"].sort(key=lambda e: e["gameweek"])
-    total_m = sum(e["matches"] for e in ledger["entries"])
-    total_h = sum(e["hits"] for e in ledger["entries"])
-    ledger["summary"] = {
-        "gameweeks": len(ledger["entries"]), "matches": total_m, "hits": total_h,
-        "accuracy_pct": round(total_h / total_m * 100, 1) if total_m else None,
-        "mean_rps": round(sum(e["mean_rps"] * e["matches"] for e in ledger["entries"]) / total_m, 4) if total_m else None,
-    }
-    ledger["updated"] = as_of_date()
-    os.makedirs(os.path.dirname(path), exist_ok=True)
-    with open(path, "w", encoding="utf-8") as fh:
-        json.dump(ledger, fh, indent=2)
-    return ledger
+    """Thin wrapper so the ledger path still follows NT90_DATA_DIR (the end-to-end test uses it)."""
+    return _ledger.append_ledger(entry, path=path)
 
 
 def latest_snapshot():
@@ -336,15 +289,24 @@ def main(argv=None):
     # ── 6. ledger: score the gameweek that just completed ──
     snap = latest_snapshot()
     if snap and snap.get("predictions"):
-        scored = score_gameweek(snap["predictions"], results)
-        if scored:
-            entry = {"gameweek": snap["gameweek"], "scored_on": as_of_date(), "source": snap.get("source"),
-                     "predictions_published": snap.get("as_of"), **scored}
-            ledger = append_ledger(entry)
+        # Lock before scoring, so what is scored is provably the bytes that were published. Locking
+        # is idempotent, and a lock taken now carries its own timestamp — the snapshot's own
+        # `generated` time is what says when the predictions were actually made.
+        _ledger_file, lock, locked_now = lock_gameweek(snap, path=LEDGER_PATH)
+        if locked_now:
+            log("lock", "gw%d predictions locked · %d fixtures · sha256 %s"
+                % (lock["gameweek"], lock["predictions"], lock["content_hash"][:16]))
+        ledger, written = score_and_append(results, path=LEDGER_PATH,
+                                           snapshot_dir=SNAPSHOT_DIR)
+        if written:
+            entry = written[-1]
             log("ledger", "gw%d: %d/%d correct (%.1f%%), mean RPS %.4f · season: %s"
-                % (entry["gameweek"], scored["hits"], scored["matches"], scored["accuracy_pct"],
-                   scored["mean_rps"], json.dumps(ledger["summary"])))
+                % (entry["gameweek"], entry["hits"], entry["matches"], entry["accuracy_pct"],
+                   entry["mean_rps"], json.dumps(ledger["summary"])))
             summary["ledger"] = ledger["summary"]
+        else:
+            log("ledger", "gw%d locked, no new results yet · %d gameweek(s) scored so far"
+                % (lock["gameweek"], ledger["summary"]["gameweeks"]))
     else:
         log("ledger", "no prior snapshot with predictions — nothing to score yet")
 
@@ -394,6 +356,12 @@ def main(argv=None):
     }
     path = write_snapshot(state)
     log("snapshot", os.path.relpath(path, BASE_DIR))
+    # Locked here, right after publication, while the fixtures are still in the future. This is the
+    # moment that makes the ledger worth reading: the hash exists before a ball is kicked, and
+    # `score_ledger.py --verify` will fail if those predictions are ever edited afterwards.
+    if state.get("predictions"):
+        _f, lock, _new = lock_gameweek(state, path=LEDGER_PATH)
+        log("lock", "gw%d locked before kickoff · sha256 %s" % (lock["gameweek"], lock["content_hash"][:16]))
     if ALERT_ON_SUCCESS:
         _leader = ("-", 0)
         for _row in state["table"]:

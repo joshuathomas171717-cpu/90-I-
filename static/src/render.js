@@ -55,7 +55,7 @@ function renderHeader(){
     <button class="btn sm kbdbtn" id="kbdBtn" style="align-self:center" aria-label="Keyboard shortcuts"
       data-tip="Keyboard shortcuts">?</button>`;
   const sub = $("markSub");
-  if(sub) sub.textContent = `Premier League 2026–27 · model v2.1${AS_OF ? " · as of " + AS_OF : ""}`;
+  if(sub) sub.textContent = `Premier League 2026–27${AS_OF ? " · as of " + AS_OF : ""}`;
   const r = $("resetScenTop"); if(r) r.onclick = resetScenario;
   const kb = $("kbdBtn"); if(kb) kb.onclick = () => UX.toggleSheet(true);
   paintMode();
@@ -249,14 +249,47 @@ function renderPulse(){
   const acc = BT ? BT.model.accuracy : M.accuracy_1x2;
   const skill = BT ? BT.skill_vs_prior_table.rps : 8.8;
   const rho = BT ? BT.table_level.spearman_rank_correlation : 0.566;
-  const hits = (BT && BT.hits) || [];
-  const strip = hits.slice(0, 190).map((h, i) =>
+  const replay = (BT && BT.hits) || [];
+  const L = (typeof EMBEDDED !== "undefined" && EMBEDDED && EMBEDDED.ledger) || {};
+  const scored = L.scored || [], locks = L.locks || [];
+  const live = L.summary || {};
+
+  /* P10.5 — the strip reads the live ledger first.
+   *
+   * It used to be a fixed picture of the 2025-26 replay: honest, but frozen, and incapable of changing
+   * when the model was right or wrong in the season actually being played. Now every tick is a fixture
+   * whose prediction was locked before kickoff and scored afterwards, so the visual grows on its own
+   * each week — misses included, because a strip that only shows hits is decoration.
+   *
+   * While a gameweek is locked and unplayed its ticks are drawn hollow and labelled as pending, which
+   * is the honest picture of "we have published this and do not know yet" — and the state this block
+   * sits in for most of the week. The replay stays underneath, clearly marked as a backtest.
+   */
+  const liveTicks = [];
+  scored.forEach(e => (e.ticks || []).forEach((t, i) => liveTicks.push({ hit: t, gw: e.gameweek, i: i })));
+  const pending = locks.filter(l => !scored.some(e => e.gameweek === l.gameweek))
+                       .reduce((n, l) => n + (l.predictions || 0), 0);
+  const liveStrip = liveTicks.map(t =>
+    `<i data-hit="${t.hit}" title="Matchweek ${t.gw}: call ${t.hit ? "correct" : "missed"}" style="--i:${t.i}; background:${t.hit ? "var(--pitch)" : "rgba(244,114,182,.55)"}; height:${t.hit ? 14 : 6}px"></i>`).join("")
+    + Array.from({ length: pending }, (_, i) =>
+    `<i data-pending="1" title="locked, not yet played" style="--i:${i}; background:transparent; box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.22); height:14px"></i>`).join("");
+  const replayStrip = replay.slice(0, 190).map((h, i) =>
     `<i data-hit="${h}" style="--i:${i}; background:${h ? "var(--pitch)" : "rgba(255,255,255,.10)"}; height:${h ? 14 : 6}px"></i>`).join("");
+
+  const liveHeadline = scored.length
+    ? `${live.hits}/${live.matches} correct in the season being played · mean RPS ${live.mean_rps}`
+    : (locks.length
+        ? `Matchweek ${locks[locks.length - 1].gameweek} locked${locks[locks.length - 1].locked_label ? " " + locks[locks.length - 1].locked_label : ""}, before kickoff · ${pending} calls pending, scored after the weekend`
+        : "no gameweek locked yet — the ledger opens with the next snapshot");
+  const liveCaption = scored.length
+    ? `${scored.length} gameweek${scored.length === 1 ? "" : "s"} scored · ${live.accuracy_pct}% correct so far · misses shown, not hidden`
+    : "These calls were published and hashed before the matches. Nothing is scored until they are played.";
+
   $("pulse").innerHTML = `
     <div class="grid g2" style="gap:10px">
       <div class="tile g" style="padding:12px 13px">
-        <div class="k">Out-of-sample 1X2</div>
-        <div class="big" data-count="${acc}" data-dec="1" data-suf="%" style="font-size:26px">0%</div>
+        <div class="k">${scored.length ? "Live ledger 1X2" : "Out-of-sample 1X2"}</div>
+        <div class="big" data-count="${scored.length ? (live.accuracy_pct || 0) : acc}" data-dec="1" data-suf="%" style="font-size:26px">0%</div>
       </div>
       <div class="tile g" style="padding:12px 13px">
         <div class="k">Skill vs prior table</div>
@@ -264,17 +297,23 @@ function renderPulse(){
       </div>
     </div>
     <div style="margin-top:14px">
-      <div class="kick" style="margin-bottom:8px">Every call in the 2025–26 replay</div>
-      <div class="hitstrip">${strip}</div>
-      <div class="small dim" style="margin-top:7px">${hits.slice(0,190).filter(Boolean).length} of ${hits.slice(0,190).length} shown correct · tall ticks = the model got it right
-        (full replay: ${hits.filter(Boolean).length}/${hits.length}, ${(hits.filter(Boolean).length / (hits.length||1) * 100).toFixed(1)}%)</div>
+      <div class="kick" style="margin-bottom:8px">The live ledger — predictions locked before kickoff</div>
+      <div class="hitstrip">${liveStrip || '<span class="small dim">No calls locked yet.</span>'}</div>
+      <div class="small dim" style="margin-top:7px">${esc(liveHeadline)}<br>${esc(liveCaption)}</div>
+    </div>
+    <div style="margin-top:14px; padding-top:12px; border-top:1px solid rgba(255,255,255,.07)">
+      <div class="kick" style="margin-bottom:8px">2025–26 replay <span class="dim">— a backtest, not the live record</span></div>
+      <div class="hitstrip">${replayStrip}</div>
+      <div class="small dim" style="margin-top:7px">${replay.filter(Boolean).length}/${replay.length} (${(replay.filter(Boolean).length / (replay.length||1) * 100).toFixed(1)}%) · every call made <b>before that season started</b></div>
     </div>
     <div class="small mut" style="margin-top:12px; line-height:1.6">
-      Rank correlation <b>${rho}</b> on final positions, calibration checked,
-      and every one of those calls made <b>before the season started</b>.
-      <a href="#" id="pulseMore" style="color:var(--pitch);text-decoration:none;font-weight:600">See the full replay →</a>
+      Rank correlation <b>${rho}</b> on final positions, calibration checked.
+      <a href="receipts.html" id="pulseMore" style="color:var(--pitch);text-decoration:none;font-weight:600">See every call, on the record →</a>
     </div>`;
-  const pm = $("pulseMore"); if(pm) pm.onclick = (e) => { e.preventDefault(); switchTab("model"); };
+  // The link is a real page now (P10.3), so it navigates instead of hijacking a tab. Left as a plain
+  // anchor: middle-click and "open in new tab" have to keep working on something whose whole purpose
+  // is being checked by a sceptic.
+  const pm = $("pulseMore"); if(pm) pm.target = "_self";
   // the wave: each correct call gets its own beat
   const stripEls = $("pulse").querySelectorAll(".hitstrip i");
   if(!REDUCED) stripEls.forEach((el, i) => {

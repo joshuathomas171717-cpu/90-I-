@@ -1,0 +1,37 @@
+{
+  "season": "2026-27",
+  "note": "Predictions are locked before kickoff and scored after. Locks and revisions are append-only: run `python3 score_ledger.py --verify` to check this file against the published snapshots yourself.",
+  "entries": [],
+  "locks": [
+    {
+      "gameweek": 6,
+      "locked_at": "2026-10-04T08:57:22+00:00",
+      "as_of": "2026-10-03",
+      "generated": "2026-10-03T04:58:45",
+      "snapshot": "gw06.json",
+      "predictions": 10,
+      "content_hash": "fc81a13fe72c60beda214b438a204b3579b5adeb6cf3717aba59ce135f4802ad",
+      "supersedes": null
+    }
+  ],
+  "revisions": [
+    {
+      "seq": 0,
+      "at": "2026-10-04T08:57:22+00:00",
+      "event": "locked",
+      "gameweek": 6,
+      "detail": "10 predictions, hash fc81a13fe72c",
+      "content": "fc81a13fe72c60beda214b438a204b3579b5adeb6cf3717aba59ce135f4802ad",
+      "prev": "",
+      "hash": "622e2310595069c7e649e49c0093a0d26770b93fa8263875b783b2df64573886"
+    }
+  ],
+  "summary": {
+    "gameweeks": 0,
+    "matches": 0,
+    "hits": 0,
+    "accuracy_pct": null,
+    "mean_rps": null
+  },
+  "updated": "2026-10-04"
+}

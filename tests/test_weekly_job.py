@@ -437,6 +437,15 @@ def test_weekly_job_end_to_end_in_a_copy():
         shutil.rmtree(os.path.join(project, "data", "raw"), ignore_errors=True)
         shutil.rmtree(os.path.join(project, "data", "staging"), ignore_errors=True)
         shutil.rmtree(os.path.join(project, "data", "snapshots"), ignore_errors=True)
+        # The ledger too. Without this the copy inherits the shipped ledger, which already has a gw6
+        # lock, and the assertions below could pass on the inherited lock rather than on one this run
+        # created. Removing it forces the job to build the whole record itself — which is the thing
+        # being tested.
+        for stale in ("ledger_2026_27.json",):
+            try:
+                os.remove(os.path.join(project, "data", stale))
+            except OSError:
+                pass
 
         # the snapshot we just read belongs to the copy too
         os.makedirs(os.path.join(project, "data", "snapshots"), exist_ok=True)
@@ -496,6 +505,29 @@ def test_weekly_job_end_to_end_in_a_copy():
             "gw7 snapshot is not usable: %s" % {k: nxt[k] for k in ("gameweek", "stale_payload")}
         assert nxt.get("stale_payload") is False
         assert nxt["played_matches"] == 60
+
+        # ── and the run locked what it published, so the record can be checked afterwards ──────────
+        # The ledger's promise is that a prediction existed, unchanged, before the match. It is only
+        # worth anything if the *job* takes the lock, not just the CLI: this asserts the run locked the
+        # gameweek it scored and the one it just published, and that the chain verifies on the files
+        # the job wrote. A lock that is never taken is the failure mode that looks fine from outside.
+        import score_ledger as _SL
+        ledger_path = os.path.join(project, "data", "ledger_2026_27.json")
+        with open(ledger_path, encoding="utf-8") as fh:
+            written = json.load(fh)
+        locked_weeks = {l["gameweek"] for l in written.get("locks", [])}
+        assert {6, 7} <= locked_weeks, (
+            "the job scored gw6 and published gw7 but locked only %s — an unlocked gameweek cannot be "
+            "verified by a reader" % sorted(locked_weeks))
+        assert written.get("revisions"), "the ledger has no audit trail"
+        report = _SL.verify(path=ledger_path,
+                            snapshot_dir=os.path.join(project, "data", "snapshots"))
+        assert report["ok"], "the ledger the job just wrote does not verify: %s" % report["problems"]
+        gw7_lock = [l for l in written["locks"] if l["gameweek"] == 7][-1]
+        with open(os.path.join(project, "data", "snapshots", "gw07.json"), encoding="utf-8") as fh:
+            gw7_snapshot = json.load(fh)
+        assert gw7_lock["content_hash"] == _SL.content_hash(gw7_snapshot["predictions"]), (
+            "the gw7 lock does not match the snapshot the job published")
         print("\n  [weekly] 60 played · ledger gw6 %d/%d (%.1f%%) · snapshot gw7 with %d predictions"
               % (entry["hits"], entry["matches"], entry["accuracy_pct"], len(nxt["predictions"])))
 

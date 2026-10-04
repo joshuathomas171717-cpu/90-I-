@@ -3,27 +3,22 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Sunderland 2026–27 projection — NINETY+</title>
-<meta name="description" content="Sunderland are projected 41.1 points with a 0% chance of the title. Remaining fixtures and probabilities from 5,000 simulated seasons.">
+<title>Changelog — what changed, and what it did to accuracy</title>
+<meta name="description" content="Every version of the NINETY+ model and site: what changed, when, and the measured accuracy delta where one exists.">
 <meta name="theme-color" content="#0B0F1A">
-<link rel="icon" href="../icon.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="../apple-touch-icon.png">
-<link rel="icon" href="../icons/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="icons/favicon-32.png" sizes="32x32" type="image/png">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="NINETY+">
-<meta property="og:title" content="Sunderland 2026–27 projection — NINETY+">
-<meta property="og:description" content="Sunderland are projected 41.1 points with a 0% chance of the title. Remaining fixtures and probabilities from 5,000 simulated seasons.">
+<meta property="og:title" content="Changelog — what changed, and what it did to accuracy">
+<meta property="og:description" content="Every version of the NINETY+ model and site: what changed, when, and the measured accuracy delta where one exists.">
 
-<meta property="og:image" content="../og/club-sun.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Sunderland 2026–27 projection — NINETY+">
-<meta name="twitter:image" content="../og/club-sun.png">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Sunderland 2026–27 projection — NINETY+">
-<meta name="twitter:description" content="Sunderland are projected 41.1 points with a 0% chance of the title. Remaining fixtures and probabilities from 5,000 simulated seasons.">
-<link rel="canonical" href="club/sunderland.html">
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Dashboard","item":"index.html"},{"@type":"ListItem","position":2,"name":"Sunderland","item":"club/sunderland.html"}]},{"@type":"SportsTeam","name":"Sunderland","sport":"Association football","location":{"@type":"Place","name":"Stadium of Light"}}]}</script>
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Changelog — what changed, and what it did to accuracy">
+<meta name="twitter:description" content="Every version of the NINETY+ model and site: what changed, when, and the measured accuracy delta where one exists.">
+<link rel="canonical" href="changelog.html">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebPage","name":"NINETY+ changelog"}]}</script>
 <style>
 :root{color-scheme:dark}
 *{box-sizing:border-box}
@@ -119,50 +114,37 @@ ul.plain{padding-left:18px}ul.plain li{margin:4px 0}
 </head>
 <body>
 <header class="site">
-  <a class="brand" href="../index.html">NINETY+</a>
+  <a class="brand" href="index.html">NINETY+</a>
   <span class="tag">Premier League 2026–27 predictions, simulated 5,000 times</span>
 </header>
 <main class="wrap">
-
-<nav class="crumbs"><a href="../index.html">Dashboard</a> › Sunderland</nav>
-<h1>Sunderland — 2026–27 projection</h1>
-<p class="lede">Stadium of Light · Régis Le Bris · currently
-14th on 4 points after 5 games.</p>
-<div class="card"><div class="grid">
-  <div class="kv"><span>Projected points</span><b>41.1</b>final total</div>
-  <div class="kv"><span>Title</span><b>0%</b><span class="bar " title="0%"><i style="width:0%"></i></span></div>
-  <div class="kv"><span>Top four</span><b>0%</b><span class="bar " title="0%"><i style="width:0%"></i></span></div>
-  <div class="kv"><span>Relegation</span><b>28%</b><span class="bar rel" title="28%"><i style="width:28%"></i></span></div>
+<nav class="crumbs"><a href="index.html">Dashboard</a> › Changelog</nav>
+<h1>Every version, and what it actually did to accuracy</h1><p class="lede">A delta appears against a version only where a blind replay was run for it. Where a change was not measured separately, the entry says so: an estimate presented as a result is worse than no number at all. This page is generated from <code>CHANGELOG.md</code> in the repository, which is the file a contributor edits.</p><div class="changelog"><div class="card"><h3>v2.1 — 4 October 2026</h3>
+<p><b>Model</b> — unchanged from v2.0. No inputs, weights or hyperparameters moved, so the measured figures below are still the ones that apply. Two structural fixes landed in the data path rather than in the model: the fixture calendar now carries all 33 remaining matchweeks (Matchweek 9 was missing — it fell across a month boundary and the window parser dropped it), and the weekly job locks and scores predictions through the new ledger.</p>
+<p><b>Site</b> — the prediction ledger, the receipts page, and a model-pulse strip that reads the live record instead of a frozen backtest. Scenario input is now validated at every boundary after a stored cross-site scripting flaw was found in it, and the deployed site sends a Content-Security- Policy. The Vercel build was also fixed: a repository-root <code>server.py</code> made Vercel treat the project as a Python app, which is why the first deployment failed.</p>
+<p class="measured"><b>Measured</b> — 46.3% 1X2 · RPS 0.2184 · rank correlation 0.566 on the blind 2025-26 replay.</p>
+<p class="muted delta"><b>Delta vs v2.0</b> — 0.0 points, 0.0000 RPS. The model did not change, and saying otherwise would be</p>
+<p>the exact dishonesty this changelog exists to avoid.</p>
+</div>
+<div class="card"><h3>v2.0 — 3 October 2026</h3>
+<p><b>Model</b> — replaced the v1.0 approach with a Dixon-Coles bivariate Poisson model over Elo-derived attack and defence strengths, with expected-goals information folded in, a fitted home-advantage factor, a low-score correction (rho), and regression factors for promoted clubs. Season outcomes are 5,000 simulated seasons rather than a single projected table, which is where the ranges and the percentages on the site come from.</p>
+<p class="measured"><b>Measured</b> — 46.3% 1X2 · RPS 0.2184 · rank correlation 0.566, on a blind replay of all 380</p>
+<p>matches of the 2025-26 season, using information available before that season started. Against the baselines on the same fixtures: home-win-always 42.6% (RPS 0.2276), prior-season-table favourite 43.4% (RPS 0.2396), uniform 42.6% (RPS 0.2322). That is <b>+2.9 points and −0.0212 RPS</b> over the strongest baseline, a 8.8% reduction in RPS.</p>
+<p class="muted delta"><b>Delta vs v1.0</b> — not comparable. This is the first version with a saved replay artifact, so it is</p>
+<p>the first version that can carry a number at all.</p>
+</div>
+<div class="card"><h3>v1.0 — 3 October 2026</h3>
+<p><b>Model</b> — the first build: a Poisson goals model over goals-for/goals-against with a recent-form adjustment, a 5,000-simulation season engine, and projections for the table, the Golden Boot, the Golden Glove and the playmaker board.</p>
+<p class="measured"><b>Measured</b> — not separately measured. No replay artifact was kept for this version, and</p>
+<p>reconstructing a number for it now would be an invention; the v2.0 replay supersedes it and is what the site quotes.</p>
 </div></div>
-<h2>Projected goals and defence</h2>
-<div class="card"><table>
-<tr><th>Metric</th><th class="num">Projected</th></tr>
-<tr><td>Goals for</td><td class="num">45.7</td></tr>
-<tr><td>Goals against</td><td class="num">63.3</td></tr>
-<tr><td>Goal difference</td><td class="num">-17.7</td></tr>
-<tr><td>Win / draw / loss</td><td class="num">10.7 / 8.9 / 18.4</td></tr>
-</table></div>
-<h2>Remaining fixtures (33)</h2>
-<div class="card"><div class="fixture"><span><b>Sunderland</b> <span class="score">v</span> <b>Brighton</b> <span class="score">— 23% / 25% / 52%</span></span><span class="pick">Brighton</span></div>
-<div class="fixture"><span><b>Bournemouth</b> <span class="score">v</span> <b>Sunderland</b> <span class="score">— 47% / 27% / 26%</span></span><span class="pick">Bournemouth</span></div>
-<div class="fixture"><span><b>Sunderland</b> <span class="score">v</span> <b>Leeds</b> <span class="score">— 30% / 29% / 40%</span></span><span class="pick">Leeds</span></div>
-<div class="fixture"><span><b>Coventry</b> <span class="score">v</span> <b>Sunderland</b> <span class="score">— 30% / 29% / 41%</span></span><span class="pick">Sunderland</span></div>
-<div class="fixture"><span><b>Sunderland</b> <span class="score">v</span> <b>Chelsea</b> <span class="score">— 31% / 26% / 44%</span></span><span class="pick">Chelsea</span></div>
-<div class="fixture"><span><b>Aston Villa</b> <span class="score">v</span> <b>Sunderland</b> <span class="score">— 52% / 26% / 23%</span></span><span class="pick">Aston Villa</span></div>
-<div class="fixture"><span><b>Sunderland</b> <span class="score">v</span> <b>Tottenham</b> <span class="score">— 39% / 28% / 33%</span></span><span class="pick">Sunderland</span></div>
-<div class="fixture"><span><b>Liverpool</b> <span class="score">v</span> <b>Sunderland</b> <span class="score">— 67% / 21% / 12%</span></span><span class="pick">Liverpool</span></div>
-<div class="fixture"><span><b>Newcastle</b> <span class="score">v</span> <b>Sunderland</b> <span class="score">— 57% / 23% / 20%</span></span><span class="pick">Newcastle</span></div>
-<div class="fixture"><span><b>Sunderland</b> <span class="score">v</span> <b>Nott&#x27;m Forest</b> <span class="score">— 35% / 30% / 35%</span></span><span class="pick">Nott&#x27;m Forest</span></div></div>
-<p class="muted">Showing the next 10; every fixture is listed on its matchweek page.</p>
-<p style="margin-top:18px"><a class="cta" href="../index.html">Open Sunderland in the dashboard</a></p>
-
 <footer class="site">
-  <p><a href="../index.html">Open the interactive dashboard</a> — six views, a
+  <p><a href="index.html">Open the interactive dashboard</a> — six views, a
   What-If simulator and the full model breakdown. Everything on this page is generated from
   <code>data/</code> at build time; nothing here is hand-written.</p>
   <p class="muted">Model output is a probabilistic forecast, not advice. Not affiliated with the
   Premier League or any club. Results data from the official fixture list and
-  football-data.org; see <a href="../model.html">the model page</a> for sources and
+  football-data.org; see <a href="model.html">the model page</a> for sources and
   limitations.</p>
 </footer>
 </main>

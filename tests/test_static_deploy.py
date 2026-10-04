@@ -320,27 +320,182 @@ def test_vercel_config_caches_html_shortly_and_assets_longer():
 
 
 def test_vercel_config_does_not_shadow_the_generated_pages():
-    """The app routes are rewrites to the dashboard; the generated .html pages are real files.
+    """Two kinds of route, and they must not collide.
 
-    /table is the app and /table.html is the crawlable page — the same split server.py makes. A
+    /table is the app and /table.html is the crawlable page — the same split server.py makes, and
     `cleanUrls: true` here would quietly make /table serve the static page instead, which is a
     different site from the one the local server serves.
+
+    A rewrite may therefore point at the app shell, or at a generated static page that the router does
+    *not* own — /changelog and /receipts are pages, not views, so pointing at them shadows nothing.
+    What it may never do is point at a page the app also answers on, or at a file that does not exist.
     """
     cfg = json.loads(_read("vercel.json", ROOT))
     _check(cfg.get("cleanUrls") is not True, "cleanUrls would shadow the generated .html pages")
+
+    #: Paths the in-page router answers. A rewrite whose source is one of these is the app; a static
+    #: page at the same path would be unreachable, which is the failure this test exists to catch.
+    app_source = {"", "/matchweek", "/table", "/awards", "/duel", "/whatif", "/model"}
     for rule in cfg["rewrites"]:
-        dest = rule["destination"]
-        _check(dest == "/index.html", "unexpected rewrite destination: %s" % dest)
-        _check(not rule["source"].endswith(".html"),
-               "a rewrite must not shadow a generated page: %s" % rule["source"])
-    app_routes = {r["source"] for r in cfg["rewrites"]}
+        dest, source = rule["destination"], rule["source"]
+        _check(not source.endswith(".html"), "a rewrite must not shadow a generated page: %s" % source)
+        if dest == "/index.html":
+            continue
+        page = dest.lstrip("/")
+        _check(os.path.exists(os.path.join(STATIC, page)),
+               "rewrite %s points at %s, which is not a generated file" % (source, dest))
+        _check(source not in app_source,
+               "rewrite %s points at the static page %s while the app also answers on that path — "
+               "one of the two is now unreachable" % (source, dest))
+    assert_sources = [r["source"] for r in cfg["rewrites"]]
+    duplicates = {x for x in assert_sources if assert_sources.count(x) > 1}
+    _check(not duplicates,
+           "these paths are rewritten twice, so which one wins is down to order: %s"
+           % sorted(duplicates))
+
+    app_routes = set(assert_sources)
     for route in ("/table", "/awards", "/duel", "/whatif", "/model", "/matchweek"):
         _check(route in app_routes, "%s is an app route in server.py but not in vercel.json" % route)
+    for route in ("/receipts", "/changelog"):
+        _check(route in app_routes, "%s is generated but not routed, so it would 404 when typed" % route)
 
 
 # ════════════════════════════════════════════════════════════════════════════════════════════════════
 #  Hygiene: secrets, ignore rules, weight
 # ════════════════════════════════════════════════════════════════════════════════════════════════════
+def test_the_receipts_page_publishes_the_live_ledger_with_its_hashes():
+    """P10.3 — the page has to be checkable, which means the hashes have to be on it.
+
+    A receipts page that only shows "we were right 46.3% of the time" is a claim. Showing the lock
+    hash and the command that recomputes it turns the same page into evidence, so both are asserted
+    here, along with the machine-readable ledger it was generated from.
+    """
+    page = _read("receipts.html", STATIC)
+    ledger_path = os.path.join(DATA, "ledger_2026_27.json")
+    if not os.path.exists(ledger_path):
+        skip("data/ledger_2026_27.json is missing")
+    with open(ledger_path, encoding="utf-8") as fh:
+        ledger = json.load(fh)
+
+    _check("Every call, on the record" in page, "the receipts page lost its title")
+    _check("score_ledger.py --verify" in page, "the receipts page no longer says how to check it")
+    _check('href="ledger.json"' in page, "the receipts page does not link the ledger it was built from")
+    _check("locked" in page and "sha256" in page, "no lock hash is shown, so nothing is checkable")
+
+    for lock in ledger.get("locks", []):
+        _check(lock["content_hash"][:16] in page,
+               "gw%s's lock hash is not on the page" % lock["gameweek"])
+        _check(lock["snapshot"] or True, lock)
+
+    if not ledger.get("entries"):
+        _check("not yet scored" in page or "have not been played" in page,
+               "the ledger has no scored gameweeks, so the page must say so rather than imply a "
+               "record exists")
+        _check("0 </b><span>scored so far" in page or ">0<" in page,
+               "the page should report zero gameweeks scored, not a placeholder number")
+
+
+def test_the_receipts_page_keeps_the_replay_labelled_as_a_replay():
+    """The 2025-26 numbers are a backtest. Blending them with the live ledger would be a lie by layout."""
+    page = _read("receipts.html", STATIC)
+    _check("backtest, not a live record" in page,
+           "the replay section is no longer labelled as a backtest")
+    _check("2025–26 replay" in page, "the replay section is missing")
+    _check("order the source file lists them" in page and "no gameweek column" in page,
+           "the replay is charted without saying that it is in fixture-list order rather than "
+           "gameweeks — the source file has no gameweek column, so claiming gameweeks would be an "
+           "invention")
+
+
+def test_feedback_on_the_receipts_page_cannot_phone_home():
+    """P10.4's promise, enforced: reactions are local, and sending is a link a human clicks.
+
+    This is the test that stops a future edit from quietly adding analytics to a page whose text
+    promises nothing is transmitted. If a network call is ever genuinely needed, it has to arrive with
+    the wording changed in the same commit — which is the point.
+    """
+    page = _read("receipts.html", STATIC)
+    #: API names, not keywords: the page discusses analytics in the sentence where it promises not to
+    #: use any, and a keyword scan would flag its own explanation — the same trap as scanning raw page
+    #: text for the payload a comment describes.
+    for forbidden in ("fetch(", "XMLHttpRequest", "sendBeacon", "new WebSocket", "navigator.sendBeacon",
+                      "gtag(", "ga(", "_paq", "plausible(", "posthog", "mixpanel", "amplitude"):
+        _check(forbidden not in page,
+               "the receipts page contains %r, which contradicts its own privacy wording" % forbidden)
+    _check('localStorage' in page and "nt90:feedback" in page,
+           "the local reaction store is missing, so the buttons cannot work as described")
+    _check("in this browser only" in page or "in this browser" in page,
+           "the page does not say where a reaction is recorded")
+    _check("issues/new" in page, "there is no way to actually send a review comment")
+    _check('rel="noopener"' in page, "external issue links must carry rel=noopener")
+    _check("docs/reviews/" in page, "the page does not point at where the review aggregate lives")
+
+
+def test_the_changelog_page_matches_the_changelog_file():
+    """One source of truth. Every release in CHANGELOG.md appears, and no release invents a delta."""
+    md_path = os.path.join(ROOT, "CHANGELOG.md")
+    if not os.path.exists(md_path):
+        skip("CHANGELOG.md is missing")
+    md = _read("CHANGELOG.md", ROOT)
+    page = _read("changelog.html", STATIC)
+
+    releases = [line[3:].strip() for line in md.splitlines() if line.startswith("## ")]
+    _check(releases, "CHANGELOG.md has no release headings")
+    _check(page.count('<div class="card">') == len(releases),
+           "the page shows %d releases for %d headings in CHANGELOG.md"
+           % (page.count('<div class="card">'), len(releases)))
+    for release in releases:
+        version = release.split()[0]
+        _check(version in page, "release %s is in CHANGELOG.md but not on the page" % version)
+
+    # The rule the file states about itself: a delta only ever accompanies a measurement.
+    sections = md.split("\n## ")[1:]
+    for section in sections:
+        version = section.split(" ")[0]
+        if "**Delta" in section:
+            _check("**Measured" in section,
+                   "%s claims a delta without a measurement — the file promises this cannot happen"
+                   % version)
+
+
+def test_the_header_version_links_to_the_changelog():
+    """"model v2.1" must be the link the plan says it is, and still read as one line of text."""
+    page = _page()
+    _check('href="/changelog.html"' in page, "the header version does not link to the changelog")
+    _check("model v2.1" in page, "the version string vanished from the header")
+    _check(page.count("model v2.1") == 1,
+           "the version appears %d times — the markup and the textContent write are fighting again"
+           % page.count("model v2.1"))
+
+
+def test_the_published_ledger_json_equals_the_ledger_on_disk():
+    ledger_path = os.path.join(DATA, "ledger_2026_27.json")
+    if not os.path.exists(ledger_path):
+        skip("data/ledger_2026_27.json is missing")
+    with open(ledger_path, encoding="utf-8") as fh:
+        on_disk = json.load(fh)
+    published = json.loads(_read("ledger.json", STATIC))
+    _check([l["content_hash"] for l in published.get("locks", [])]
+           == [l["content_hash"] for l in on_disk.get("locks", [])],
+           "static/ledger.json does not match data/ledger_2026_27.json — the page would be "
+           "publishing a record the repository does not contain")
+
+
+def test_the_pulse_strip_reads_the_live_ledger():
+    """P10.5 — the strip must be wired to the ledger, and must still work with an empty one."""
+    page = _page()
+    render = _code_only(_read("render.js", SRC))
+    _check('"ledger"' in page or "ledger" in page, "the ledger is not embedded in the page")
+    _check("EMBEDDED.ledger" in render or "EMBEDDED && EMBEDDED.ledger" in render,
+           "render.js no longer reads the embedded ledger")
+    for fragment in ("locked before kickoff", "replay", "backtest"):
+        _check(fragment in render,
+               "the pulse strip lost its %r wording — the live record and the replay have to stay "
+               "distinguishable" % fragment)
+    _check("data-pending" in render, "there is no pending state, so a locked-but-unplayed gameweek "
+                                     "would render as nothing at all")
+
+
 def test_gitignore_covers_the_things_it_must():
     ignore = _read(".gitignore", ROOT)
     for entry in ("__pycache__", ".env", ".venv", ".DS_Store", ".vercel"):

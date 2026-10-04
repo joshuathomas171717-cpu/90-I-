@@ -78,6 +78,43 @@ footer.site{border-top:1px solid #232b42;margin-top:40px;padding-top:18px;color:
 .fixture .pick{color:#6ee7ff;font-weight:700;font-size:13px}
 .fixture .score{color:#8E9BB8;font-size:13px}
 ul.plain{padding-left:18px}ul.plain li{margin:4px 0}
+
+  /* ── receipts page (P10.3) ─────────────────────────────────────────────── */
+  .cards{display:flex;flex-wrap:wrap;gap:12px;margin:18px 0}
+  .cards .card{flex:1 1 150px;margin:0;text-align:center}
+  .cards .card b{display:block;font-size:26px;color:#EAF0FF;font-variant-numeric:tabular-nums}
+  .cards .card span{font-size:12px;color:#8E9BB8;letter-spacing:.03em;text-transform:uppercase}
+  .rbar{display:inline-flex;height:8px;width:132px;border-radius:4px;overflow:hidden;background:#1B2336}
+  .rbar i{display:block;height:100%}
+  .rbar i.h{background:#22D3EE}.rbar i.d{background:#64748B}.rbar i.a{background:#A855F7}
+  .ticks{display:flex;flex-wrap:wrap;gap:2px;margin:10px 0 4px}
+  .ticks i{width:7px;height:20px;border-radius:2px;display:block}
+  .ticks i.hit{background:#22D3EE}
+  .ticks i.miss{background:#7F1D4D;height:9px;align-self:flex-end}
+  .hit{color:#22D3EE;font-weight:600}
+  .miss{color:#F472B6;font-weight:600}
+  pre{background:#0E1424;border:1px solid #1E2537;border-radius:10px;padding:12px 14px;overflow-x:auto}
+  pre code{color:#B9C6E4;font-size:12.5px}
+  td code{color:#B9C6E4;font-size:12px}
+  .changelog .card{margin:0 0 14px}
+  .changelog h3{margin:0 0 10px;color:#EAF0FF;font-size:17px}
+  .changelog p{margin:8px 0;line-height:1.65}
+  .changelog .measured{color:#22D3EE;font-weight:600}
+  .changelog .delta{color:#F4B860;font-weight:600}
+  .changelog .bullet{color:#B9C6E4}
+  td.fb{white-space:nowrap}
+  /* The receipts tables are wide by design (seven columns). On a phone they must scroll rather than
+     stretch the page: a horizontally-scrolling table is usable, a page that pans sideways is not. */
+  .tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 0 4px}
+  .tbl{min-width:620px}
+  .tbl td:nth-last-child(2),.tbl td:last-child{white-space:nowrap}
+  td.fb button{background:#141B2C;color:#8E9BB8;border:1px solid #232C42;border-radius:6px;
+    width:26px;height:24px;cursor:pointer;font-size:12px;transition:all .15s ease}
+  td.fb button:hover{color:#EAF0FF;border-color:#3A4763}
+  td.fb button.on{background:#22D3EE;color:#08111C;border-color:#22D3EE;font-weight:700}
+  td.fb button[data-vote="bad"].on{background:#F472B6;border-color:#F472B6}
+  td.fb a.send{margin-left:6px;color:#5C6884;font-size:11px;text-decoration:underline}
+  td.fb a.send:hover{color:#22D3EE}
 </style>
 </head>
 <body>

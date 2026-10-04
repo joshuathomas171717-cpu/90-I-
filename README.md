@@ -99,6 +99,9 @@ deploy, and as generated HTML on a static host:
 | `/club/arsenal` | the app, opened on the table with Arsenal's row highlighted |
 | `/gameweek/mw6.html` | **generated page** — every fixture, probability and pick as text |
 | `/club/arsenal.html`, `/table.html`, `/model.html` | generated pages |
+| `/receipts.html` (also `/receipts`) | **generated page** — every call, locked before kickoff and scored after, with the hashes and how to re-check them (P10.3) |
+| `/changelog.html` (also `/changelog`) | **generated page** — generated from `CHANGELOG.md`; each version with its measured accuracy delta, or a plain statement that it was not measured (P10.1) |
+| `/ledger.json` | the published ledger itself, served so the receipts page can be checked against the file |
 | `/calendar.html` | **generated page** — subscribe to the fixtures as an iCal feed |
 | `/calendar/league.ics` | the whole league, one all-day event per matchweek window |
 | `/calendar/ars.ics` | one club's remaining fixtures (also `.ics` for all 20 clubs) |
@@ -158,6 +161,48 @@ python3 update_week.py --replay                   # work from cached payloads, n
 A scheduled workflow ([.github/workflows/weekly.yml](.github/workflows/weekly.yml), Mondays 06:00 UTC)
 runs it in CI and commits only when the gate passes. xG is a **manual, dated** input by design — see
 [docs/xg-strategy.md](docs/xg-strategy.md) for why and for the upgrade path.
+
+## The prediction ledger — a record you can check (Wave 7, P10.2–P10.5)
+
+A prediction site can regenerate last week's forecast once the results are in, and nobody would see it
+happen. So every gameweek's predictions are **hashed when they are published**, scored only after the
+matches, and appended to a ledger that is **never rewritten**:
+
+```bash
+python3 score_ledger.py --lock      # hash the newest snapshot before kickoff
+python3 score_ledger.py --score     # score every locked gameweek whose results are in
+python3 score_ledger.py --verify    # re-hash everything against the published files
+python3 score_ledger.py --json      # the raw ledger
+```
+
+`--verify` recomputes two independent things and fails loudly on either: the SHA-256 recorded for each
+lock against the predictions in `data/snapshots/gwNN.json` today, and a hash chain over every write to
+the ledger — so an edited prediction *or* an edited audit trail is caught. The test suite proves the
+verifier works by actually tampering with a ledger in a temp directory and requiring it to fail
+(`tests/test_ledger.py`), because a verification routine that has only ever seen honest data has proved
+nothing.
+
+What the ledger does **not** do is back-fill. It starts with the first gameweek locked after
+`score_ledger.py` existed (matchweek 6, 4 October 2026). Gameweeks whose predictions were never
+published have no entry, because inventing a pre-match record after the match is exactly the failure
+the ledger exists to prevent. The 2025–26 replay is the historical evidence, and it is labelled as a
+backtest everywhere it appears.
+
+The weekly job takes the lock in two places — when it scores a completed gameweek, and again the
+moment it publishes the next one — so the hash exists while the fixtures are still in the future. The
+end-to-end test asserts the run it performs locks both gameweeks and that the resulting ledger
+verifies.
+
+**Feedback and review cadence (P10.4).** The receipts page carries a verdict control per fixture.
+It is deliberately local: the buttons write to `localStorage` under `nt90:feedback` and nothing is
+transmitted — "send" opens a pre-filled GitHub issue, which is where the weekly review happens. A test
+fails if a network call is ever added to that page without the wording changing with it. One review per
+gameweek lives in `docs/reviews/`, with the checklist and cadence in `docs/reviews/README.md`.
+
+**Model pulse (P10.5).** The strip on the What-If view reads the live ledger first — every tick is a
+fixture whose prediction was locked before kickoff and scored afterwards, with pending gameweeks drawn
+hollow — and the 2025–26 replay sits below it, labelled as a backtest. It starts nearly empty and grows
+every week, which is the point: it is a record, not decoration.
 
 ## Production behaviour — measured, not asserted (Wave 3)
 
@@ -299,6 +344,9 @@ ninety-plus-pl-predictor/
 ├── backtest.py                # leakage-free 2025-26 replay + scoring vs baselines
 ├── build_dashboard.py         # compiles payload + static/src/* into the single-file dashboard
 ├── check_page_current.py      # gate: is the published page the page the committed data describes?
+├── score_ledger.py            # lock, score and verify the public prediction ledger (Wave 7, P10.2)
+├── CHANGELOG.md               # every version and its measured accuracy delta; source of /changelog
+├── docs/reviews/              # one review per gameweek — the week-by-week reading of the ledger
 ├── site_pages.py              # real HTML, sitemap, robots, 404 and every preview card (Wave 4)
 ├── feeds.py                   # iCal feeds: one per club + the league (named feeds.py, not
 │                              #   calendar.py — see the note at the top of the file)

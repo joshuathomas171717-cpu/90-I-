@@ -82,6 +82,14 @@
   ],
   "rewrites": [
     {
+      "source": "/changelog",
+      "destination": "/changelog.html"
+    },
+    {
+      "source": "/receipts",
+      "destination": "/receipts.html"
+    },
+    {
       "source": "/matchweek",
       "destination": "/index.html"
     },

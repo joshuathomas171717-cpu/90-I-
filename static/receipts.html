@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Receipts — every NINETY+ call, before and after</title>
+<meta name="description" content="What was predicted before kickoff, what actually happened, and how to re-check the record yourself.">
+<meta name="theme-color" content="#0B0F1A">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="icons/favicon-32.png" sizes="32x32" type="image/png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="NINETY+">
+<meta property="og:title" content="Receipts — every NINETY+ call, before and after">
+<meta property="og:description" content="What was predicted before kickoff, what actually happened, and how to re-check the record yourself.">
+
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Receipts — every NINETY+ call, before and after">
+<meta name="twitter:description" content="What was predicted before kickoff, what actually happened, and how to re-check the record yourself.">
+<link rel="canonical" href="receipts.html">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebPage","name":"The NINETY+ prediction ledger"}]}</script>
+<style>
+:root{color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:#0B0F1A;color:#ECF1FB;
+     font:16px/1.55 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+a{color:#6ee7ff;text-decoration:none}a:hover{text-decoration:underline}
+.wrap{max-width:960px;margin:0 auto;padding:28px 20px 64px}
+header.site{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;padding:18px 20px;
+        border-bottom:1px solid #232b42;max-width:960px;margin:0 auto}
+header.site .brand{font-weight:800;letter-spacing:.14em;font-size:18px}
+header.site .tag{color:#8E9BB8;font-size:13px}
+nav.crumbs{color:#8E9BB8;font-size:13px;margin:0 0 18px}
+nav.crumbs a{color:#8E9BB8}
+h1{font-size:30px;line-height:1.15;margin:14px 0 6px;letter-spacing:-.01em}
+h2{font-size:19px;margin:30px 0 10px;letter-spacing:.01em}
+p.lede{color:#B9C4DC;margin:0 0 22px}
+/* the method page's tables and notes (P9.2): same palette as the rest of the generated site */
+.mtable{width:100%;border-collapse:collapse;margin:14px 0 18px;font-size:13px}
+.mtable caption{text-align:left;color:#97A1B3;font-size:11.5px;padding-bottom:7px}
+.mtable th{text-align:left;font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:#97A1B3;
+  border-bottom:1px solid rgba(255,255,255,.12);padding:6px 10px 7px 0;font-weight:600}
+.mtable td{padding:7px 10px 7px 0;border-bottom:1px solid rgba(255,255,255,.05);color:#C9D2E3;vertical-align:top}
+.mtable tr.hl td{color:#F3F6FA;font-weight:600}
+.mtable .num{text-align:right;font-variant-numeric:tabular-nums}
+p.note{color:#97A1B3;font-size:12.5px;border-left:2px solid rgba(45,212,191,.45);padding-left:11px;margin:0 0 18px}
+h2{margin-top:26px}
+.card{background:#12182A;border:1px solid #232b42;border-radius:14px;padding:18px 18px 8px;margin:0 0 18px}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid #1d2437;font-size:14px}
+th{color:#8E9BB8;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.08em}
+td.num,th.num{text-align:right}
+tr:last-child td{border-bottom:0}
+.chip{display:inline-block;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;
+      letter-spacing:.06em;text-transform:uppercase}
+.chip.ucl{background:rgba(34,211,238,.14);color:#6ee7ff}
+.chip.rel{background:rgba(229,75,154,.16);color:#ff8fc4}
+.bar{height:7px;border-radius:4px;background:#232b42;overflow:hidden;min-width:60px}
+.bar>i{display:block;height:100%;background:#22D3EE}
+.bar.rel>i{background:#E54B9A}
+.muted{color:#8E9BB8}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+.kv{background:#0f1626;border:1px solid #1d2437;border-radius:12px;padding:12px 14px}
+.kv b{display:block;font-size:22px;letter-spacing:-.01em}
+.kv span{color:#8E9BB8;font-size:12px;text-transform:uppercase;letter-spacing:.08em}
+footer.site{border-top:1px solid #232b42;margin-top:40px;padding-top:18px;color:#8E9BB8;font-size:13px}
+.cta{display:inline-block;background:#22D3EE;color:#062028;font-weight:700;padding:10px 18px;
+     border-radius:10px;margin:6px 0 0}
+.cta:hover{text-decoration:none;filter:brightness(1.08)}
+.fixture{display:flex;justify-content:space-between;gap:14px;align-items:baseline;
+         padding:9px 0;border-bottom:1px solid #1d2437}
+.fixture:last-child{border-bottom:0}
+.fixture .pick{color:#6ee7ff;font-weight:700;font-size:13px}
+.fixture .score{color:#8E9BB8;font-size:13px}
+ul.plain{padding-left:18px}ul.plain li{margin:4px 0}
+
+  /* ── receipts page (P10.3) ─────────────────────────────────────────────── */
+  .cards{display:flex;flex-wrap:wrap;gap:12px;margin:18px 0}
+  .cards .card{flex:1 1 150px;margin:0;text-align:center}
+  .cards .card b{display:block;font-size:26px;color:#EAF0FF;font-variant-numeric:tabular-nums}
+  .cards .card span{font-size:12px;color:#8E9BB8;letter-spacing:.03em;text-transform:uppercase}
+  .rbar{display:inline-flex;height:8px;width:132px;border-radius:4px;overflow:hidden;background:#1B2336}
+  .rbar i{display:block;height:100%}
+  .rbar i.h{background:#22D3EE}.rbar i.d{background:#64748B}.rbar i.a{background:#A855F7}
+  .ticks{display:flex;flex-wrap:wrap;gap:2px;margin:10px 0 4px}
+  .ticks i{width:7px;height:20px;border-radius:2px;display:block}
+  .ticks i.hit{background:#22D3EE}
+  .ticks i.miss{background:#7F1D4D;height:9px;align-self:flex-end}
+  .hit{color:#22D3EE;font-weight:600}
+  .miss{color:#F472B6;font-weight:600}
+  pre{background:#0E1424;border:1px solid #1E2537;border-radius:10px;padding:12px 14px;overflow-x:auto}
+  pre code{color:#B9C6E4;font-size:12.5px}
+  td code{color:#B9C6E4;font-size:12px}
+  .changelog .card{margin:0 0 14px}
+  .changelog h3{margin:0 0 10px;color:#EAF0FF;font-size:17px}
+  .changelog p{margin:8px 0;line-height:1.65}
+  .changelog .measured{color:#22D3EE;font-weight:600}
+  .changelog .delta{color:#F4B860;font-weight:600}
+  .changelog .bullet{color:#B9C6E4}
+  td.fb{white-space:nowrap}
+  /* The receipts tables are wide by design (seven columns). On a phone they must scroll rather than
+     stretch the page: a horizontally-scrolling table is usable, a page that pans sideways is not. */
+  .tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 0 4px}
+  .tbl{min-width:620px}
+  .tbl td:nth-last-child(2),.tbl td:last-child{white-space:nowrap}
+  td.fb button{background:#141B2C;color:#8E9BB8;border:1px solid #232C42;border-radius:6px;
+    width:26px;height:24px;cursor:pointer;font-size:12px;transition:all .15s ease}
+  td.fb button:hover{color:#EAF0FF;border-color:#3A4763}
+  td.fb button.on{background:#22D3EE;color:#08111C;border-color:#22D3EE;font-weight:700}
+  td.fb button[data-vote="bad"].on{background:#F472B6;border-color:#F472B6}
+  td.fb a.send{margin-left:6px;color:#5C6884;font-size:11px;text-decoration:underline}
+  td.fb a.send:hover{color:#22D3EE}
+</style>
+</head>
+<body>
+<header class="site">
+  <a class="brand" href="index.html">NINETY+</a>
+  <span class="tag">Premier League 2026–27 predictions, simulated 5,000 times</span>
+</header>
+<main class="wrap">
+
+<nav class="crumbs"><a href="index.html">Dashboard</a> › Receipts</nav>
+<h1>Every call, on the record</h1>
+<p class="lede">A prediction site can regenerate last week's forecast once the results are in, and
+nobody would ever see it happen. So each gameweek's predictions are <b>hashed when they are
+published</b>, scored only after the matches, and added to a ledger that is append-only: nothing is
+overwritten, and re-scoring a gameweek leaves the old numbers in the audit trail. You do not have to
+take any of that on trust — the file is in the repository and one command re-checks every hash.</p>
+<h2>The live ledger — 2026–27</h2>
+<div class="cards"><div class="card"><b>1</b><span>gameweek locked</span></div><div class="card"><b>0</b><span>scored so far</span></div><div class="card"><b>—</b><span>season accuracy</span></div><div class="card"><b>—</b><span>mean RPS</span></div></div>
+<div class="card"><h3>Matchweek 6</h3><p class="muted">Predictions generated <b>2026-10-03</b> · locked <b>2026-10-04</b> · sha256 <code>fc81a13fe72c60be…</code><br>locked, not yet scored — the matches have not been played</p>
+<div class="tablewrap"><table class="tbl"><tr><th>Fixture</th><th>Our call</th><th>Score</th><th>Home / draw / away</th><th>Actual</th><th></th><th>Your verdict</th></tr>
+<tr><td>Arsenal v Leeds United</td><td>Arsenal win</td><td>2-0</td><td><span class="rbar" title="home 68.5% · draw 20.9% · away 10.6%"><i class="h" style="width:68.5%"></i><i class="d" style="width:20.9%"></i><i class="a" style="width:10.6%"></i></span></td><td>not played</td><td></td><td class="fb" data-ref="gw6-ARS-LEE"><button type="button" data-vote="good" title="This call was reasonable">&#10003;</button><button type="button" data-vote="bad" title="This call looks wrong">&#10007;</button><a class="send" href="https://github.com/joshuathomas171717-cpu/90-I-/issues/new?labels=review&title=%5Breview%5D%20MW6%20ARS%20v%20LEE%20%E2%80%94%20Arsenal%20win&body=%2A%2AFixture%2A%2A%20MW6%3A%20ARS%20v%20LEE%0A%0A%2A%2AThe%20call%2A%2A%3A%20Arsenal%20win%20%28home%2068.5%25%20/%20draw%2020.9%25%20/%20away%2010.6%25%29%2C%20most%20likely%20score%202-0%0A%0A%2A%2ALocked%2A%2A%3A%202026-10-04%2C%20sha256%20%60fc81a13fe72c60be%60%0A%0A%2A%2AWhy%20I%20think%20this%20one%20is%20wrong%2A%2A%3A%20%0A%0A%3C%21--%20The%20lock%20hash%20is%20here%20so%20the%20review%20can%20tell%20which%20published%20version%20you%20were%20looking%20at.%20--%3E" target="_blank" rel="noopener" title="Open a pre-filled review issue for this fixture">send</a></td></tr>
+<tr><td>Aston Villa v Brentford</td><td>Brentford win</td><td>1-1</td><td><span class="rbar" title="home 34.0% · draw 28.3% · away 37.7%"><i class="h" style="width:34.0%"></i><i class="d" style="width:28.3%"></i><i class="a" style="width:37.7%"></i></span></td><td>not played</td><td></td><td class="fb" data-ref="gw6-AVL-BRE"><button type="button" data-vote="good" title="This call was reasonable">&#10003;</button><button type="button" data-vote="bad" title="This call looks wrong">&#10007;</button><a class="send" href="https://github.com/joshuathomas171717-cpu/90-I-/issues/new?labels=review&title=%5Breview%5D%20MW6%20AVL%20v%20BRE%20%E2%80%94%20Brentford%20win&body=%2A%2AFixture%2A%2A%20MW6%3A%20AVL%20v%20BRE%0A%0A%2A%2AThe%20call%2A%2A%3A%20Brentford%20win%20%28home%2034.0%25%20/%20draw%2028.3%25%20/%20away%2037.7%25%29%2C%20most%20likely%20score%201-1%0A%0A%2A%2ALocked%2A%2A%3A%202026-10-04%2C%20sha256%20%60fc81a13fe72c60be%60%0A%0A%2A%2AWhy%20I%20think%20this%20one%20is%20wrong%2A%2A%3A%20%0A%0A%3C%21--%20The%20lock%20hash%20is%20here%20so%20the%20review%20can%20tell%20which%20published%20version%20you%20were%20looking%20at.%20--%3E" target="_blank" rel="noopener" title="Open a pre-filled review issue for this fixture">send</a></td></tr>
+<tr><td>Chelsea v Bournemouth</td><td>Chelsea win</td><td>1-1</td><td><span class="rbar" title="home 50.3% · draw 23.9% · away 25.8%"><i class="h" style="width:50.3%"></i><i class="d" style="width:23.9%"></i><i class="a" style="width:25.8%"></i></span></td><td>not played</td><td></td><td class="fb" data-ref="gw6-CHE-BOU"><button type="button" data-vote="good" title="This call was reasonable">&#10003;</button><button type="button" data-vote="bad" title="This call looks wrong">&#10007;</button><a class="send" href="https://github.com/joshuathomas171717-cpu/90-I-/issues/new?labels=review&title=%5Breview%5D%20MW6%20CHE%20v%20BOU%20%E2%80%94%20Chelsea%20win&body=%2A%2AFixture%2A%2A%20MW6%3A%20CHE%20v%20BOU%0A%0A%2A%2AThe%20call%2A%2A%3A%20Chelsea%20win%20%28home%2050.3%25%20/%20draw%2023.9%25%20/%20away%2025.8%25%29%2C%20most%20likely%20score%201-1%0A%0A%2A%2ALocked%2A%2A%3A%202026-10-04%2C%20sha256%20%60fc81a13fe72c60be%60%0A%0A%2A%2AWhy%20I%20think%20this%20one%20is%20wrong%2A%2A%3A%20%0A%0A%3C%21--%20The%20lock%20hash%20is%20here%20so%20the%20review%20can%20tell%20which%20published%20version%20you%20were%20looking%20at.%20--%3E" target="_blank" rel="noopener" title="Open a pre-filled review issue for this fixture">send</a></td></tr>
+<tr><td>Coventry City v Newcastle United</td><td>Newcastle United win</td><td>1-1</td><td><span class="rbar" title="home 18.5% · draw 25.1% · away 56.4%"><i class="h" style="width:18.5%"></i><i class="d" style="width:25.1%"></i><i class="a" style="width:56.4%"></i></span></td><td>not played</td><td></td><td class="fb" data-ref="gw6-COV-NEW"><button type="button" data-vote="good" title="This call was reasonable">&#10003;</button><button type="button" data-vote="bad" title="This call looks wrong">&#10007;</button><a class="send" href="https://github.com/joshuathomas171717-cpu/90-I-/issues/new?labels=review&title=%5Breview%5D%20MW6%20COV%20v%20NEW%20%E2%80%94%20Newcastle%20United%20win&body=%2A%2AFixture%2A%2A%20MW6%3A%20COV%20v%20NEW%0A%0A%2A%2AThe%20call%2A%2A%3A%20Newcastle%20United%20win%20%28home%2018.5%25%20/%20draw%2025.1%25%20/%20away%2056.4%25%29%2C%20most%20likely%20score%201-1%0A%0A%2A%2ALocked%2A%2A%3A%202026-10-04%2C%20sha256%20%60fc81a13fe72c60be%60%0A%0A%2A%2AWhy%20I%20think%20this%20one%20is%20wrong%2A%2A%3A%20%0A%0A%3C%21--%20The%20lock%20hash%20is%20here%20so%20the%20review%20can%20tell%20which%20published%20version%20you%20were%20looking%20at.%20--%3E" target="_blank" rel="noopener" title="Open a pre-filled review issue for this fixture">send</a></td></tr>
+<tr><td>Crystal Palace v Nottingham Forest</td><td>Crystal Palace win</td><td>1-1</td><td><span class="rbar" title="home 35.9% · draw 29.8% · away 34.3%"><i class="h" style="width:35.9%"></i><i class="d" style="width:29.8%"></i><i class="a" style="width:34.3%"></i></span></td><td>not played</td><td></td><td class="fb" data-ref="gw6-CRY-NFO"><button type="button" data-vote="good" title="This call was reasonable">&#10003;</button><button type="button" data-vote="bad" title="This call looks wrong">&#10007;</button><a class="send" href="https://github.com/joshuathomas171717-cpu/90-I-/issues/new?labels=review&title=%5Breview%5D%20MW6%20CRY%20v%20NFO%20%E2%80%94%20Crystal%20Palace%20win&body=%2A%2AFixture%2A%2A%20MW6%3A%20CRY%20v%20NFO%0A%0A%2A%2AThe%20call%2A%2A%3A%20Crystal%20Palace%20win%20%28home%2035.9%25%20/%20draw%2029.8%25%20/%20away%2034.3%25%29%2C%20most%20likely%20score%201-1%0A%0A%2A%2ALocked%2A%2A%3A%202026-10-04%2C%20sha256%20%60fc81a13fe72c60be%60%0A%0A%2A%2AWhy%20I%20think%20this%20one%20is%20wrong%2A%2A%3A%20%0A%0A%3C%21--%20The%20lock%20hash%20is%20here%20so%20the%20review%20can%20tell%20which%20published%20version%20you%20were%20looking%20at.%20--%3E" target="_blank" rel="noopener" title="Open a pre-filled review issue for this fixture">send</a></td></tr>
+<tr><td>Hull City v Everton</td><td>Everton win</td><td>1-1</td><td><span class="rbar" title="home 30.3% · draw 31.5% · away 38.1%"><i class="h" style="width:30.3%"></i><i class="d" style="width:31.5%"></i><i class="a" style="width:38.1%"></i></span></td><td>not played</td><td></td><td class="fb" data-ref="gw6-HUL-EVE"><button type="button" data-vote="good" title="This call was reasonable">&#10003;</button><button type="button" data-vote="bad" title="This call looks wrong">&#10007;</button><a class="send" href="https://github.com/joshuathomas171717-cpu/90-I-/issues/new?labels=review&title=%5Breview%5D%20MW6%20HUL%20v%20EVE%20%E2%80%94%20Everton%20win&body=%2A%2AFixture%2A%2A%20MW6%3A%20HUL%20v%20EVE%0A%0A%2A%2AThe%20call%2A%2A%3A%20Everton%20win%20%28home%2030.3%25%20/%20draw%2031.5%25%20/%20away%2038.1%25%29%2C%20most%20likely%20score%201-1%0A%0A%2A%2ALocked%2A%2A%3A%202026-10-04%2C%20sha256%20%60fc81a13fe72c60be%60%0A%0A%2A%2AWhy%20I%20think%20this%20one%20is%20wrong%2A%2A%3A%20%0A%0A%3C%21--%20The%20lock%20hash%20is%20here%20so%20the%20review%20can%20tell%20which%20published%20version%20you%20were%20looking%20at.%20--%3E" target="_blank" rel="noopener" title="Open a pre-filled review issue for this fixture">send</a></td></tr>
+<tr><td>Ipswich Town v Fulham</td><td>Ipswich Town win</td><td>1-1</td><td><span class="rbar" title="home 36.2% · draw 28.7% · away 35.1%"><i class="h" style="width:36.2%"></i><i class="d" style="width:28.7%"></i><i class="a" style="width:35.1%"></i></span></td><td>not played</td><td></td><td class="fb" data-ref="gw6-IPS-FUL"><button type="button" data-vote="good" title="This call was reasonable">&#10003;</button><button type="button" data-vote="bad" title="This call looks wrong">&#10007;</button><a class="send" href="https://github.com/joshuathomas171717-cpu/90-I-/issues/new?labels=review&title=%5Breview%5D%20MW6%20IPS%20v%20FUL%20%E2%80%94%20Ipswich%20Town%20win&body=%2A%2AFixture%2A%2A%20MW6%3A%20IPS%20v%20FUL%0A%0A%2A%2AThe%20call%2A%2A%3A%20Ipswich%20Town%20win%20%28home%2036.2%25%20/%20draw%2028.7%25%20/%20away%2035.1%25%29%2C%20most%20likely%20score%201-1%0A%0A%2A%2ALocked%2A%2A%3A%202026-10-04%2C%20sha256%20%60fc81a13fe72c60be%60%0A%0A%2A%2AWhy%20I%20think%20this%20one%20is%20wrong%2A%2A%3A%20%0A%0A%3C%21--%20The%20lock%20hash%20is%20here%20so%20the%20review%20can%20tell%20which%20published%20version%20you%20were%20looking%20at.%20--%3E" target="_blank" rel="noopener" title="Open a pre-filled review issue for this fixture">send</a></td></tr>
+<tr><td>Liverpool v Manchester City</td><td>Manchester City win</td><td>1-1</td><td><span class="rbar" title="home 35.2% · draw 27.2% · away 37.6%"><i class="h" style="width:35.2%"></i><i class="d" style="width:27.2%"></i><i class="a" style="width:37.6%"></i></span></td><td>not played</td><td></td><td class="fb" data-ref="gw6-LIV-MCI"><button type="button" data-vote="good" title="This call was reasonable">&#10003;</button><button type="button" data-vote="bad" title="This call looks wrong">&#10007;</button><a class="send" href="https://github.com/joshuathomas171717-cpu/90-I-/issues/new?labels=review&title=%5Breview%5D%20MW6%20LIV%20v%20MCI%20%E2%80%94%20Manchester%20City%20win&body=%2A%2AFixture%2A%2A%20MW6%3A%20LIV%20v%20MCI%0A%0A%2A%2AThe%20call%2A%2A%3A%20Manchester%20City%20win%20%28home%2035.2%25%20/%20draw%2027.2%25%20/%20away%2037.6%25%29%2C%20most%20likely%20score%201-1%0A%0A%2A%2ALocked%2A%2A%3A%202026-10-04%2C%20sha256%20%60fc81a13fe72c60be%60%0A%0A%2A%2AWhy%20I%20think%20this%20one%20is%20wrong%2A%2A%3A%20%0A%0A%3C%21--%20The%20lock%20hash%20is%20here%20so%20the%20review%20can%20tell%20which%20published%20version%20you%20were%20looking%20at.%20--%3E" target="_blank" rel="noopener" title="Open a pre-filled review issue for this fixture">send</a></td></tr>
+<tr><td>Manchester United v Tottenham Hotspur</td><td>Manchester United win</td><td>1-1</td><td><span class="rbar" title="home 57.3% · draw 23.9% · away 18.8%"><i class="h" style="width:57.3%"></i><i class="d" style="width:23.9%"></i><i class="a" style="width:18.8%"></i></span></td><td>not played</td><td></td><td class="fb" data-ref="gw6-MUN-TOT"><button type="button" data-vote="good" title="This call was reasonable">&#10003;</button><button type="button" data-vote="bad" title="This call looks wrong">&#10007;</button><a class="send" href="https://github.com/joshuathomas171717-cpu/90-I-/issues/new?labels=review&title=%5Breview%5D%20MW6%20MUN%20v%20TOT%20%E2%80%94%20Manchester%20United%20win&body=%2A%2AFixture%2A%2A%20MW6%3A%20MUN%20v%20TOT%0A%0A%2A%2AThe%20call%2A%2A%3A%20Manchester%20United%20win%20%28home%2057.3%25%20/%20draw%2023.9%25%20/%20away%2018.8%25%29%2C%20most%20likely%20score%201-1%0A%0A%2A%2ALocked%2A%2A%3A%202026-10-04%2C%20sha256%20%60fc81a13fe72c60be%60%0A%0A%2A%2AWhy%20I%20think%20this%20one%20is%20wrong%2A%2A%3A%20%0A%0A%3C%21--%20The%20lock%20hash%20is%20here%20so%20the%20review%20can%20tell%20which%20published%20version%20you%20were%20looking%20at.%20--%3E" target="_blank" rel="noopener" title="Open a pre-filled review issue for this fixture">send</a></td></tr>
+<tr><td>Sunderland v Brighton &amp; Hove Albion</td><td>Brighton &amp; Hove Albion win</td><td>1-1</td><td><span class="rbar" title="home 22.6% · draw 25.2% · away 52.2%"><i class="h" style="width:22.6%"></i><i class="d" style="width:25.2%"></i><i class="a" style="width:52.2%"></i></span></td><td>not played</td><td></td><td class="fb" data-ref="gw6-SUN-BHA"><button type="button" data-vote="good" title="This call was reasonable">&#10003;</button><button type="button" data-vote="bad" title="This call looks wrong">&#10007;</button><a class="send" href="https://github.com/joshuathomas171717-cpu/90-I-/issues/new?labels=review&title=%5Breview%5D%20MW6%20SUN%20v%20BHA%20%E2%80%94%20Brighton%20%26%20Hove%20Albion%20win&body=%2A%2AFixture%2A%2A%20MW6%3A%20SUN%20v%20BHA%0A%0A%2A%2AThe%20call%2A%2A%3A%20Brighton%20%26%20Hove%20Albion%20win%20%28home%2022.6%25%20/%20draw%2025.2%25%20/%20away%2052.2%25%29%2C%20most%20likely%20score%201-1%0A%0A%2A%2ALocked%2A%2A%3A%202026-10-04%2C%20sha256%20%60fc81a13fe72c60be%60%0A%0A%2A%2AWhy%20I%20think%20this%20one%20is%20wrong%2A%2A%3A%20%0A%0A%3C%21--%20The%20lock%20hash%20is%20here%20so%20the%20review%20can%20tell%20which%20published%20version%20you%20were%20looking%20at.%20--%3E" target="_blank" rel="noopener" title="Open a pre-filled review issue for this fixture">send</a></td></tr>
+</table></div>
+</div>
+
+<h2>The 2025–26 replay — a backtest, not a live record</h2>
+<p class="lede">This is a different kind of evidence and it is labelled as such: the model was fitted
+on <b>2024-25 final table + fixed PL hyperparameters (no 2025-26 data)</b>, then replayed across all 380 matches of 2025–26. Every one of those calls was made
+before that season was played. It is not the ledger — the ledger above is the only live record.</p>
+<p>The fixtures are in the order the source file lists them, not grouped into gameweeks: that file has
+no gameweek column, and inventing one would be exactly the kind of tidy-up this page exists to avoid.</p>
+<div class="card"><h3>380 calls, misses included</h3><div class="ticks"><i class="hit" title="ARS v AVL — 4-1"></i><i class="miss" title="ARS v BOU — 1-2"></i><i class="hit" title="ARS v BRE — 2-0"></i><i class="hit" title="ARS v BHA — 2-1"></i><i class="hit" title="ARS v BUR — 1-0"></i><i class="hit" title="ARS v CHE — 2-1"></i><i class="hit" title="ARS v CRY — 1-0"></i><i class="hit" title="ARS v EVE — 2-0"></i><i class="hit" title="ARS v FUL — 3-0"></i><i class="hit" title="ARS v LEE — 5-0"></i><i class="miss" title="ARS v LIV — 0-0"></i><i class="miss" title="ARS v MCI — 1-1"></i><i class="miss" title="ARS v MUN — 2-3"></i><i class="hit" title="ARS v NEW — 1-0"></i><i class="hit" title="ARS v NFO — 3-0"></i><i class="hit" title="ARS v SUN — 3-0"></i><i class="hit" title="ARS v TOT — 4-1"></i><i class="hit" title="ARS v WHU — 2-0"></i><i class="hit" title="ARS v WOL — 2-1"></i><i class="miss" title="AVL v ARS — 2-1"></i><i class="hit" title="AVL v BOU — 4-0"></i><i class="miss" title="AVL v BRE — 0-1"></i><i class="hit" title="AVL v BHA — 1-0"></i><i class="hit" title="AVL v BUR — 2-1"></i><i class="hit" title="AVL v CHE — 1-4"></i><i class="miss" title="AVL v CRY — 0-3"></i><i class="miss" title="AVL v EVE — 0-1"></i><i class="hit" title="AVL v FUL — 3-1"></i><i class="miss" title="AVL v LEE — 1-1"></i><i class="miss" title="AVL v LIV — 4-2"></i><i class="miss" title="AVL v MCI — 1-0"></i><i class="hit" title="AVL v MUN — 2-1"></i><i class="miss" title="AVL v NEW — 0-0"></i><i class="hit" title="AVL v NFO — 3-1"></i><i class="hit" title="AVL v SUN — 4-3"></i><i class="miss" title="AVL v TOT — 1-2"></i><i class="hit" title="AVL v WHU — 2-0"></i><i class="hit" title="AVL v WOL — 1-0"></i><i class="hit" title="BOU v ARS — 2-3"></i><i class="miss" title="BOU v AVL — 1-1"></i><i class="miss" title="BOU v BRE — 0-0"></i><i class="hit" title="BOU v BHA — 2-1"></i><i class="miss" title="BOU v BUR — 1-1"></i><i class="miss" title="BOU v CHE — 0-0"></i><i class="hit" title="BOU v CRY — 3-0"></i><i class="miss" title="BOU v EVE — 0-1"></i><i class="hit" title="BOU v FUL — 3-1"></i><i class="miss" title="BOU v LEE — 2-2"></i><i class="miss" title="BOU v LIV — 3-2"></i><i class="miss" title="BOU v MCI — 1-1"></i><i class="miss" title="BOU v MUN — 2-2"></i><i class="miss" title="BOU v NEW — 0-0"></i><i class="hit" title="BOU v NFO — 2-0"></i><i class="miss" title="BOU v SUN — 1-1"></i><i class="hit" title="BOU v TOT — 3-2"></i><i class="miss" title="BOU v WHU — 2-2"></i><i class="hit" title="BOU v WOL — 1-0"></i><i class="miss" title="BRE v ARS — 1-1"></i><i class="hit" title="BRE v AVL — 1-0"></i><i class="hit" title="BRE v BOU — 4-1"></i><i class="miss" title="BRE v BHA — 0-2"></i><i class="hit" title="BRE v BUR — 3-1"></i><i class="miss" title="BRE v CHE — 2-2"></i><i class="miss" title="BRE v CRY — 2-2"></i><i class="miss" title="BRE v EVE — 2-2"></i><i class="miss" title="BRE v FUL — 0-0"></i><i class="miss" title="BRE v LEE — 1-1"></i><i class="miss" title="BRE v LIV — 3-2"></i><i class="hit" title="BRE v MCI — 0-1"></i><i class="hit" title="BRE v MUN — 3-1"></i><i class="hit" title="BRE v NEW — 3-1"></i><i class="miss" title="BRE v NFO — 0-2"></i><i class="hit" title="BRE v SUN — 3-0"></i><i class="miss" title="BRE v TOT — 0-0"></i><i class="hit" title="BRE v WHU — 3-0"></i><i class="miss" title="BRE v WOL — 2-2"></i><i class="hit" title="BHA v ARS — 0-1"></i><i class="miss" title="BHA v AVL — 3-4"></i><i class="miss" title="BHA v BOU — 1-1"></i><i class="hit" title="BHA v BRE — 2-1"></i><i class="hit" title="BHA v BUR — 2-0"></i><i class="miss" title="BHA v CHE — 3-0"></i><i class="miss" title="BHA v CRY — 0-1"></i><i class="miss" title="BHA v EVE — 1-1"></i><i class="miss" title="BHA v FUL — 1-1"></i><i class="hit" title="BHA v LEE — 3-0"></i><i class="miss" title="BHA v LIV — 2-1"></i><i class="miss" title="BHA v MCI — 2-1"></i><i class="miss" title="BHA v MUN — 0-3"></i><i class="miss" title="BHA v NEW — 2-1"></i><i class="hit" title="BHA v NFO — 2-1"></i><i class="miss" title="BHA v SUN — 0-0"></i><i class="miss" title="BHA v TOT — 2-2"></i><i class="miss" title="BHA v WHU — 1-1"></i><i class="hit" title="BHA v WOL — 3-0"></i><i class="hit" title="BUR v ARS — 0-2"></i><i class="miss" title="BUR v AVL — 2-2"></i><i class="miss" title="BUR v BOU — 0-0"></i><i class="hit" title="BUR v BRE — 3-4"></i><i class="hit" title="BUR v BHA — 0-2"></i><i class="hit" title="BUR v CHE — 0-2"></i><i class="hit" title="BUR v CRY — 0-1"></i><i class="miss" title="BUR v EVE — 0-0"></i><i class="hit" title="BUR v FUL — 2-3"></i><i class="hit" title="BUR v LEE — 2-0"></i><i class="hit" title="BUR v LIV — 0-1"></i><i class="hit" title="BUR v MCI — 0-1"></i><i class="miss" title="BUR v MUN — 2-2"></i><i class="hit" title="BUR v NEW — 1-3"></i><i class="miss" title="BUR v NFO — 1-1"></i><i class="hit" title="BUR v SUN — 2-0"></i><i class="miss" title="BUR v TOT — 2-2"></i><i class="miss" title="BUR v WHU — 0-2"></i><i class="miss" title="BUR v WOL — 1-1"></i><i class="miss" title="CHE v ARS — 1-1"></i><i class="miss" title="CHE v AVL — 1-2"></i><i class="miss" title="CHE v BOU — 2-2"></i><i class="hit" title="CHE v BRE — 2-0"></i><i class="miss" title="CHE v BHA — 1-3"></i><i class="miss" title="CHE v BUR — 1-1"></i><i class="miss" title="CHE v CRY — 0-0"></i><i class="hit" title="CHE v EVE — 2-0"></i><i class="hit" title="CHE v FUL — 2-0"></i><i class="miss" title="CHE v LEE — 2-2"></i><i class="miss" title="CHE v LIV — 2-1"></i><i class="miss" title="CHE v MCI — 0-3"></i><i class="miss" title="CHE v MUN — 0-1"></i><i class="miss" title="CHE v NEW — 0-1"></i><i class="miss" title="CHE v NFO — 1-3"></i><i class="miss" title="CHE v SUN — 1-2"></i><i class="hit" title="CHE v TOT — 2-1"></i><i class="hit" title="CHE v WHU — 3-2"></i><i class="hit" title="CHE v WOL — 3-0"></i><i class="hit" title="CRY v ARS — 1-2"></i><i class="miss" title="CRY v AVL — 0-0"></i><i class="miss" title="CRY v BOU — 3-3"></i><i class="hit" title="CRY v BRE — 2-0"></i><i class="miss" title="CRY v BHA — 0-0"></i><i class="miss" title="CRY v BUR — 2-3"></i><i class="hit" title="CRY v CHE — 1-3"></i><i class="miss" title="CRY v EVE — 2-2"></i><i class="miss" title="CRY v FUL — 1-1"></i><i class="miss" title="CRY v LEE — 0-0"></i><i class="miss" title="CRY v LIV — 2-1"></i><i class="hit" title="CRY v MCI — 0-3"></i><i class="miss" title="CRY v MUN — 1-2"></i><i class="miss" title="CRY v NEW — 2-1"></i><i class="miss" title="CRY v NFO — 1-1"></i><i class="miss" title="CRY v SUN — 0-0"></i><i class="miss" title="CRY v TOT — 0-1"></i><i class="miss" title="CRY v WHU — 0-0"></i><i class="hit" title="CRY v WOL — 1-0"></i><i class="hit" title="EVE v ARS — 0-1"></i><i class="miss" title="EVE v AVL — 0-0"></i><i class="hit" title="EVE v BOU — 1-2"></i><i class="miss" title="EVE v BRE — 2-4"></i><i class="hit" title="EVE v BHA — 2-0"></i><i class="hit" title="EVE v BUR — 2-0"></i><i class="miss" title="EVE v CHE — 3-0"></i><i class="hit" title="EVE v CRY — 2-1"></i><i class="hit" title="EVE v FUL — 2-0"></i><i class="miss" title="EVE v LEE — 1-1"></i><i class="hit" title="EVE v LIV — 1-2"></i><i class="miss" title="EVE v MCI — 3-3"></i><i class="miss" title="EVE v MUN — 0-1"></i><i class="hit" title="EVE v NEW — 1-4"></i><i class="miss" title="EVE v NFO — 3-0"></i><i class="miss" title="EVE v SUN — 1-3"></i><i class="miss" title="EVE v TOT — 0-3"></i><i class="miss" title="EVE v WHU — 1-1"></i><i class="miss" title="EVE v WOL — 1-1"></i><i class="hit" title="FUL v ARS — 0-1"></i><i class="hit" title="FUL v AVL — 1-0"></i><i class="hit" title="FUL v BOU — 0-1"></i><i class="hit" title="FUL v BRE — 3-1"></i><i class="hit" title="FUL v BHA — 2-1"></i><i class="hit" title="FUL v BUR — 3-1"></i><i class="miss" title="FUL v CHE — 2-1"></i><i class="miss" title="FUL v CRY — 1-2"></i><i class="miss" title="FUL v EVE — 1-2"></i><i class="hit" title="FUL v LEE — 1-0"></i><i class="miss" title="FUL v LIV — 2-2"></i><i class="hit" title="FUL v MCI — 4-5"></i><i class="miss" title="FUL v MUN — 1-1"></i><i class="miss" title="FUL v NEW — 2-0"></i><i class="miss" title="FUL v NFO — 1-0"></i><i class="hit" title="FUL v SUN — 1-0"></i><i class="hit" title="FUL v TOT — 2-1"></i><i class="miss" title="FUL v WHU — 0-1"></i><i class="hit" title="FUL v WOL — 3-0"></i><i class="hit" title="LEE v ARS — 0-4"></i><i class="hit" title="LEE v AVL — 1-2"></i><i class="miss" title="LEE v BOU — 2-2"></i><i class="miss" title="LEE v BRE — 0-0"></i><i class="miss" title="LEE v BHA — 1-0"></i><i class="hit" title="LEE v BUR — 3-1"></i><i class="miss" title="LEE v CHE — 3-1"></i><i class="miss" title="LEE v CRY — 4-1"></i><i class="miss" title="LEE v EVE — 1-0"></i><i class="miss" title="LEE v FUL — 1-0"></i><i class="miss" title="LEE v LIV — 3-3"></i><i class="hit" title="LEE v MCI — 0-1"></i><i class="miss" title="LEE v MUN — 1-1"></i><i class="miss" title="LEE v NEW — 0-0"></i><i class="miss" title="LEE v NFO — 3-1"></i><i class="miss" title="LEE v SUN — 0-1"></i><i class="hit" title="LEE v TOT — 1-2"></i><i class="hit" title="LEE v WHU — 2-1"></i><i class="miss" title="LEE v WOL — 3-0"></i><i class="hit" title="LIV v ARS — 1-0"></i><i class="hit" title="LIV v AVL — 2-0"></i><i class="hit" title="LIV v BOU — 4-2"></i><i class="miss" title="LIV v BRE — 1-1"></i><i class="hit" title="LIV v BHA — 2-0"></i><i class="miss" title="LIV v BUR — 1-1"></i><i class="miss" title="LIV v CHE — 1-1"></i><i class="hit" title="LIV v CRY — 3-1"></i><i class="hit" title="LIV v EVE — 2-1"></i><i class="hit" title="LIV v FUL — 2-0"></i><i class="miss" title="LIV v LEE — 0-0"></i><i class="miss" title="LIV v MCI — 1-2"></i><i class="miss" title="LIV v MUN — 1-2"></i><i class="hit" title="LIV v NEW — 4-1"></i><i class="miss" title="LIV v NFO — 0-3"></i><i class="miss" title="LIV v SUN — 1-1"></i><i class="miss" title="LIV v TOT — 1-1"></i><i class="hit" title="LIV v WHU — 5-2"></i><i class="hit" title="LIV v WOL — 2-1"></i><i class="hit" title="MCI v ARS — 2-1"></i><i class="miss" title="MCI v AVL — 1-2"></i><i class="hit" title="MCI v BOU — 3-1"></i><i class="hit" title="MCI v BRE — 3-0"></i><i class="miss" title="MCI v BHA — 1-1"></i><i class="hit" title="MCI v BUR — 5-1"></i><i class="miss" title="MCI v CHE — 1-1"></i><i class="hit" title="MCI v CRY — 3-0"></i><i class="hit" title="MCI v EVE — 2-0"></i><i class="hit" title="MCI v FUL — 3-0"></i><i class="hit" title="MCI v LEE — 3-2"></i><i class="miss" title="MCI v LIV — 3-0"></i><i class="hit" title="MCI v MUN — 3-0"></i><i class="hit" title="MCI v NEW — 2-1"></i><i class="miss" title="MCI v NFO — 2-2"></i><i class="hit" title="MCI v SUN — 3-0"></i><i class="miss" title="MCI v TOT — 0-2"></i><i class="hit" title="MCI v WHU — 3-0"></i><i class="hit" title="MCI v WOL — 2-0"></i><i class="hit" title="MUN v ARS — 0-1"></i><i class="miss" title="MUN v AVL — 3-1"></i><i class="miss" title="MUN v BOU — 4-4"></i><i class="miss" title="MUN v BRE — 2-1"></i><i class="miss" title="MUN v BHA — 4-2"></i><i class="hit" title="MUN v BUR — 3-2"></i><i class="miss" title="MUN v CHE — 2-1"></i><i class="hit" title="MUN v CRY — 2-1"></i><i class="miss" title="MUN v EVE — 0-1"></i><i class="hit" title="MUN v FUL — 3-2"></i><i class="miss" title="MUN v LEE — 1-2"></i><i class="miss" title="MUN v LIV — 3-2"></i><i class="miss" title="MUN v MCI — 2-0"></i><i class="miss" title="MUN v NEW — 1-0"></i><i class="miss" title="MUN v NFO — 3-2"></i><i class="hit" title="MUN v SUN — 2-0"></i><i class="hit" title="MUN v TOT — 2-0"></i><i class="miss" title="MUN v WHU — 1-1"></i><i class="miss" title="MUN v WOL — 1-1"></i><i class="hit" title="NEW v ARS — 1-2"></i><i class="miss" title="NEW v AVL — 0-2"></i><i class="miss" title="NEW v BOU — 1-2"></i><i class="miss" title="NEW v BRE — 2-3"></i><i class="hit" title="NEW v BHA — 3-1"></i><i class="hit" title="NEW v BUR — 2-1"></i><i class="miss" title="NEW v CHE — 2-2"></i><i class="hit" title="NEW v CRY — 2-0"></i><i class="miss" title="NEW v EVE — 2-3"></i><i class="hit" title="NEW v FUL — 2-1"></i><i class="hit" title="NEW v LEE — 4-3"></i><i class="hit" title="NEW v LIV — 2-3"></i><i class="hit" title="NEW v MCI — 2-1"></i><i class="hit" title="NEW v MUN — 2-1"></i><i class="hit" title="NEW v NFO — 2-0"></i><i class="miss" title="NEW v SUN — 1-2"></i><i class="miss" title="NEW v TOT — 2-2"></i><i class="hit" title="NEW v WHU — 3-1"></i><i class="hit" title="NEW v WOL — 1-0"></i><i class="miss" title="NFO v ARS — 0-0"></i><i class="miss" title="NFO v AVL — 1-1"></i><i class="miss" title="NFO v BOU — 1-1"></i><i class="hit" title="NFO v BRE — 3-1"></i><i class="miss" title="NFO v BHA — 0-2"></i><i class="hit" title="NFO v BUR — 4-1"></i><i class="miss" title="NFO v CHE — 0-3"></i><i class="miss" title="NFO v CRY — 1-1"></i><i class="miss" title="NFO v EVE — 0-2"></i><i class="miss" title="NFO v FUL — 0-0"></i><i class="hit" title="NFO v LEE — 3-1"></i><i class="hit" title="NFO v LIV — 0-1"></i><i class="hit" title="NFO v MCI — 1-2"></i><i class="miss" title="NFO v MUN — 2-2"></i><i class="miss" title="NFO v NEW — 1-1"></i><i class="miss" title="NFO v SUN — 0-1"></i><i class="hit" title="NFO v TOT — 3-0"></i><i class="miss" title="NFO v WHU — 0-3"></i><i class="miss" title="NFO v WOL — 0-0"></i><i class="miss" title="SUN v ARS — 2-2"></i><i class="miss" title="SUN v AVL — 1-1"></i><i class="miss" title="SUN v BOU — 3-2"></i><i class="miss" title="SUN v BRE — 2-1"></i><i class="hit" title="SUN v BHA — 0-1"></i><i class="hit" title="SUN v BUR — 3-0"></i><i class="miss" title="SUN v CHE — 2-1"></i><i class="miss" title="SUN v CRY — 2-1"></i><i class="miss" title="SUN v EVE — 1-1"></i><i class="hit" title="SUN v FUL — 1-3"></i><i class="miss" title="SUN v LEE — 1-1"></i><i class="hit" title="SUN v LIV — 0-1"></i><i class="miss" title="SUN v MCI — 0-0"></i><i class="miss" title="SUN v MUN — 0-0"></i><i class="miss" title="SUN v NEW — 1-0"></i><i class="hit" title="SUN v NFO — 0-5"></i><i class="miss" title="SUN v TOT — 1-0"></i><i class="hit" title="SUN v WHU — 3-0"></i><i class="miss" title="SUN v WOL — 2-0"></i><i class="hit" title="TOT v ARS — 1-4"></i><i class="miss" title="TOT v AVL — 1-2"></i><i class="hit" title="TOT v BOU — 0-1"></i><i class="hit" title="TOT v BRE — 2-0"></i><i class="miss" title="TOT v BHA — 2-2"></i><i class="hit" title="TOT v BUR — 3-0"></i><i class="hit" title="TOT v CHE — 0-1"></i><i class="miss" title="TOT v CRY — 1-3"></i><i class="hit" title="TOT v EVE — 1-0"></i><i class="miss" title="TOT v FUL — 1-2"></i><i class="miss" title="TOT v LEE — 1-1"></i><i class="hit" title="TOT v LIV — 1-2"></i><i class="miss" title="TOT v MCI — 2-2"></i><i class="miss" title="TOT v MUN — 2-2"></i><i class="hit" title="TOT v NEW — 1-2"></i><i class="hit" title="TOT v NFO — 0-3"></i><i class="miss" title="TOT v SUN — 1-1"></i><i class="miss" title="TOT v WHU — 1-2"></i><i class="miss" title="TOT v WOL — 1-1"></i><i class="hit" title="WHU v ARS — 0-1"></i><i class="hit" title="WHU v AVL — 2-3"></i><i class="miss" title="WHU v BOU — 0-0"></i><i class="hit" title="WHU v BRE — 0-2"></i><i class="miss" title="WHU v BHA — 2-2"></i><i class="hit" title="WHU v BUR — 3-2"></i><i class="hit" title="WHU v CHE — 1-5"></i><i class="hit" title="WHU v CRY — 1-2"></i><i class="miss" title="WHU v EVE — 2-1"></i><i class="hit" title="WHU v FUL — 0-1"></i><i class="hit" title="WHU v LEE — 3-0"></i><i class="hit" title="WHU v LIV — 0-2"></i><i class="miss" title="WHU v MCI — 1-1"></i><i class="miss" title="WHU v MUN — 1-1"></i><i class="miss" title="WHU v NEW — 3-1"></i><i class="hit" title="WHU v NFO — 1-2"></i><i class="hit" title="WHU v SUN — 3-1"></i><i class="hit" title="WHU v TOT — 0-3"></i><i class="hit" title="WHU v WOL — 4-0"></i><i class="miss" title="WOL v ARS — 2-2"></i><i class="miss" title="WOL v AVL — 2-0"></i><i class="hit" title="WOL v BOU — 0-2"></i><i class="hit" title="WOL v BRE — 0-2"></i><i class="miss" title="WOL v BHA — 1-1"></i><i class="miss" title="WOL v BUR — 2-3"></i><i class="hit" title="WOL v CHE — 1-3"></i><i class="hit" title="WOL v CRY — 0-2"></i><i class="miss" title="WOL v EVE — 2-3"></i><i class="miss" title="WOL v FUL — 1-1"></i><i class="miss" title="WOL v LEE — 1-3"></i><i class="miss" title="WOL v LIV — 2-1"></i><i class="hit" title="WOL v MCI — 0-4"></i><i class="miss" title="WOL v MUN — 1-4"></i><i class="miss" title="WOL v NEW — 0-0"></i><i class="hit" title="WOL v NFO — 0-1"></i><i class="miss" title="WOL v SUN — 1-1"></i><i class="hit" title="WOL v TOT — 0-1"></i><i class="hit" title="WOL v WHU — 3-0"></i></div>
+<p class="muted">176 correct of 380 (46.3%). Tall ticks are hits, short are misses; hover for the
+fixture and scoreline.</p></div>
+<div class="tablewrap"><table class="tbl"><tr><th></th><th>Accuracy</th><th>RPS (lower is better)</th></tr>
+<tr><td><b>NINETY+ model</b></td><td><b>46.3%</b></td><td><b>0.2184</b></td></tr>
+<tr><td>home_win_always (PL base rates)</td><td>42.6%</td><td>0.2276</td></tr><tr><td>uniform_1x3</td><td>42.6%</td><td>0.2322</td></tr><tr><td>prior_season_table_favourite</td><td>43.4%</td><td>0.2396</td></tr></table></div>
+<div class="tablewrap"><table class="tbl"><tr><th>Running accuracy</th><th></th></tr><tr><td>first 40</td><td>65.0%</td></tr><tr><td>first 80</td><td>52.5%</td></tr><tr><td>first 120</td><td>48.3%</td></tr><tr><td>first 160</td><td>45.6%</td></tr><tr><td>first 200</td><td>45.0%</td></tr><tr><td>first 240</td><td>46.2%</td></tr><tr><td>first 280</td><td>46.8%</td></tr><tr><td>first 320</td><td>45.3%</td></tr><tr><td>first 380</td><td>46.3%</td></tr></table></div>
+
+<h2>Check it yourself</h2>
+<p>The ledger, the published snapshots and the code that verifies them are all in the repository.
+Nothing here needs an account:</p>
+<pre><code>python3 score_ledger.py --verify     # re-hash every lock against the published snapshot
+python3 score_ledger.py --json       # the raw ledger, as published</code></pre>
+<p><code>--verify</code> recomputes two things and fails loudly on either: the SHA-256 recorded when
+each gameweek was locked, against the predictions in the snapshot file today, and a hash chain over
+every write to the ledger, so an edited or deleted record cannot pass. A mismatch means the
+predictions or the record changed after publication — which is the one thing this page promises
+cannot happen quietly.</p>
+<p><a href="ledger.json">ledger.json</a> is the same file the page above was generated from, served
+so you can compare it with what it says.</p>
+
+<h2>Was this call good? — and where your answer goes</h2>
+<p>Two honest options, because this site has no server, no accounts and no analytics. The buttons on
+each row record your verdict <b>in this browser only</b>: nothing is transmitted, and clearing your
+site data removes it. <b>send</b> opens a pre-filled review issue on GitHub, which is where the weekly
+review actually lives. Nothing leaves the page unless you click that link.</p>
+<p class="muted" id="fbSummary">No verdicts recorded yet.</p>
+<p>Aggregation is the part a static site cannot honestly fake, so it happens where you can see it:
+<a href="https://github.com/joshuathomas171717-cpu/90-I-/tree/main/docs/reviews">docs/reviews/</a>
+holds one review per gameweek — what the ledger shows, which misses were noise and which look
+systematic, and what changed as a result. The cadence and the checklist live in that folder.</p>
+
+<script>
+/* P10.4 — per-fixture reactions, local by design: localStorage only, no fetch, no beacon, nothing
+   leaving the browser unless the reader clicks "send". A reaction that quietly phoned home would
+   contradict the privacy note on a site whose whole point is that it does not track anyone. */
+(function(){
+  var KEY = "nt90:feedback", box = {};
+  try { box = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch(e){ box = {}; }
+  function save(){ try { localStorage.setItem(KEY, JSON.stringify(box)); } catch(e){} }
+  function summary(){
+    var v = Object.keys(box).map(function(k){ return box[k]; });
+    var good = v.filter(function(x){ return x === "good"; }).length;
+    var bad  = v.filter(function(x){ return x === "bad"; }).length;
+    var el = document.getElementById("fbSummary");
+    if(el) el.textContent = (good + bad)
+      ? ("Recorded in this browser: " + good + " flagged reasonable, " + bad + " flagged questionable. "
+         + "Nothing has been sent — use “send” on a row to put one in the review.")
+      : "No verdicts recorded yet.";
+  }
+  document.querySelectorAll(".fb button").forEach(function(btn){
+    var cell = btn.parentNode, ref = cell.getAttribute("data-ref");
+    if(box[ref] === btn.getAttribute("data-vote")) btn.classList.add("on");
+    btn.addEventListener("click", function(){
+      var vote = btn.getAttribute("data-vote");
+      if(box[ref] === vote){ delete box[ref]; } else { box[ref] = vote; }
+      save();
+      cell.querySelectorAll("button").forEach(function(b){ b.classList.remove("on"); });
+      if(box[ref]) btn.classList.add("on");
+      summary();
+    });
+  });
+  summary();
+})();
+</script>
+<footer class="site">
+  <p><a href="index.html">Open the interactive dashboard</a> — six views, a
+  What-If simulator and the full model breakdown. Everything on this page is generated from
+  <code>data/</code> at build time; nothing here is hand-written.</p>
+  <p class="muted">Model output is a probabilistic forecast, not advice. Not affiliated with the
+  Premier League or any club. Results data from the official fixture list and
+  football-data.org; see <a href="model.html">the model page</a> for sources and
+  limitations.</p>
+</footer>
+</main>
+</body>
+</html>
