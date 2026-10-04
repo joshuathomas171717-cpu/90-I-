@@ -158,9 +158,25 @@ python3 update_week.py --source local             # the pipeline's own CSVs / da
 python3 update_week.py --replay                   # work from cached payloads, no network
 ```
 
-A scheduled workflow ([.github/workflows/weekly.yml](.github/workflows/weekly.yml), Mondays 06:00 UTC)
-runs it in CI and commits only when the gate passes. xG is a **manual, dated** input by design — see
-[docs/xg-strategy.md](docs/xg-strategy.md) for why and for the upgrade path.
+A scheduled workflow ([.github/workflows/weekly-update.yml](.github/workflows/weekly-update.yml),
+Mondays 06:00 UTC) runs it in CI and commits only when the gate passes. xG is a **manual, dated** input by
+design — see [docs/xg-strategy.md](docs/xg-strategy.md) for why and for the upgrade path.
+
+**Is the deployed site current?** That is a different question from "did the build work", and it is the
+one that goes wrong quietly: with no data key the job runs green, promotes nothing, and the site keeps
+serving its old vintage while looking confident.
+
+```bash
+python3 check_live.py                  # fetches the deployed site, reads its own stamp and matchweek,
+                                       # reconciles both against the fixture calendar, checks the lock
+                                       # and the published record — exit 1 if it is behind, 3 if the
+                                       # published ledger no longer verifies
+python3 check_live.py --page static/index.html --today 2026-10-16   # the same judgement on a local build
+```
+
+The page answers the same question for a reader, in its header: `ok`, `gameweek in progress`, or
+**out of date** with the missing gameweek named. What breaks, how to tell and what to do about it is in
+[docs/operations.md](docs/operations.md).
 
 ## The prediction ledger — a record you can check (Wave 7, P10.2–P10.5)
 
@@ -344,9 +360,12 @@ ninety-plus-pl-predictor/
 ├── backtest.py                # leakage-free 2025-26 replay + scoring vs baselines
 ├── build_dashboard.py         # compiles payload + static/src/* into the single-file dashboard
 ├── check_page_current.py      # gate: is the published page the page the committed data describes?
+├── check_live.py              # is the *deployed* site current? (Phase 11, P11.2) — the only check here
+│                              #   that looks at the deployment rather than the working tree
 ├── score_ledger.py            # lock, score and verify the public prediction ledger (Wave 7, P10.2)
 ├── CHANGELOG.md               # every version and its measured accuracy delta; source of /changelog
 ├── docs/reviews/              # one review per gameweek — the week-by-week reading of the ledger
+├── docs/operations.md          # the runbook: what breaks, how to tell, what to do (Phase 11, P11.4)
 ├── site_pages.py              # real HTML, sitemap, robots, 404 and every preview card (Wave 4)
 ├── feeds.py                   # iCal feeds: one per club + the league (named feeds.py, not
 │                              #   calendar.py — see the note at the top of the file)

@@ -88,6 +88,11 @@ def test_no_stale_as_of_date_is_anywhere_in_the_page():
     """
     as_of = json.loads(_read("as_of.json", DATA))["date"]
     page = _code_only(_page())
+    # The fixture calendar is exempt, and only the fixture calendar. It has to be full of dates — that
+    # is what a calendar is — and it makes no claim about when the numbers were built. It is checked
+    # against the published fixture list instead, in tests/test_wave11_liveness.py, which is a stronger
+    # assertion than "these dates do not look stale". Everything else in the page is still scanned.
+    page = re.sub(r'"schedule"\s*:\s*\{[^{}]*\}', '"schedule": {}', page)
     found = set(re.findall(r"20\d\d-\d\d-\d\d", page))
     stale = sorted(d for d in found if d != as_of)
     _check(not stale,

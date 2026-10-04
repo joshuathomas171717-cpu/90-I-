@@ -272,7 +272,22 @@ section.page.on{display:block}
 .fresh.stale{color:var(--gold)}
 .fresh.stale .dot{background:var(--gold); box-shadow:0 0 8px -1px var(--gold); animation:pulse 2.4s var(--e-out) infinite}
 .fresh.stale b{color:var(--gold)}
-@media (max-width:720px){ .fresh{display:none} }
+/* P11.1 - three states, three colours, and the meaning is in the word as well as the hue, because
+   colour alone is not a signal everyone receives. `ok` is the quiet default; `due` is not a fault (the
+   gameweek is being played and results cannot exist yet), so it gets the accent rather than an alarm;
+   `behind` is the one that matters and gets both the gold chip and the note above the tabs. */
+.fresh.due{color:var(--accent)}
+.fresh.due .dot{background:var(--accent); box-shadow:0 0 8px -1px var(--accent)}
+.fresh.due b{color:var(--accent)}
+.fresh.stale b{font-weight:600}
+#staleNote.reveal{animation:fadeUp .45s var(--e-out) both}
+/* The chip is decoration when the page is current, so hiding it on a narrow screen costs nothing. When
+   it is not current it is the reason the numbers look wrong, so it stays. */
+@media (max-width:720px){
+  .fresh{display:none}
+  .fresh.stale, .fresh.due{display:flex}
+  #staleNote{font-size:12px}
+}
 
 /* ── following clubs and saved scenarios (P8.2) ── */
 .star{background:none; border:0; padding:2px 4px; cursor:pointer; line-height:1;

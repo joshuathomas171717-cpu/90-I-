@@ -148,11 +148,45 @@ def _ledger_digest(path):
     return digest
 
 
+def _schedule(path):
+    """{gameweek: [first_kickoff, day_after_last_fixture]} for every remaining matchweek.
+
+    P11.1: the page can tell how old it is in calendar days, but that is not the same as knowing
+    whether it is *behind*. A gameweek is a weekend: if these numbers do not include matchweek 6 and
+    matchweek 6 finished three days ago, the site is out of date no matter how recent the stamp looks.
+    Only the fixture calendar can say that, so the calendar ships with the page — 33 pairs of dates,
+    about 700 bytes, against a 1 MB budget.
+
+    Windows come from the same `dates` column the iCal feed uses and go through the same parser, so a
+    window this file cannot read is a bug the feed already has tests for.
+    """
+    import csv as _csv
+    import feeds as _feeds
+    out = {}
+    if not os.path.exists(path):
+        return out
+    with open(path, encoding="utf-8") as fh:
+        for row in _csv.DictReader(fh):
+            try:
+                gw = int(row["gw"])
+            except (KeyError, TypeError, ValueError):
+                continue
+            start, end = _feeds.parse_window(row.get("dates"))
+            if start is None:
+                continue
+            # `end` is exclusive (the day after the last fixture), which is what "should be complete
+            # by" means — the refresh can only have run once the weekend is over.
+            out[str(gw)] = [start.isoformat(), end.isoformat()]
+    return out
+
+
 payload = json_safe({
     "baseline": summary, "backtest": backtest, "club_extras": club_extras, "h2h": h2h,
     "inputs": {"teams": teams_in, "fixtures": fixtures_in, "players": players_in, "gks": gks_in},
     "ledger": _ledger_digest(os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                           "data", "ledger_2026_27.json")),
+    "schedule": _schedule(os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                      "data", "projected_fixtures_2026_27.csv")),
 })
 
 parts = {p: open(os.path.join(SRC, p), encoding="utf-8").read()

@@ -392,46 +392,51 @@ def test_both_trust_pages_are_in_the_sitemap_and_linked_from_the_dashboard():
 # ════════════════════════════════════════════════════════════════════════════════════════════════════
 
 def test_the_page_states_the_age_of_its_own_data():
-    """After a failed weekly pull the site must say so rather than serve old numbers as current."""
+    """After a failed weekly pull the site must say so rather than serve old numbers as current.
+
+    Updated by Phase 11: the age is still stated in words, but the *verdict* no longer comes from a day
+    count. "Nine days old" was true and useless — a reader cannot know from it that a whole gameweek has
+    been played since. The chip now reports a state (current / in progress / out of date, named by
+    gameweek) and the calendar-aware rule behind it is covered in tests/test_wave11_liveness.py.
+    """
     render = _read("render.js")
+    core = _read("core.js")
     assert "function renderFreshness" in render, "the freshness indicator is gone"
-    assert "the weekly update may have failed" in render, \
-        "the stale state no longer says what it means"
-    assert "data ${days} days old" in render, "the age is no longer stated in days"
+    # The wording moved into freshness() when the verdict moved: the renderer prints the label, the
+    # rule produces it. Both halves have to be present or the chip goes silent.
+    assert "data ${days} days old" in core and ("updated yesterday" in core), \
+        "the age is no longer stated in words"
+    assert "state.label" in render, "the renderer no longer prints the label the rule produces"
+    assert "out of date" in render, "the out-of-date state no longer says what it means"
     assert "$(\"freshness\")" in render and 'id="freshness"' in _read("app.html"), \
         "the freshness indicator has nowhere to render"
-    # the threshold must be tied to the weekly cadence, not arbitrary
-    threshold = re.search(r"const weekly = (\d+)", render)
-    assert threshold and 7 <= int(threshold.group(1)) <= 14, \
-        "the staleness threshold has drifted away from a weekly pipeline"
+    # The verdict must come from the calendar, not from a number typed into the renderer.
+    assert re.search(r"freshness\(asOf,[^)]*schedule", render), \
+        "the freshness verdict no longer uses the shipped fixture calendar"
+    assert "const weekly = 8" not in re.sub(r"/\*.*?\*/", "", render, flags=re.S), \
+        "the fixed eight-day threshold is still here — it cannot tell 'a week old' from 'a gameweek behind'"
 
 
-def test_the_staleness_logic_is_correct_at_its_boundaries():
-    """The rule is small enough to test directly: today is fresh, a fortnight is not.
+def test_a_page_with_no_calendar_still_flags_the_obviously_stale():
+    """The degenerate path, kept: a build with no embedded calendar (hand-opened, or older than
+    Phase 11) falls back to the blunt rule rather than silently claiming to be current.
 
-    This mirrors the arithmetic in renderFreshness rather than running it, because the real function
-    lives in a browser. Mirroring is a weaker guarantee — and it is exactly how the boundary gets
-    checked when a browser is not available.
+    The boundary arithmetic is mirrored here because the real function lives in a browser; the
+    calendar-aware rule that supersedes it for a normal build is tested in test_wave11_liveness.py.
     """
-    def age_label(as_of, today):
+    def fallback_stale(as_of, today, weekly=8):
         import datetime
         stamped = datetime.date(*[int(x) for x in as_of.split("-")])
-        days = (today - stamped).days
-        weekly = 8
-        if days <= 0:
-            return "updated today", False
-        if days == 1:
-            return "updated yesterday", False
-        return "data %d days old" % days, days > weekly
+        return (today - stamped).days > weekly
 
     import datetime
     today = datetime.date(2026, 10, 3)
-    assert age_label("2026-10-03", today) == ("updated today", False)
-    assert age_label("2026-10-02", today) == ("updated yesterday", False)
-    assert age_label("2026-09-30", today) == ("data 3 days old", False)
-    assert age_label("2026-09-25", today) == ("data 8 days old", False), "a week's gap is normal"
-    label, stale = age_label("2026-09-15", today)
-    assert stale and "18 days old" in label, "an 18-day-old snapshot must be flagged as stale"
+    assert not fallback_stale("2026-10-03", today), "today's data is not stale"
+    assert not fallback_stale("2026-09-25", today), "an eight-day gap is normal for a weekly pipeline"
+    assert fallback_stale("2026-09-15", today), "an 18-day-old snapshot must be flagged as stale"
+    core = _read("core.js")
+    assert re.search(r"days\s*>\s*8\b", core), \
+        "the no-calendar fallback is gone — a page that cannot judge itself must not pass itself"
 
 
 def test_the_api_reports_the_same_vintage_as_the_page():

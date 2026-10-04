@@ -263,6 +263,102 @@ function scnInt(v, lo, hi){
   return Math.max(lo, Math.min(hi, n));
 }
 
+/** How old is this page — and, more to the point, is it *behind*?
+ *
+ * P11.1. The old rule was a fixed threshold: flag the page when its data was more than eight days
+ * old. That is true but it under-states the problem, because eight days is not the unit that matters.
+ * The unit that matters is the gameweek. If the numbers do not include matchweek 6 and matchweek 6
+ * finished three days ago, the site is out of date however recent the stamp looks — and a reader has
+ * no way to know that from a date, because they do not carry the fixture calendar in their head.
+ *
+ * So the calendar ships with the page (`EMBEDDED.schedule`, from the same parser the iCal feed uses)
+ * and this decides, per load, which of three honest states the page is in:
+ *
+ *   ok      — the next gameweek has not started; these numbers are current.
+ *   due     — a gameweek is being played right now. Numbers cannot include results that do not exist
+ *             yet, so this is not a failure, and it says what will happen and when.
+ *   behind  — a gameweek has finished and the data still starts from before it. The weekly refresh
+ *             has not run. Say so plainly, name the gameweek, and stop presenting the numbers as the
+ *             current state of the league.
+ *
+ * Pure on purpose: `now` is a parameter, so the behaviour at any date can be tested without waiting
+ * for that date, and `schedule` is a plain {gameweek: [start, dayAfterEnd]} object.
+ */
+function freshness(asOfISO, schedule, nextGw, now){
+  const stamp = String(asOfISO || "").match(/(\d{4})-(\d{2})-(\d{2})/);
+  const today = now instanceof Date ? now : new Date();
+  const midnight = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+  const days = stamp
+    ? Math.floor((midnight - new Date(+stamp[1], +stamp[2] - 1, +stamp[3])) / 86400000)
+    : null;
+  const label = days === null ? "" : days <= 0 ? "updated today"
+    : days === 1 ? "updated yesterday" : `data ${days} days old`;
+
+  const table = schedule && typeof schedule === "object" ? schedule : null;
+  if(!table || !stamp){
+    // No calendar (an older build, or a hand-opened file): fall back to the rule this replaced. Blunt
+    // is better than silent — the page still refuses to present month-old numbers as this week's.
+    const stale = days !== null && days > 8;
+    return { level: stale ? "behind" : "ok", days, label,
+             detail: stale ? "The weekly update should have refreshed this by now — treat the numbers "
+                           + "as a snapshot, not the current state of the league." : "" };
+  }
+
+  const weeks = Object.keys(table).map(Number).sort((a, b) => a - b);
+  const start = weeks.find(gw => nextGw === undefined || gw >= nextGw) ?? weeks[0];
+  // Finished gameweeks: the day after their last fixture has arrived.
+  const finished = weeks.filter(gw => {
+    const end = table[String(gw)][1];
+    return end && new Date(end + "T00:00:00") <= midnight;
+  });
+  const playing = weeks.find(gw => {
+    const [a, b] = table[String(gw)] || [];
+    return a && b && new Date(a + "T00:00:00") <= midnight && midnight < new Date(b + "T00:00:00");
+  });
+  const next = start !== undefined ? table[String(start)] : null;
+  const first = next ? new Date(next[0] + "T00:00:00") : null;
+  const daysToStart = first ? Math.round((first - midnight) / 86400000) : null;
+
+  if(finished.length){
+    // The earliest finished gameweek is the one the data should already contain: `nextGw` is the
+    // gameweek these numbers are *for*, so any finished gameweek at or after it has been missed.
+    const missed = finished.filter(gw => nextGw === undefined || gw >= nextGw);
+    if(missed.length){
+      const gw = missed[0];
+      const [a, b] = table[String(gw)];
+      return { level: "behind", days, label, gameweek: gw, start: a, ended: b,
+               detail: `Matchweek ${gw} ran ${a} to ${dayBefore(b)} and these numbers do not include `
+                     + `its results — the weekly refresh has not run since ${String(asOfISO).slice(0, 10)}. `
+                     + `Everything on this page starts from before that gameweek was played.` };
+    }
+  }
+
+  if(playing){
+    const [a, b] = table[String(playing)];
+    return { level: "due", days, label, gameweek: playing, start: a, ended: b,
+             detail: `Matchweek ${playing} is being played now (${a} to ${dayBefore(b)}). These numbers `
+                   + `cover everything up to the last completed gameweek, and refresh once the weekend `
+                   + `is over — this is what the model knew before kickoff, which is the point of it.` };
+  }
+
+  if(daysToStart !== null && daysToStart <= 2 && daysToStart >= 0){
+    return { level: "ok", days, label, gameweek: start, start: next[0],
+             detail: `Matchweek ${start} starts on ${next[0]} — the model's numbers for it are already `
+                   + `published, and they are the ones locked in the ledger before kickoff.` };
+  }
+  return { level: "ok", days, label, gameweek: start, start: next ? next[0] : null, detail: "" };
+}
+
+/** '2026-10-13' -> '12 October' — for prose that names when a gameweek ended. */
+function dayBefore(iso){
+  const m = String(iso || "").match(/(\d{4})-(\d{2})-(\d{2})/);
+  if(!m) return "?";
+  const dt = new Date(+m[1], +m[2] - 1, +m[3] - 1);
+  const months = ["January", "February", "March", "April", "May", "June", "July", "August",
+                  "September", "October", "November", "December"];
+  return dt.getDate() + " " + months[dt.getMonth()];
+}
+
 function sanitizeScenario(raw){
   const src = (raw && typeof raw === "object") ? raw : {};
   const out = { player_injuries:{}, team_boosts:{}, points_deductions:{}, custom_scores:{} };

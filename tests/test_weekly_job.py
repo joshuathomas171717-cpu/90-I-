@@ -464,6 +464,26 @@ def test_weekly_job_end_to_end_in_a_copy():
         with open(os.path.join(drop_dir, "gw06.json"), "w", encoding="utf-8") as fh:
             json.dump({"results": results}, fh, indent=2)
 
+        # ── the week starts here, on a clean tree ────────────────────────────────────────────────────
+        # The rehearsal commits before the job runs, because that is the shape of the real thing: CI
+        # checks out a committed tree, the job mutates it, and what the job changed is what gets
+        # committed. (Committing *after* the run would stage every output as "before", and the commit
+        # that the workflow makes would have nothing left to carry — which is exactly what happened the
+        # first time this was written, and it made the test fail on a clean tree.)
+        def git(*args):
+            done = subprocess.run(["git"] + list(args), cwd=project, capture_output=True, text=True,
+                                  timeout=120)
+            assert done.returncode == 0, "git %s failed:\n%s\n%s" % (
+                " ".join(args), done.stdout[-800:], done.stderr[-800:])
+            return done.stdout
+
+        git("init", "-q", "-b", "main")
+        git("config", "user.email", "rehearsal@example.invalid")
+        git("config", "user.name", "weekly rehearsal")
+        git("add", "-A")
+        git("-c", "commit.gpgsign=false", "commit", "-q", "-m", "the state before the week")
+        before = git("rev-parse", "HEAD").strip()
+
         env = dict(os.environ, NT90_SOURCE="local")
         # the full chain: the rebuild is what turns 60 played matches into gw7 predictions
         out = subprocess.run([sys.executable, "update_week.py"], cwd=project, env=env,
@@ -530,6 +550,76 @@ def test_weekly_job_end_to_end_in_a_copy():
             "the gw7 lock does not match the snapshot the job published")
         print("\n  [weekly] 60 played · ledger gw6 %d/%d (%.1f%%) · snapshot gw7 with %d predictions"
               % (entry["hits"], entry["matches"], entry["accuracy_pct"], len(nxt["predictions"])))
+
+        # ── P11.5: the commit path, and the site that comes out the other side ─────────────────────
+        # Everything above proves the job *worked*. It does not prove the deployment changes, and that
+        # gap is the whole reason Phase 11 exists: a job that runs green and promotes nothing looks
+        # identical from the outside to a job with nothing to do. So the last stretch is played for
+        # real — the steps the workflow performs between a successful run and a live site:
+        #
+        #     git add data/ static/ ; git commit -m "chore(data): weekly refresh <date>"
+        #
+        # and then the deployed artefact is asked what it thinks, with the live checker rather than with
+        # an assumption about what the rebuild did.
+        # the workflow's own two commands, in spirit: stage the source data and the built pages
+        git("add", "data/", "static/")
+        staged = git("diff", "--cached", "--name-only").split()
+        message = "chore(data): weekly refresh 2026-10-13"
+        git("-c", "commit.gpgsign=false", "commit", "-q", "-m", message)
+        after = git("rev-parse", "HEAD").strip()
+        assert after != before, ("the weekly run produced nothing to commit — a green job that promotes "
+                                 "nothing is the exact failure this test exists to catch")
+
+        # What the commit holds has to include both halves, or the site and the data drift apart: the
+        # page the deployment serves and the record the receipts page links to.
+        changed = set(git("show", "--pretty=format:", "--name-only", after).split())
+        assert "static/index.html" in changed, \
+            "the commit does not carry the rebuilt page: %s" % sorted(changed)[:8]
+        assert "data/ledger_2026_27.json" in changed, "the commit does not carry the scored ledger"
+        assert "data/matches_2026_27_played.csv" in changed, "the commit does not carry the new results"
+        assert not [f for f in staged if f.startswith("tests/")], \
+            "the weekly commit stages test files, which is not what the workflow does"
+        assert message.startswith("chore(data): weekly refresh"), "the commit message shape changed"
+
+        # ── and now the question that matters: does the site that comes out say the right thing? ────
+        # check_live.py is run against the rebuilt page at a date after matchweek 6's window closed. If
+        # the rebuild, the snapshot or the stamp were wrong, this is where it shows — the tool does not
+        # know it is looking at a rehearsal.
+        live = subprocess.run([sys.executable, os.path.join(project, "check_live.py"),
+                               "--page", os.path.join(project, "static", "index.html"),
+                               "--today", "2026-10-16", "--json"],
+                              cwd=project, capture_output=True, text=True, timeout=120)
+        assert live.returncode == 0, ("the site after the weekly run did not pass its own live check:\n%s"
+                                      % (live.stdout[-800:] or live.stderr[-800:]))
+        verdict = json.loads(live.stdout)
+        assert verdict["state"] == "current", \
+            "after a successful weekly run the site still reports %s" % verdict["state"]
+        assert verdict["matchweek"] == 7, \
+            "after scoring gw6 the site should be published for gw7, not %s" % verdict["matchweek"]
+        # The stamp is the *run* date, not the last result date — `as_of_date()` is `datetime.now()`.
+        # So the claim worth asserting is not a date typed into this test, it is that the stamp is the
+        # day this run happened and that the page's own idea of the season has moved on.
+        import datetime as _dt
+        stamp = _dt.date.fromisoformat(verdict["as_of"])
+        assert abs((stamp - _dt.date.today()).days) <= 1, \
+            "the rebuilt page is stamped %s, which is not the day this run happened (%s)" % (
+                verdict["as_of"], _dt.date.today())
+        assert verdict["locked_before_kickoff"] is True, \
+            "the gw7 lock the job took does not precede gw7's first kickoff"
+
+        # and the page itself must say the gameweek was completed — the stamp alone could be a rebuild
+        # that changed nothing. This is the assertion that catches "ran green, promoted nothing".
+        with open(os.path.join(project, "static", "index.html"), encoding="utf-8") as fh:
+            rebuilt = fh.read()
+        blob, _ = json.JSONDecoder().raw_decode(rebuilt, rebuilt.index("const EMBEDDED = ")
+                                                + len("const EMBEDDED = "))
+        assert blob["baseline"]["meta"]["last_completed_gw"] == 6, \
+            "the rebuilt page still believes the last completed gameweek is %s" % (
+                blob["baseline"]["meta"]["last_completed_gw"])
+        assert blob["baseline"]["meta"]["next_gw"] == 7, \
+            "the rebuilt page is not published for gw7"
+        print("  [weekly] the commit carries %d files · the site after the run: %s, matchweek %s, "
+              "last completed gw6" % (len(changed), verdict["state"], verdict["matchweek"]))
 
         # the original workspace must be untouched by all of this
         with open(os.path.join(DATA, "matches_2026_27_played.csv"), encoding="utf-8") as fh:

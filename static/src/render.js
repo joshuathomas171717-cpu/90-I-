@@ -1287,24 +1287,28 @@ function renderFreshness(){
   const host = $("freshness");
   if(!host) return;
   const asOf = (DATA.meta && DATA.meta.as_of_date) || "";
-  const m = String(asOf).match(/(\d{4})-(\d{2})-(\d{2})/);
-  if(!m){ host.innerHTML = ""; return; }
-  const stamped = new Date(+m[1], +m[2] - 1, +m[3]);
-  const today = new Date();
-  const days = Math.floor((new Date(today.getFullYear(), today.getMonth(), today.getDate()) - stamped) / 86400000);
-  // The pipeline runs weekly, so a gap of up to a week is normal and a fortnight is not. The point is
-  // not to alarm on schedule — it is to never quietly present month-old numbers as this week's.
-  const weekly = 8;
-  const stale = days > weekly;
-  const label = days <= 0 ? "updated today"
-    : days === 1 ? "updated yesterday"
-    : `data ${days} days old`;
-  host.className = "fresh" + (stale ? " stale" : "");
-  host.innerHTML = `<span class="dot" aria-hidden="true"></span>${esc(label)}`
-    + (stale ? ` <b>· the weekly update may have failed</b>` : "");
-  host.title = `Predictions built from results up to ${esc(String(asOf))}${stale
-    ? ". The weekly job should have refreshed this by now — treat the numbers as a snapshot, not the current state of the league."
-    : ". The pipeline refreshes after the last match of each gameweek."}`;
+  /* P11.1 - the chip says whether the page is current, not merely how old it looks. The rule lives in
+     core.js as a pure function, so its behaviour on any date can be tested without waiting for that
+     date to arrive; this renders the verdict. A page a whole gameweek behind says so and names the
+     gameweek - "data 9 days old" is a fact a reader cannot act on. */
+  const state = freshness(asOf, (typeof EMBEDDED !== "undefined" && EMBEDDED.schedule) || null,
+    DATA.meta && DATA.meta.next_gw, new Date());
+  host.className = "fresh" + (state.level === "behind" ? " stale" : state.level === "due" ? " due" : "");
+  host.innerHTML = `<span class="dot" aria-hidden="true"></span>${esc(state.label || "date unknown")}`
+    + (state.level === "behind" ? " <b>\u00b7 out of date</b>"
+       : state.level === "due" ? " <b>\u00b7 gameweek in progress</b>" : "");
+  host.title = (state.detail || `Predictions built from results up to ${String(asOf).slice(0, 10)}.`)
+    + (state.label ? ` (${state.label})` : "");
+  if(state.level === "behind"){
+    // Also on the page, not only in a tooltip: a tooltip is where honesty goes to be unread, and this is
+    // the one state where the numbers must not be presented as the current state of the league.
+    const note = $("staleNote");
+    if(note){
+      note.hidden = false;
+      note.innerHTML = `<b>These numbers are out of date.</b> ${esc(state.detail)} `
+        + `<a href="receipts.html">The ledger</a> shows what has actually been scored.`;
+    }
+  }
 }
 
 /* ═══════════ FOLLOW YOUR CLUBS, AND WHAT YOU SAVED (P8.1, P8.2) ═══════════
