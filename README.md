@@ -177,6 +177,36 @@ minutes — because the project's own dataset has none, and every surface that s
 ([docs/player-signal.md](docs/player-signal.md) is the measured audit; it reports each capability as
 proven, not-proven or failed, and never turns "no key" into a green tick).
 
+### The player layer (Phase 14 — context, not live input)
+
+```bash
+python3 player_history.py --source local --season 2025-26  # import a dated historical bundle, no key
+python3 player_gate.py       # temporal shadow test, or an honest not-measured report
+python3 player_context.py    # form, replacement-aware absence tiers and exact schedule context
+```
+
+[Model card v3.0](docs/player-model-card.md) documents the arithmetic and its boundaries. A 35-day
+recency decay applies only to dated matches: a fetch timestamp is never turned into a match date.
+Season totals say **recency unavailable**, a keeper without ratings has no fake goals-based form score,
+and squad indices label the 52-player bootstrap as a partial sample. International coverage remains
+unverified unless a supplied record explicitly verifies it.
+
+Tier 1 prices a replacement, not a missing player's contribution falling to zero. Tier 2 requires
+10 appearances and 5 explicit zero-minute records, adjusted for opponent/home strength. It reports an
+association, not a causal injury effect. The date-free 2025–26 matrix cannot prove this works: the gate
+currently reports **not measured**, candidate/delta **null**, and **input off**. Even a good structural
+shadow result cannot authorize an untested live ML ensemble. Existing forecasts and What-If assumptions
+therefore remain unchanged.
+
+`python3 player_history.py --source api-football --season 2025-26 --max-fixtures 20` is a separate,
+opt-in, resumable free-provider backfill. It never starts in CI or the weekly refresh; historical access
+still needs a real free-key audit. Missing rows/null minutes are unknown, not absence records, and
+provider lineups fetched today cannot be backdated into pre-match captures.
+
+The site publishes `/player-model.html` and a downloadable `/player-model.json` report; the Model tab
+links to them. The weekly job refreshes optional inputs before rebuilding and checks the deployed
+player-context content fingerprint even when the matchweek/data date stay the same.
+
 A scheduled workflow ([.github/workflows/weekly-update.yml](.github/workflows/weekly-update.yml),
 Mondays 06:00 UTC) runs it in CI and commits only when the gate passes. xG is a **manual, dated** input by
 design — see [docs/xg-strategy.md](docs/xg-strategy.md) for why and for the upgrade path.

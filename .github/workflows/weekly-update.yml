@@ -51,6 +51,8 @@ jobs:
       FOOTBALL_DATA_ORG_TOKEN: ${{ secrets.FOOTBALL_DATA_ORG_TOKEN }}
       FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
       NT90_SOURCE: ${{ inputs.provider }}
+      # Optional, separate FREE player provider. Empty means committed files/manual drops; no paid plan.
+      API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
       # Canonical/OG URLs baked into the generated pages. Set the repository variable
       # NT90_SITE_URL (Settings -> Secrets and variables -> Actions -> Variables) to the deployed
       # origin, e.g. https://ninety-plus.vercel.app, and every page gets an absolute canonical.
@@ -120,7 +122,9 @@ jobs:
         if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && !inputs.dry_run)
         run: |
           git show HEAD:static/index.html > /tmp/committed_index.html
-          if python3 check_page_current.py --against /tmp/committed_index.html; then
+          # Context/provenance changes count even when headline predictions do not move.
+          PLAYER_CHANGES=$(git status --porcelain -- data/players_form_2026_27.csv data/players_form_2026_27.meta.json data/availability_2026_27.json data/player_calendar_2026_27.json data/player_context_2026_27.json data/player_gate_2025_26.json)
+          if [ -z "$PLAYER_CHANGES" ] && python3 check_page_current.py --against /tmp/committed_index.html; then
             # Everything derived is put back together. `static/` now covers the crawlable pages,
             # the preview cards, the icons and the calendar feeds, and all of them are written from
             # the same numbers — reverting one without the others would leave the repository holding

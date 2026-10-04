@@ -85,6 +85,7 @@ def from_drop(directory=DROP_DIR):
                          "type": str(entry.get("type") or "Injury"),
                          "reason": str(entry.get("reason") or ""),
                          "since": (str(entry.get("since") or "")[:10]) or None,
+                         "player_id": str(entry.get("player_id") or ""),
                          "source": str(entry.get("source") or declared or "manual-drop")})
         if not entries:
             problems.append("%s: no entries (an empty export is recorded, not ignored)" % name)
@@ -104,6 +105,7 @@ def from_provider(provider, replay=False, quiet=False):
                              "type": entry.get("type") or "Injury",
                              "reason": entry.get("reason") or "",
                              "since": (entry.get("since") or None),
+                             "player_id": str(entry.get("player_id") or ""),
                              "source": provider.name})
         except Exception as exc:
             problems.append("%s: %s" % (team["code"], exc))
@@ -124,14 +126,23 @@ def build(rows, source, problems=None, gameweek=None):
         by_club[code] = []
     for row in rows:
         by_club.setdefault(row["club"], []).append({
-            "player": row["player"], "type": row["type"], "reason": row["reason"], "since": row["since"]})
-    known = bool(rows)
+            "player": row["player"], "player_id": str(row.get("player_id") or ""),
+            "type": row["type"], "reason": row["reason"], "since": row["since"]})
+        # An empty successful provider response is a checked-empty club. A manual list proves only
+    # the clubs it lists. A quota/network failure for one club must not mark that club healthy.
+    failed = {code for code in CLUB_CODES if any(str(problem).startswith(code + ":") for problem in (problems or []))}
+    global_failure = any("no clubs" in str(problem) for problem in (problems or []))
+    listed = {r["club"] for r in rows}
+    coverage = {code: ("failed" if code in failed else "checked" if source == "api-football" and not global_failure
+                       else "listed-only" if code in listed else "unknown") for code in CLUB_CODES}
+    known = bool(rows) or any(v == "checked" for v in coverage.values())
     return {
         "captured_at": now_iso(),
         "season": SEASON_LABEL,
         "gameweek": gameweek,
         "source": source,
         "tracked": known,
+        "coverage": coverage,
         "clubs": by_club,
         "totals": {"players_out": len(rows), "clubs_reporting": sum(1 for v in by_club.values() if v)},
         "problems": problems or [],
@@ -182,7 +193,8 @@ def summarise(payload, club=None):
     if club:
         out = (payload.get("clubs") or {}).get(club) or []
         if not out:
-            return "%s: nobody listed out" % club
+            status = (payload.get("coverage") or {}).get(club)
+            return "%s: availability unknown" % club if status in ("unknown", "failed") else "%s: nobody listed out" % club
         return "%s: %s" % (club, ", ".join(sorted("%s (%s)" % (o["player"], o["type"]) for o in out)))
     return ("%d player(s) out across %d club(s) · source %s · captured %s"
             % (totals.get("players_out", 0), totals.get("clubs_reporting", 0),

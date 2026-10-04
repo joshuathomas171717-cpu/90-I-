@@ -278,6 +278,138 @@ def _slug(name):
 # ═══════════════════════════════════════════════════════════════════════════════════════════════════
 #  P9.2 · P9.3 — the pages that explain the project to a stranger
 # ═══════════════════════════════════════════════════════════════════════════════════════════════════
+def _player_model_page(context, gate):
+    """P14's readable gate, separate from the production model version and future squad UI."""
+    from player_data import policy as _policy
+    settings = _policy()
+    coverage = context.get("coverage") or {}
+    candidate = gate.get("candidate")
+    baseline = (gate.get("baseline") if candidate else gate.get("baseline_full_season")) or {}
+    baseline_matches = gate.get("test_matches", 0) if candidate else gate.get("fixtures_in_result_matrix", 380)
+    gate_explanation = ("The historical result matrix has no kickoff dates or lineups. This run lacks "
+                        "the dated history and pre-match captures needed to evaluate the new layer; no new accuracy is claimed.") if candidate is None else (
+                        "The candidate has been measured on a matched chronological structural holdout, not on the live ML ensemble. "
+                        "That production head remains unvalidated and cannot be silently promoted.")
+    delta = gate.get("delta") or {}
+    reasons = "".join("<li>%s</li>" % _esc(r) for r in (gate.get("reasons") or ["No historical comparison is available."]))
+    def metric(value, digits=4, suffix=""):
+        return "Not measured" if value is None else ("%.*f%s" % (digits, value, suffix))
+    samples = []
+    for name in ("Erling Haaland", "Bukayo Saka", "David Raya"):
+        player = next((p for p in context.get("players") or [] if p.get("name") == name), None)
+        if not player:
+            continue
+        score = player.get("score")
+        absence = player.get("absence") or {}
+        samples.append("<tr><td><b>%s</b><br><span class='muted'>%s · %s</span></td>"
+                       "<td class='num'>%s</td><td>%s</td></tr>" % (
+                           _esc(name), _esc(player.get("club")), _esc(player.get("position")),
+                           metric(score, 1) if score is not None else "Unavailable",
+                           _esc(absence.get("label") or "unknown")))
+    sources = {}
+    for player in context.get("players") or []:
+        for source in player.get("sources") or []:
+            entry = sources.setdefault(source, {"players": 0, "dates": set()})
+            entry["players"] += 1
+            if player.get("fetched_at"):
+                entry["dates"].add(player["fetched_at"])
+    source_rows = "".join("<tr><td>%s</td><td class='num'>%d</td><td>%s</td></tr>" % (
+        _esc(name), value["players"], _esc("; ".join(sorted(value["dates"])) or "Not supplied"))
+        for name, value in sorted(sources.items()))
+    competition_scope = ", ".join(coverage.get("competition_scope") or []) or "None recorded"
+    body = f"""
+<nav class="crumbs"><a href="index.html">Dashboard</a> › <a href="method.html">Method</a> › Player layer</nav>
+<div style="display:flex;gap:8px;flex-wrap:wrap"><span class="chip ucl">Model card v3.0</span>
+<span class="chip rel">Context only · input off</span></div>
+<h1>Players matter.<br>The evidence matters too.</h1>
+<p class="lede">A player-form, absence and workload layer for NINETY+.
+Built to work without a key; not allowed to change a forecast before it earns that right.</p>
+<div class="card" style="border-top:3px solid #6ee7ff">
+  <h2 style="margin-top:0">The live model has not changed</h2>
+  <p>The new layer is <b>context, not prediction input</b>. {_esc(gate_explanation)}
+  The existing What-If assumptions remain unchanged too.</p>
+  <p class="muted">Card version v3.0 is not a promoted production model. Current data: {_esc(context.get('as_of') or 'unknown')}.
+  <a href="changelog.html">Read the release</a>.</p>
+</div>
+<div class="grid">
+  <div class="card"><div class="kv"><span>Tracked players</span><b>{coverage.get('players', 0)}</b>
+    At {coverage.get('clubs', 0)} clubs; not complete squads.</div></div>
+  <div class="card"><div class="kv"><span>Players with dated form</span><b>{coverage.get('dated_players', 0)}</b>
+    Fetch dates are not match dates.</div></div>
+  <div class="card"><div class="kv"><span>Measured absence estimates</span><b>{coverage.get('tier2_players', 0)}</b>
+    Tier 1 stays when Tier 2 lacks history.</div></div>
+</div>
+<h2>The gate, in the open</h2>
+<div class="card"><div class="tablewrap" style="overflow-x:auto" tabindex="0" role="region" aria-label="Player gate metrics; scroll horizontally on small screens">
+<table style="min-width:480px"><caption style="text-align:left;color:#8E9BB8;padding:0 0 10px">2025–26: baseline and new player candidate</caption>
+<thead><tr><th scope="col">Measurement</th><th scope="col">Existing baseline</th><th scope="col">New candidate</th></tr></thead>
+<tbody>
+<tr><td>Matches evaluated</td><td class="num">{baseline_matches}</td><td class="num">{gate.get('test_matches', 0)}</td></tr>
+<tr><td>1X2 hit rate</td><td class="num">{metric(baseline.get('accuracy'), 1, '%')}</td><td>{metric((candidate or {}).get('accuracy'), 1, '%')}</td></tr>
+<tr><td>RPS ↓</td><td class="num">{metric(baseline.get('rps'))}</td><td>{metric((candidate or {}).get('rps'))}</td></tr>
+<tr><td>Candidate − baseline</td><td colspan="2">RPS: {metric(delta.get('rps'), 6)} · hit rate: {metric(delta.get('accuracy_percentage_points'), 3, ' pp')}</td></tr>
+</tbody></table></div>
+<p class="note">Missing evidence is not a measured zero improvement. These are the structural replay's
+metrics, not a temporal validation of the live ML ensemble. A passing shadow test cannot silently
+promote an untested production head.</p>
+<ul>{reasons}</ul>
+<p><a href="player-model.json" download>Download the context and gate report (JSON)</a></p>
+</div>
+<h2>01 · Form, without fake recency</h2>
+<p>Minutes-weighted, competition-adjusted output, shrunk toward 50 for sparse samples. Dated matches
+use a {settings['half_life_days']}-day half-life; season totals explicitly say <b>recency unavailable</b>.
+A goalkeeper needs rating data, not goals. Scores below are descriptive indices, not win probabilities.</p>
+<div class="card"><div class="tablewrap" style="overflow-x:auto" tabindex="0" role="region" aria-label="Tracked player examples; scroll horizontally on small screens"><table style="min-width:420px">
+<caption style="text-align:left;color:#8E9BB8;padding-bottom:10px">Illustrative tracked players · {_esc(competition_scope)} · season totals where dates are absent</caption>
+<thead><tr><th scope="col">Player</th><th scope="col">Index / 100</th><th scope="col">Absence tier, if out</th></tr></thead>
+<tbody>{''.join(samples)}</tbody></table></div>
+<p class="note">This is a partial tracked sample, not a squad ranking. International coverage remains
+unverified; unverified minutes are excluded. A fetch timestamp is never used to create a recency trend.</p></div>
+<h2>02 · What a team loses, with a replacement counted</h2>
+<p><b>Tier 1:</b> position-weighted share of the club's goals. A replacement retains
+{settings['replacement_retained']*100:.0f}% by assumption; the range uses
+{settings['replacement_range'][0]*100:.0f}–{settings['replacement_range'][1]*100:.0f}% retained contribution.
+These are scenario assumptions, not confidence intervals. Defensive and goalkeeper role shares are priors.</p>
+<p><b>Tier 2:</b> output with/without a player, adjusted for opponent and home advantage, using only
+completed prior matches. It needs at least {settings['tier2_min_present']} appearances and
+{settings['tier2_min_absent']} explicit zero-minute records. Missing records are unknown, not injuries.
+The fitted effect is an <b>association, not a causal injury estimate</b>—rotation and selection can explain it.</p>
+<h2>03 · Rest and travel, only when actually known</h2>
+<p>Exact kickoff intervals and explicitly supplied travel distances replace the candidate's crude
+European-membership proxy. An international window is not proof someone played; only named appearances
+count. Away travel without a distance stays unknown. Today the layer has
+<b>{coverage.get('exact_next_kickoffs', 0)} exact next kickoffs</b>; fixture windows are not converted
+into invented match dates. The live model's old proxy remains unchanged until the new head is validated.</p>
+<h2>Where this build came from</h2>
+<div class="card"><div class="tablewrap" style="overflow-x:auto" tabindex="0" role="region" aria-label="Player sources and fetch dates; scroll horizontally on small screens"><table style="min-width:470px">
+<caption style="text-align:left;color:#8E9BB8;padding-bottom:10px">Source and fetch date, separate from the results cutoff</caption>
+<thead><tr><th scope="col">Source</th><th scope="col">Players</th><th scope="col">Fetched / exported at</th></tr></thead>
+<tbody>{source_rows or '<tr><td colspan="3">No player source available.</td></tr>'}</tbody></table></div>
+<p>Availability: <b>{'recorded, with per-club coverage' if coverage.get('availability_tracked') else 'not tracked'}</b>.
+An empty unknown list is not a clean bill of health. No paid APIs, accounts on this site, databases or external scripts.</p></div>
+<details class="card"><summary style="cursor:pointer;color:#6ee7ff;padding-bottom:12px">How to reproduce, and what opens the gate</summary>
+<p><code>python3 player_gate.py</code> builds the report;
+<code>python3 player_context.py</code> builds the indices; <code>python3 run_all.py</code> rebuilds the site.</p>
+<p>Exact historical dates, appearances and separately timestamped pre-match captures are required.
+The first 120 fixtures warm up the features; later calls see only prior completed matches.
+No season-end totals or target lineups enter the features. Policy constants are fixed before evaluation.</p>
+<p>Requirements: ≥{settings['gate_min_test_matches']} test matches, ≥{settings['gate_min_coverage']*100:.0f}%
+pre-match coverage, RPS gain ≥{settings['gate_min_rps_gain']:.3f}, improved hit rate, and the upper endpoint
+of a paired seven-day-block RPS-delta interval below zero. The actual production head then needs validation too.</p>
+<p>A free-provider backfill is optional and resumable; it never starts automatically in CI.
+Manual history/calendar drops work without a key. See <a href="{_esc(REPO_URL)}/blob/main/docs/player-model-card.md">the full model card and input schema</a>.</p>
+</details>
+<p class="note">Next, not already shipped: squad panels, named-player What-If ranges and pre-match missing-player digests.
+This card does not pretend those future UI features exist.</p>
+<p><a class="cta" href="index.html">Back to the dashboard</a></p>
+"""
+    # Links inside prose must differ by more than colour (WCAG 1.4.1); scope to this new card.
+    body = '<style>.player-layer p a,footer.site a{text-decoration:underline;text-underline-offset:3px}.player-layer :focus-visible{outline:2px solid #6ee7ff;outline-offset:3px}</style><div class="player-layer">'+body+'</div>'
+    return page("Player layer — model card v3.0, evidence and limits",
+                "Player form, replacement-aware absence and exact workload: context only until a temporal test earns input.",
+                body, canonical="player-model.html", jsonld={"@type": "WebPage", "name": "NINETY+ player layer model card v3.0"})
+
+
 def _method_page(summary, backtest):
     """The method page (P9.2).
 
@@ -332,6 +464,13 @@ modest edge: it is a better-than-average forecaster, not a clairvoyant.</p>
 with the actual final table was <b>%.2f</b>, average points error <b>±%.1f</b>, and the projected
 champion was <b>%s</b> rather than the actual <b>%s</b>. Predicting a 38-game table is harder than
 predicting matches, because small per-match errors compound.</p>
+
+<h2>The player layer: built, not silently promoted</h2>
+<p>Player form, replacement-aware absence priors and an exact workload candidate now have their own
+<a href="player-model.html">model card v3.0</a>. They are context, not live prediction inputs:
+season totals do not prove recency, and the historical matrix lacks the dated appearances and
+pre-match captures needed for a temporal comparison. The active forecasts and existing What-If
+assumptions remain unchanged until their actual head is validated.</p>
 
 <h2>What it cannot know</h2>
 <ul>
@@ -1082,6 +1221,15 @@ def build(summary=None):
         with open(_bt_path, encoding="utf-8") as fh:
             _backtest = json.load(fh)
     w("method.html", _method_page(summary, _backtest))
+    _player_context = {}
+    _player_gate = {}
+    for _name, _dest in (("player_context_2026_27.json", _player_context), ("player_gate_2025_26.json", _player_gate)):
+        _path = os.path.join(DATA, _name)
+        if os.path.exists(_path):
+            with open(_path, encoding="utf-8") as fh:
+                _dest.update(json.load(fh))
+    w("player-model.html", _player_model_page(_player_context, _player_gate))
+    w("player-model.json", json.dumps({"context": _player_context, "gate": _player_gate}, indent=2, allow_nan=False)+"\n", "data")
     _ledger = {}
     _ledger_path = os.path.join(DATA, "ledger_2026_27.json")
     if os.path.exists(_ledger_path):
@@ -1179,7 +1327,7 @@ data from the official fixture list and football-data.org.</p>
 
     # ── discovery: sitemap and robots ────────────────────────────────────────────────────────────
     urls = [("index.html", "1.0"), ("table.html", "0.9"), ("model.html", "0.6"),
-            ("method.html", "0.8"), ("calendar.html", "0.7"), ("privacy.html", "0.2")]
+            ("method.html", "0.8"), ("player-model.html", "0.7"), ("calendar.html", "0.7"), ("privacy.html", "0.2")]
     urls += [(p, "0.7") for _gw, _d, p in gw_pages]
     urls += [(p, "0.6") for _t, p in club_pages]
     lastmod = _lastmod(meta.get("as_of_date", ""))

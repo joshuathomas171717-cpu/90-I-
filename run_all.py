@@ -18,8 +18,10 @@ STEPS = [
     ("validate_data.py", "gating the dataset (20 clubs, 380 fixtures, table reproduced from results)"),
     ("fixtures_official.py", "validating the official 2026-27 fixture calendar"),
     ("data_builder.py", "building datasets (matches, fixtures, teams, players)"),
-    ("ml_engine.py", "training models + running the baseline Monte Carlo"),
     ("backtest.py", "replaying the 2025-26 season for out-of-sample scoring"),
+    ("player_gate.py", "testing the temporal player shadow, or keeping missing evidence as context"),
+    ("player_context.py", "building the offline player layer with source, timing and absence tiers"),
+    ("ml_engine.py", "training models + running the baseline Monte Carlo (player input remains gated)"),
     # The pages are built *before* the tests, not after. Two of the checks read the generated site —
     # that its fixture text matches the projected-fixtures table, that a club page states its club's
     # projection — and a page built from the previous run's data is not a product bug, it is the

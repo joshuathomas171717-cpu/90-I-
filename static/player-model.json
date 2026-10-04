@@ -1,0 +1,4235 @@
+{
+  "context": {
+    "absences": {
+      "ARS": {
+        "attack_loss_pct": null,
+        "defence_cost_pct": null,
+        "mapped_absences": 0,
+        "players": [],
+        "tiers": [],
+        "tracked": false,
+        "unmapped": []
+      },
+      "AVL": {
+        "attack_loss_pct": null,
+        "defence_cost_pct": null,
+        "mapped_absences": 0,
+        "players": [],
+        "tiers": [],
+        "tracked": false,
+        "unmapped": []
+      },
+      "BHA": {
+        "attack_loss_pct": null,
+        "defence_cost_pct": null,
+        "mapped_absences": 0,
+        "players": [],
+        "tiers": [],
+        "tracked": false,
+        "unmapped": []
+      },
+      "BOU": {
+        "attack_loss_pct": null,
+        "defence_cost_pct": null,
+        "mapped_absences": 0,
+        "players": [],
+        "tiers": [],
+        "tracked": false,
+        "unmapped": []
+      },
+      "BRE": {
+        "attack_loss_pct": null,
+        "defence_cost_pct": null,
+        "mapped_absences": 0,
+        "players": [],
+        "tiers": [],
+        "tracked": false,
+        "unmapped": []
+      },
+      "CHE": {
+        "attack_loss_pct": null,
+        "defence_cost_pct": null,
+        "mapped_absences": 0,
+        "players": [],
+        "tiers": [],
+        "tracked": false,
+        "unmapped": []
+      },
+      "COV": {
+        "attack_loss_pct": null,
+        "defence_cost_pct": null,
+        "mapped_absences": 0,
+        "players": [],
+        "tiers": [],
+        "tracked": false,
+        "unmapped": []
+      },
+      "CRY": {
+        "attack_loss_pct": null,
+        "defence_cost_pct": null,
+        "mapped_absences": 0,
+        "players": [],
+        "tiers": [],
+        "tracked": false,
+        "unmapped": []
+      },
+      "EVE": {
+        "attack_loss_pct": null,
+        "defence_cost_pct": null,
+        "mapped_absences": 0,
+        "players": [],
+        "tiers": [],
+        "tracked": false,
+        "unmapped": []
+      },
+      "FUL": {
+        "attack_loss_pct": null,
+        "defence_cost_pct": null,
+        "mapped_absences": 0,
+        "players": [],
+        "tiers": [],
+        "tracked": false,
+        "unmapped": []
+      },
+      "HUL": {
+        "attack_loss_pct": null,
+        "defence_cost_pct": null,
+        "mapped_absences": 0,
+        "players": [],
+        "tiers": [],
+        "tracked": false,
+        "unmapped": []
+      },
+      "IPS": {
+        "attack_loss_pct": null,
+        "defence_cost_pct": null,
+        "mapped_absences": 0,
+        "players": [],
+        "tiers": [],
+        "tracked": false,
+        "unmapped": []
+      },
+      "LEE": {
+        "attack_loss_pct": null,
+        "defence_cost_pct": null,
+        "mapped_absences": 0,
+        "players": [],
+        "tiers": [],
+        "tracked": false,
+        "unmapped": []
+      },
+      "LIV": {
+        "attack_loss_pct": null,
+        "defence_cost_pct": null,
+        "mapped_absences": 0,
+        "players": [],
+        "tiers": [],
+        "tracked": false,
+        "unmapped": []
+      },
+      "MCI": {
+        "attack_loss_pct": null,
+        "defence_cost_pct": null,
+        "mapped_absences": 0,
+        "players": [],
+        "tiers": [],
+        "tracked": false,
+        "unmapped": []
+      },
+      "MUN": {
+        "attack_loss_pct": null,
+        "defence_cost_pct": null,
+        "mapped_absences": 0,
+        "players": [],
+        "tiers": [],
+        "tracked": false,
+        "unmapped": []
+      },
+      "NEW": {
+        "attack_loss_pct": null,
+        "defence_cost_pct": null,
+        "mapped_absences": 0,
+        "players": [],
+        "tiers": [],
+        "tracked": false,
+        "unmapped": []
+      },
+      "NFO": {
+        "attack_loss_pct": null,
+        "defence_cost_pct": null,
+        "mapped_absences": 0,
+        "players": [],
+        "tiers": [],
+        "tracked": false,
+        "unmapped": []
+      },
+      "SUN": {
+        "attack_loss_pct": null,
+        "defence_cost_pct": null,
+        "mapped_absences": 0,
+        "players": [],
+        "tiers": [],
+        "tracked": false,
+        "unmapped": []
+      },
+      "TOT": {
+        "attack_loss_pct": null,
+        "defence_cost_pct": null,
+        "mapped_absences": 0,
+        "players": [],
+        "tiers": [],
+        "tracked": false,
+        "unmapped": []
+      }
+    },
+    "as_of": "2026-10-03",
+    "availability": {
+      "captured_at": "2026-10-04T20:17:07+00:00",
+      "coverage": null,
+      "gameweek": 6,
+      "problems": [],
+      "source": "none",
+      "tracked": false
+    },
+    "coverage": {
+      "availability_tracked": false,
+      "clubs": 20,
+      "competition_scope": [
+        "Premier League"
+      ],
+      "dated_players": 0,
+      "exact_next_kickoffs": 0,
+      "international_scope": "unverified; excluded unless explicitly verified per record",
+      "players": 52,
+      "scored_players": 32,
+      "squad_scope": "tracked sample; complete-squad coverage not verified",
+      "tier2_players": 0
+    },
+    "gate": {
+      "delta": {
+        "accuracy_percentage_points": null,
+        "rps": null
+      },
+      "reasons": [
+        "A validated dated calendar for all 380 historical fixtures is missing or disagrees with the result matrix.",
+        "No timestamped pre-kickoff availability captures; post-match appearances cannot stand in for them.",
+        "No usable per-match player appearances; season totals cannot be walked backwards through time.",
+        "Missing evidence is not a measured zero delta. Keep player form, absence and rest/travel as context."
+      ],
+      "scope": "structural shadow head only; the live ML ensemble is not validated by this comparison",
+      "shadow_verdict": "not-measured",
+      "test_matches": 0
+    },
+    "input_enabled": false,
+    "legacy_europe_proxy_still_used": true,
+    "mode": "context",
+    "model_card": "v3.0",
+    "next_fixture_context": {
+      "ARS": {
+        "fatigue_pct": null,
+        "gameweek": 6,
+        "international_players": [],
+        "kickoff": null,
+        "last_kickoff": null,
+        "opponent": "LEE",
+        "reason": "exact kickoff unavailable; a fixture window is not a match date",
+        "rest_days": null,
+        "status": "unknown",
+        "travel_km": null,
+        "window": "10-12 October 2026"
+      },
+      "AVL": {
+        "fatigue_pct": null,
+        "gameweek": 6,
+        "international_players": [],
+        "kickoff": null,
+        "last_kickoff": null,
+        "opponent": "BRE",
+        "reason": "exact kickoff unavailable; a fixture window is not a match date",
+        "rest_days": null,
+        "status": "unknown",
+        "travel_km": null,
+        "window": "10-12 October 2026"
+      },
+      "BHA": {
+        "fatigue_pct": null,
+        "gameweek": 6,
+        "international_players": [],
+        "kickoff": null,
+        "last_kickoff": null,
+        "opponent": "SUN",
+        "reason": "exact kickoff unavailable; a fixture window is not a match date",
+        "rest_days": null,
+        "status": "unknown",
+        "travel_km": null,
+        "window": "10-12 October 2026"
+      },
+      "BOU": {
+        "fatigue_pct": null,
+        "gameweek": 6,
+        "international_players": [],
+        "kickoff": null,
+        "last_kickoff": null,
+        "opponent": "CHE",
+        "reason": "exact kickoff unavailable; a fixture window is not a match date",
+        "rest_days": null,
+        "status": "unknown",
+        "travel_km": null,
+        "window": "10-12 October 2026"
+      },
+      "BRE": {
+        "fatigue_pct": null,
+        "gameweek": 6,
+        "international_players": [],
+        "kickoff": null,
+        "last_kickoff": null,
+        "opponent": "AVL",
+        "reason": "exact kickoff unavailable; a fixture window is not a match date",
+        "rest_days": null,
+        "status": "unknown",
+        "travel_km": null,
+        "window": "10-12 October 2026"
+      },
+      "CHE": {
+        "fatigue_pct": null,
+        "gameweek": 6,
+        "international_players": [],
+        "kickoff": null,
+        "last_kickoff": null,
+        "opponent": "BOU",
+        "reason": "exact kickoff unavailable; a fixture window is not a match date",
+        "rest_days": null,
+        "status": "unknown",
+        "travel_km": null,
+        "window": "10-12 October 2026"
+      },
+      "COV": {
+        "fatigue_pct": null,
+        "gameweek": 6,
+        "international_players": [],
+        "kickoff": null,
+        "last_kickoff": null,
+        "opponent": "NEW",
+        "reason": "exact kickoff unavailable; a fixture window is not a match date",
+        "rest_days": null,
+        "status": "unknown",
+        "travel_km": null,
+        "window": "10-12 October 2026"
+      },
+      "CRY": {
+        "fatigue_pct": null,
+        "gameweek": 6,
+        "international_players": [],
+        "kickoff": null,
+        "last_kickoff": null,
+        "opponent": "NFO",
+        "reason": "exact kickoff unavailable; a fixture window is not a match date",
+        "rest_days": null,
+        "status": "unknown",
+        "travel_km": null,
+        "window": "10-12 October 2026"
+      },
+      "EVE": {
+        "fatigue_pct": null,
+        "gameweek": 6,
+        "international_players": [],
+        "kickoff": null,
+        "last_kickoff": null,
+        "opponent": "HUL",
+        "reason": "exact kickoff unavailable; a fixture window is not a match date",
+        "rest_days": null,
+        "status": "unknown",
+        "travel_km": null,
+        "window": "10-12 October 2026"
+      },
+      "FUL": {
+        "fatigue_pct": null,
+        "gameweek": 6,
+        "international_players": [],
+        "kickoff": null,
+        "last_kickoff": null,
+        "opponent": "IPS",
+        "reason": "exact kickoff unavailable; a fixture window is not a match date",
+        "rest_days": null,
+        "status": "unknown",
+        "travel_km": null,
+        "window": "10-12 October 2026"
+      },
+      "HUL": {
+        "fatigue_pct": null,
+        "gameweek": 6,
+        "international_players": [],
+        "kickoff": null,
+        "last_kickoff": null,
+        "opponent": "EVE",
+        "reason": "exact kickoff unavailable; a fixture window is not a match date",
+        "rest_days": null,
+        "status": "unknown",
+        "travel_km": null,
+        "window": "10-12 October 2026"
+      },
+      "IPS": {
+        "fatigue_pct": null,
+        "gameweek": 6,
+        "international_players": [],
+        "kickoff": null,
+        "last_kickoff": null,
+        "opponent": "FUL",
+        "reason": "exact kickoff unavailable; a fixture window is not a match date",
+        "rest_days": null,
+        "status": "unknown",
+        "travel_km": null,
+        "window": "10-12 October 2026"
+      },
+      "LEE": {
+        "fatigue_pct": null,
+        "gameweek": 6,
+        "international_players": [],
+        "kickoff": null,
+        "last_kickoff": null,
+        "opponent": "ARS",
+        "reason": "exact kickoff unavailable; a fixture window is not a match date",
+        "rest_days": null,
+        "status": "unknown",
+        "travel_km": null,
+        "window": "10-12 October 2026"
+      },
+      "LIV": {
+        "fatigue_pct": null,
+        "gameweek": 6,
+        "international_players": [],
+        "kickoff": null,
+        "last_kickoff": null,
+        "opponent": "MCI",
+        "reason": "exact kickoff unavailable; a fixture window is not a match date",
+        "rest_days": null,
+        "status": "unknown",
+        "travel_km": null,
+        "window": "10-12 October 2026"
+      },
+      "MCI": {
+        "fatigue_pct": null,
+        "gameweek": 6,
+        "international_players": [],
+        "kickoff": null,
+        "last_kickoff": null,
+        "opponent": "LIV",
+        "reason": "exact kickoff unavailable; a fixture window is not a match date",
+        "rest_days": null,
+        "status": "unknown",
+        "travel_km": null,
+        "window": "10-12 October 2026"
+      },
+      "MUN": {
+        "fatigue_pct": null,
+        "gameweek": 6,
+        "international_players": [],
+        "kickoff": null,
+        "last_kickoff": null,
+        "opponent": "TOT",
+        "reason": "exact kickoff unavailable; a fixture window is not a match date",
+        "rest_days": null,
+        "status": "unknown",
+        "travel_km": null,
+        "window": "10-12 October 2026"
+      },
+      "NEW": {
+        "fatigue_pct": null,
+        "gameweek": 6,
+        "international_players": [],
+        "kickoff": null,
+        "last_kickoff": null,
+        "opponent": "COV",
+        "reason": "exact kickoff unavailable; a fixture window is not a match date",
+        "rest_days": null,
+        "status": "unknown",
+        "travel_km": null,
+        "window": "10-12 October 2026"
+      },
+      "NFO": {
+        "fatigue_pct": null,
+        "gameweek": 6,
+        "international_players": [],
+        "kickoff": null,
+        "last_kickoff": null,
+        "opponent": "CRY",
+        "reason": "exact kickoff unavailable; a fixture window is not a match date",
+        "rest_days": null,
+        "status": "unknown",
+        "travel_km": null,
+        "window": "10-12 October 2026"
+      },
+      "SUN": {
+        "fatigue_pct": null,
+        "gameweek": 6,
+        "international_players": [],
+        "kickoff": null,
+        "last_kickoff": null,
+        "opponent": "BHA",
+        "reason": "exact kickoff unavailable; a fixture window is not a match date",
+        "rest_days": null,
+        "status": "unknown",
+        "travel_km": null,
+        "window": "10-12 October 2026"
+      },
+      "TOT": {
+        "fatigue_pct": null,
+        "gameweek": 6,
+        "international_players": [],
+        "kickoff": null,
+        "last_kickoff": null,
+        "opponent": "MUN",
+        "reason": "exact kickoff unavailable; a fixture window is not a match date",
+        "rest_days": null,
+        "status": "unknown",
+        "travel_km": null,
+        "window": "10-12 October 2026"
+      }
+    },
+    "players": [
+      {
+        "absence": {
+          "attack_loss_pct": 10.313,
+          "basis": "club league goals, not the sum of the tracked squad sample",
+          "causal": false,
+          "defence_basis": "position-share assumption; goalkeeper/defender impact is not measured",
+          "defence_cost_pct": 0.52,
+          "fetched_at": "2026-10-04T20:53:09+00:00",
+          "label": "replacement-share prior",
+          "measured": false,
+          "output_share": 0.3438,
+          "participation_share": 0.8667,
+          "position": "FWD",
+          "range": {
+            "high": {
+              "attack_loss_pct": 17.188,
+              "defence_cost_pct": 0.867
+            },
+            "kind": "replacement assumptions, not a confidence interval",
+            "low": {
+              "attack_loss_pct": 5.156,
+              "defence_cost_pct": 0.26
+            }
+          },
+          "replacement_retained": 0.7,
+          "source": [
+            "project-dataset"
+          ],
+          "status": "prior",
+          "tier": 1
+        },
+        "aggregate_rows": 1,
+        "club": "ARS",
+        "competitions": [
+          "Premier League"
+        ],
+        "dated_matches": 0,
+        "detail": [
+          {
+            "competition": "Premier League",
+            "decay": null,
+            "key": "premier_league",
+            "match_date": null,
+            "matched": true,
+            "minutes": 390.0,
+            "weight": 1.0
+          }
+        ],
+        "effective_minutes": 390.0,
+        "excluded": [],
+        "fetched_at": "2026-10-04T20:53:09+00:00",
+        "identity_match": "exact",
+        "name": "Viktor Gy\u00f6keres",
+        "note": "descriptive output index, not a probability; goalkeeper index needs ratings",
+        "output_90": 0.6346,
+        "player_id": "gyokeres",
+        "position": "FWD",
+        "rating": null,
+        "raw_minutes": 390.0,
+        "recency": "season-totals; recency unavailable",
+        "reliability": 0.4643,
+        "scope": "league-only",
+        "score": 49.67,
+        "sources": [
+          "project-dataset"
+        ],
+        "uncapped_effective_minutes": 390.0
+      },
+      {
+        "absence": {
+          "attack_loss_pct": 10.313,
+          "basis": "club league goals, not the sum of the tracked squad sample",
+          "causal": false,
+          "defence_basis": "position-share assumption; goalkeeper/defender impact is not measured",
+          "defence_cost_pct": 0.584,
+          "fetched_at": "2026-10-04T20:53:09+00:00",
+          "label": "replacement-share prior",
+          "measured": false,
+          "output_share": 0.3438,
+          "participation_share": 0.9733,
+          "position": "FWD",
+          "range": {
+            "high": {
+              "attack_loss_pct": 17.188,
+              "defence_cost_pct": 0.973
+            },
+            "kind": "replacement assumptions, not a confidence interval",
+            "low": {
+              "attack_loss_pct": 5.156,
+              "defence_cost_pct": 0.292
+            }
+          },
+          "replacement_retained": 0.7,
+          "source": [
+            "project-dataset"
+          ],
+          "status": "prior",
+          "tier": 1
+        },
+        "aggregate_rows": 1,
+        "club": "ARS",
+        "competitions": [
+          "Premier League"
+        ],
+        "dated_matches": 0,
+        "detail": [
+          {
+            "competition": "Premier League",
+            "decay": null,
+            "key": "premier_league",
+            "match_date": null,
+            "matched": true,
+            "minutes": 438.0,
+            "weight": 1.0
+          }
+        ],
+        "effective_minutes": 438.0,
+        "excluded": [],
+        "fetched_at": "2026-10-04T20:53:09+00:00",
+        "identity_match": "exact",
+        "name": "Kai Havertz",
+        "note": "descriptive output index, not a probability; goalkeeper index needs ratings",
+        "output_90": 0.5651,
+        "player_id": "havertz",
+        "position": "FWD",
+        "rating": null,
+        "raw_minutes": 438.0,
+        "recency": "season-totals; recency unavailable",
+        "reliability": 0.4932,
+        "scope": "league-only",
+        "score": 47.93,
+        "sources": [
+          "project-dataset"
+        ],
+        "uncapped_effective_minutes": 438.0
+      },
+      {
+        "absence": {
+          "attack_loss_pct": 8.25,
+          "basis": "club league goals, not the sum of the tracked squad sample",
+          "causal": false,
+          "defence_basis": "position-share assumption; goalkeeper/defender impact is not measured",
+          "defence_cost_pct": 1.401,
+          "fetched_at": "2026-10-04T20:53:09+00:00",
+          "label": "replacement-share prior",
+          "measured": false,
+          "output_share": 0.3438,
+          "participation_share": 0.8489,
+          "position": "MID",
+          "range": {
+            "high": {
+              "attack_loss_pct": 13.75,
+              "defence_cost_pct": 2.334
+            },
+            "kind": "replacement assumptions, not a confidence interval",
+            "low": {
+              "attack_loss_pct": 4.125,
+              "defence_cost_pct": 0.7
+            }
+          },
+          "replacement_retained": 0.7,
+          "source": [
+            "project-dataset"
+          ],
+          "status": "prior",
+          "tier": 1
+        },
+        "aggregate_rows": 1,
+        "club": "ARS",
+        "competitions": [
+          "Premier League"
+        ],
+        "dated_matches": 0,
+        "detail": [
+          {
+            "competition": "Premier League",
+            "decay": null,
+            "key": "premier_league",
+            "match_date": null,
+            "matched": true,
+            "minutes": 382.0,
+            "weight": 1.0
+          }
+        ],
+        "effective_minutes": 382.0,
+        "excluded": [],
+        "fetched_at": "2026-10-04T20:53:09+00:00",
+        "identity_match": "exact",
+        "name": "Martin \u00d8degaard",
+        "note": "descriptive output index, not a probability; goalkeeper index needs ratings",
+        "output_90": 0.6479,
+        "player_id": "odegaard",
+        "position": "MID",
+        "rating": null,
+        "raw_minutes": 382.0,
+        "recency": "season-totals; recency unavailable",
+        "reliability": 0.4591,
+        "scope": "league-only",
+        "score": 58.48,
+        "sources": [
+          "project-dataset"
+        ],
+        "uncapped_effective_minutes": 382.0
+      },
+      {
+        "absence": {
+          "attack_loss_pct": 0.0,
+          "basis": "club league goals, not the sum of the tracked squad sample",
+          "causal": false,
+          "defence_basis": "position-share assumption; goalkeeper/defender impact is not measured",
+          "defence_cost_pct": 5.4,
+          "fetched_at": "2026-10-04T20:53:09+00:00",
+          "label": "replacement-share prior",
+          "measured": false,
+          "output_share": 0.0,
+          "participation_share": 1.0,
+          "position": "GK",
+          "range": {
+            "high": {
+              "attack_loss_pct": 0.0,
+              "defence_cost_pct": 9.0
+            },
+            "kind": "replacement assumptions, not a confidence interval",
+            "low": {
+              "attack_loss_pct": 0.0,
+              "defence_cost_pct": 2.7
+            }
+          },
+          "replacement_retained": 0.7,
+          "source": [
+            "project-dataset"
+          ],
+          "status": "prior",
+          "tier": 1
+        },
+        "aggregate_rows": 1,
+        "club": "ARS",
+        "competitions": [
+          "Premier League"
+        ],
+        "dated_matches": 0,
+        "detail": [
+          {
+            "competition": "Premier League",
+            "decay": null,
+            "key": "premier_league",
+            "match_date": null,
+            "matched": true,
+            "minutes": 450.0,
+            "weight": 1.0
+          }
+        ],
+        "effective_minutes": 450.0,
+        "excluded": [],
+        "fetched_at": "2026-10-04T20:53:09+00:00",
+        "identity_match": "exact",
+        "name": "David Raya",
+        "note": "descriptive output index, not a probability; goalkeeper index needs ratings",
+        "output_90": 0.0,
+        "player_id": "raya",
+        "position": "GK",
+        "rating": null,
+        "raw_minutes": 450.0,
+        "recency": "season-totals; recency unavailable",
+        "reliability": 0.5,
+        "scope": "league-only",
+        "score": null,
+        "sources": [
+          "project-dataset"
+        ],
+        "uncapped_effective_minutes": 450.0
+      },
+      {
+        "absence": {
+          "attack_loss_pct": 7.5,
+          "basis": "club league goals, not the sum of the tracked squad sample",
+          "causal": false,
+          "defence_basis": "position-share assumption; goalkeeper/defender impact is not measured",
+          "defence_cost_pct": 1.65,
+          "fetched_at": "2026-10-04T20:53:09+00:00",
+          "label": "replacement-share prior",
+          "measured": false,
+          "output_share": 0.3125,
+          "participation_share": 1.0,
+          "position": "MID",
+          "range": {
+            "high": {
+              "attack_loss_pct": 12.5,
+              "defence_cost_pct": 2.75
+            },
+            "kind": "replacement assumptions, not a confidence interval",
+            "low": {
+              "attack_loss_pct": 3.75,
+              "defence_cost_pct": 0.825
+            }
+          },
+          "replacement_retained": 0.7,
+          "source": [
+            "project-dataset"
+          ],
+          "status": "prior",
+          "tier": 1
+        },
+        "aggregate_rows": 1,
+        "club": "ARS",
+        "competitions": [
+          "Premier League"
+        ],
+        "dated_matches": 0,
+        "detail": [
+          {
+            "competition": "Premier League",
+            "decay": null,
+            "key": "premier_league",
+            "match_date": null,
+            "matched": true,
+            "minutes": 450.0,
+            "weight": 1.0
+          }
+        ],
+        "effective_minutes": 450.0,
+        "excluded": [],
+        "fetched_at": "2026-10-04T20:53:09+00:00",
+        "identity_match": "exact",
+        "name": "Declan Rice",
+        "note": "descriptive output index, not a probability; goalkeeper index needs ratings",
+        "output_90": 0.5,
+        "player_id": "rice",
+        "position": "MID",
+        "rating": null,
+        "raw_minutes": 450.0,
+        "recency": "season-totals; recency unavailable",
+        "reliability": 0.5,
+        "scope": "league-only",
+        "score": 55.35,
+        "sources": [
+          "project-dataset"
+        ],
+        "uncapped_effective_minutes": 450.0
+      },
+      {
+        "absence": {
+          "attack_loss_pct": 16.875,
+          "basis": "club league goals, not the sum of the tracked squad sample",
+          "causal": false,
+          "defence_basis": "position-share assumption; goalkeeper/defender impact is not measured",
+          "defence_cost_pct": 0.559,
+          "fetched_at": "2026-10-04T20:53:09+00:00",
+          "label": "replacement-share prior",
+          "measured": false,
+          "output_share": 0.5625,
+          "participation_share": 0.9311,
+          "position": "FWD",
+          "range": {
+            "high": {
+              "attack_loss_pct": 28.125,
+              "defence_cost_pct": 0.931
+            },
+            "kind": "replacement assumptions, not a confidence interval",
+            "low": {
+              "attack_loss_pct": 8.438,
+              "defence_cost_pct": 0.279
+            }
+          },
+          "replacement_retained": 0.7,
+          "source": [
+            "project-dataset"
+          ],
+          "status": "prior",
+          "tier": 1
+        },
+        "aggregate_rows": 1,
+        "club": "ARS",
+        "competitions": [
+          "Premier League"
+        ],
+        "dated_matches": 0,
+        "detail": [
+          {
+            "competition": "Premier League",
+            "decay": null,
+            "key": "premier_league",
+            "match_date": null,
+            "matched": true,
+            "minutes": 419.0,
+            "weight": 1.0
+          }
+        ],
+        "effective_minutes": 419.0,
+        "excluded": [],
+        "fetched_at": "2026-10-04T20:53:09+00:00",
+        "identity_match": "exact",
+        "name": "Bukayo Saka",
+        "note": "descriptive output index, not a probability; goalkeeper index needs ratings",
+        "output_90": 0.9666,
+        "player_id": "saka",
+        "position": "FWD",
+        "rating": null,
+        "raw_minutes": 419.0,
+        "recency": "season-totals; recency unavailable",
+        "reliability": 0.4822,
+        "scope": "league-only",
+        "score": 55.74,
+        "sources": [
+          "project-dataset"
+        ],
+        "uncapped_effective_minutes": 419.0
+      },
+      {
+        "absence": {
+          "attack_loss_pct": 0.0,
+          "basis": "club league goals, not the sum of the tracked squad sample",
+          "causal": false,
+          "defence_basis": "position-share assumption; goalkeeper/defender impact is not measured",
+          "defence_cost_pct": 5.4,
+          "fetched_at": "2026-10-04T20:53:09+00:00",
+          "label": "replacement-share prior",
+          "measured": false,
+          "output_share": 0.0,
+          "participation_share": 1.0,
+          "position": "GK",
+          "range": {
+            "high": {
+              "attack_loss_pct": 0.0,
+              "defence_cost_pct": 9.0
+            },
+            "kind": "replacement assumptions, not a confidence interval",
+            "low": {
+              "attack_loss_pct": 0.0,
+              "defence_cost_pct": 2.7
+            }
+          },
+          "replacement_retained": 0.7,
+          "source": [
+            "project-dataset"
+          ],
+          "status": "prior",
+          "tier": 1
+        },
+        "aggregate_rows": 1,
+        "club": "AVL",
+        "competitions": [
+          "Premier League"
+        ],
+        "dated_matches": 0,
+        "detail": [
+          {
+            "competition": "Premier League",
+            "decay": null,
+            "key": "premier_league",
+            "match_date": null,
+            "matched": true,
+            "minutes": 450.0,
+            "weight": 1.0
+          }
+        ],
+        "effective_minutes": 450.0,
+        "excluded": [],
+        "fetched_at": "2026-10-04T20:53:09+00:00",
+        "identity_match": "exact",
+        "name": "Zion Suzuki",
+        "note": "descriptive output index, not a probability; goalkeeper index needs ratings",
+        "output_90": 0.0,
+        "player_id": "suzuki",
+        "position": "GK",
+        "rating": null,
+        "raw_minutes": 450.0,
+        "recency": "season-totals; recency unavailable",
+        "reliability": 0.5,
+        "scope": "league-only",
+        "score": null,
+        "sources": [
+          "project-dataset"
+        ],
+        "uncapped_effective_minutes": 450.0
+      },
+      {
+        "absence": {
+          "attack_loss_pct": 20.625,
+          "basis": "club league goals, not the sum of the tracked squad sample",
+          "causal": false,
+          "defence_basis": "position-share assumption; goalkeeper/defender impact is not measured",
+          "defence_cost_pct": 0.58,
+          "fetched_at": "2026-10-04T20:53:09+00:00",
+          "label": "replacement-share prior",
+          "measured": false,
+          "output_share": 0.6875,
+          "participation_share": 0.9667,
+          "position": "FWD",
+          "range": {
+            "high": {
+              "attack_loss_pct": 30,
+              "defence_cost_pct": 0.967
+            },
+            "kind": "replacement assumptions, not a confidence interval",
+            "low": {
+              "attack_loss_pct": 10.313,
+              "defence_cost_pct": 0.29
+            }
+          },
+          "replacement_retained": 0.7,
+          "source": [
+            "project-dataset"
+          ],
+          "status": "prior",
+          "tier": 1
+        },
+        "aggregate_rows": 1,
+        "club": "AVL",
+        "competitions": [
+          "Premier League"
+        ],
+        "dated_matches": 0,
+        "detail": [
+          {
+            "competition": "Premier League",
+            "decay": null,
+            "key": "premier_league",
+            "match_date": null,
+            "matched": true,
+            "minutes": 435.0,
+            "weight": 1.0
+          }
+        ],
+        "effective_minutes": 435.0,
+        "excluded": [],
+        "fetched_at": "2026-10-04T20:53:09+00:00",
+        "identity_match": "exact",
+        "name": "Ollie Watkins",
+        "note": "descriptive output index, not a probability; goalkeeper index needs ratings",
+        "output_90": 0.569,
+        "player_id": "watkins",
+        "position": "FWD",
+        "rating": null,
+        "raw_minutes": 435.0,
+        "recency": "season-totals; recency unavailable",
+        "reliability": 0.4915,
+        "scope": "league-only",
+        "score": 48.04,
+        "sources": [
+          "project-dataset"
+        ],
+        "uncapped_effective_minutes": 435.0
+      },
+      {
+        "absence": {
+          "attack_loss_pct": 7.875,
+          "basis": "club league goals, not the sum of the tracked squad sample",
+          "causal": false,
+          "defence_basis": "position-share assumption; goalkeeper/defender impact is not measured",
+          "defence_cost_pct": 1.65,
+          "fetched_at": "2026-10-04T20:53:09+00:00",
+          "label": "replacement-share prior",
+          "measured": false,
+          "output_share": 0.3281,
+          "participation_share": 1.0,
+          "position": "MID",
+          "range": {
+            "high": {
+              "attack_loss_pct": 13.125,
+              "defence_cost_pct": 2.75
+            },
+            "kind": "replacement assumptions, not a confidence interval",
+            "low": {
+              "attack_loss_pct": 3.938,
+              "defence_cost_pct": 0.825
+            }
+          },
+          "replacement_retained": 0.7,
+          "source": [
+            "project-dataset"
+          ],
+          "status": "prior",
+          "tier": 1
+        },
+        "aggregate_rows": 1,
+        "club": "BHA",
+        "competitions": [
+          "Premier League"
+        ],
+        "dated_matches": 0,
+        "detail": [
+          {
+            "competition": "Premier League",
+            "decay": null,
+            "key": "premier_league",
+            "match_date": null,
+            "matched": true,
+            "minutes": 450.0,
+            "weight": 1.0
+          }
+        ],
+        "effective_minutes": 450.0,
+        "excluded": [],
+        "fetched_at": "2026-10-04T20:53:09+00:00",
+        "identity_match": "exact",
+        "name": "Pascal Gro\u00df",
+        "note": "descriptive output index, not a probability; goalkeeper index needs ratings",
+        "output_90": 1.05,
+        "player_id": "gross",
+        "position": "MID",
+        "rating": null,
+        "raw_minutes": 450.0,
+        "recency": "season-totals; recency unavailable",
+        "reliability": 0.5,
+        "scope": "league-only",
+        "score": 66.48,
+        "sources": [
+          "project-dataset"
+        ],
+        "uncapped_effective_minutes": 450.0
+      },
+      {
+        "absence": {
+          "attack_loss_pct": 5.156,
+          "basis": "club league goals, not the sum of the tracked squad sample",
+          "causal": false,
+          "defence_basis": "position-share assumption; goalkeeper/defender impact is not measured",
+          "defence_cost_pct": 0.475,
+          "fetched_at": "2026-10-04T20:53:09+00:00",
+          "label": "replacement-share prior",
+          "measured": false,
+          "output_share": 0.1719,
+          "participation_share": 0.7911,
+          "position": "FWD",
+          "range": {
+            "high": {
+              "attack_loss_pct": 8.594,
+              "defence_cost_pct": 0.791
+            },
+            "kind": "replacement assumptions, not a confidence interval",
+            "low": {
+              "attack_loss_pct": 2.578,
+              "defence_cost_pct": 0.237
+            }
+          },
+          "replacement_retained": 0.7,
+          "source": [
+            "project-dataset"
+          ],
+          "status": "prior",
+          "tier": 1
+        },
+        "aggregate_rows": 1,
+        "club": "BHA",
+        "competitions": [
+          "Premier League"
+        ],
+        "dated_matches": 0,
+        "detail": [
+          {
+            "competition": "Premier League",
+            "decay": null,
+            "key": "premier_league",
+            "match_date": null,
+            "matched": true,
+            "minutes": 356.0,
+            "weight": 1.0
+          }
+        ],
+        "effective_minutes": 356.0,
+        "excluded": [],
+        "fetched_at": "2026-10-04T20:53:09+00:00",
+        "identity_match": "exact",
+        "name": "Charalampos Kostoulas",
+        "note": "descriptive output index, not a probability; goalkeeper index needs ratings",
+        "output_90": 0.6952,
+        "player_id": "kostoulas",
+        "position": "FWD",
+        "rating": null,
+        "raw_minutes": 356.0,
+        "recency": "season-totals; recency unavailable",
+        "reliability": 0.4417,
+        "scope": "league-only",
+        "score": 50.89,
+        "sources": [
+          "project-dataset"
+        ],
+        "uncapped_effective_minutes": 356.0
+      },
+      {
+        "absence": {
+          "attack_loss_pct": 0.0,
+          "basis": "club league goals, not the sum of the tracked squad sample",
+          "causal": false,
+          "defence_basis": "position-share assumption; goalkeeper/defender impact is not measured",
+          "defence_cost_pct": 5.4,
+          "fetched_at": "2026-10-04T20:53:09+00:00",
+          "label": "replacement-share prior",
+          "measured": false,
+          "output_share": 0.0,
+          "participation_share": 1.0,
+          "position": "GK",
+          "range": {
+            "high": {
+              "attack_loss_pct": 0.0,
+              "defence_cost_pct": 9.0
+            },
+            "kind": "replacement assumptions, not a confidence interval",
+            "low": {
+              "attack_loss_pct": 0.0,
+              "defence_cost_pct": 2.7
+            }
+          },
+          "replacement_retained": 0.7,
+          "source": [
+            "project-dataset"
+          ],
+          "status": "prior",
+          "tier": 1
+        },
+        "aggregate_rows": 1,
+        "club": "BHA",
+        "competitions": [
+          "Premier League"
+        ],
+        "dated_matches": 0,
+        "detail": [
+          {
+            "competition": "Premier League",
+            "decay": null,
+            "key": "premier_league",
+            "match_date": null,
+            "matched": true,
+            "minutes": 450.0,
+            "weight": 1.0
+          }
+        ],
+        "effective_minutes": 450.0,
+        "excluded": [],
+        "fetched_at": "2026-10-04T20:53:09+00:00",
+        "identity_match": "exact",
+        "name": "Bart Verbruggen",
+        "note": "descriptive output index, not a probability; goalkeeper index needs ratings",
+        "output_90": 0.0,
+        "player_id": "verbruggen",
+        "position": "GK",
+        "rating": null,
+        "raw_minutes": 450.0,
+        "recency": "season-totals; recency unavailable",
+        "reliability": 0.5,
+        "scope": "league-only",
+        "score": null,
+        "sources": [
+          "project-dataset"
+        ],
+        "uncapped_effective_minutes": 450.0
+      },
+      {
+        "absence": {
+          "attack_loss_pct": 16.25,
+          "basis": "club league goals, not the sum of the tracked squad sample",
+          "causal": false,
+          "defence_basis": "position-share assumption; goalkeeper/defender impact is not measured",
+          "defence_cost_pct": 0.56,
+          "fetched_at": "2026-10-04T20:53:09+00:00",
+          "label": "replacement-share prior",
+          "measured": false,
+          "output_share": 0.5417,
+          "participation_share": 0.9333,
+          "position": "FWD",
+          "range": {
+            "high": {
+              "attack_loss_pct": 27.083,
+              "defence_cost_pct": 0.933
+            },
+            "kind": "replacement assumptions, not a confidence interval",
+            "low": {
+              "attack_loss_pct": 8.125,
+              "defence_cost_pct": 0.28
+            }
+          },
+          "replacement_retained": 0.7,
+          "source": [
+            "project-dataset"
+          ],
+          "status": "prior",
+          "tier": 1
+        },
+        "aggregate_rows": 1,
+        "club": "BOU",
+        "competitions": [
+          "Premier League"
+        ],
+        "dated_matches": 0,
+        "detail": [
+          {
+            "competition": "Premier League",
+            "decay": null,
+            "key": "premier_league",
+            "match_date": null,
+            "matched": true,
+            "minutes": 420.0,
+            "weight": 1.0
+          }
+        ],
+        "effective_minutes": 420.0,
+        "excluded": [],
+        "fetched_at": "2026-10-04T20:53:09+00:00",
+        "identity_match": "exact",
+        "name": "Evanilson",
+        "note": "descriptive output index, not a probability; goalkeeper index needs ratings",
+        "output_90": 0.6964,
+        "player_id": "evanilson",
+        "position": "FWD",
+        "rating": null,
+        "raw_minutes": 420.0,
+        "recency": "season-totals; recency unavailable",
+        "reliability": 0.4828,
+        "scope": "league-only",
+        "score": 51.0,
+        "sources": [
+          "project-dataset"
+        ],
+        "uncapped_effective_minutes": 420.0
+      },
+      {
+        "absence": {
+          "attack_loss_pct": 0.0,
+          "basis": "club league goals, not the sum of the tracked squad sample",
+          "causal": false,
+          "defence_basis": "position-share assumption; goalkeeper/defender impact is not measured",
+          "defence_cost_pct": 5.4,
+          "fetched_at": "2026-10-04T20:53:09+00:00",
+          "label": "replacement-share prior",
+          "measured": false,
+          "output_share": 0.0,
+          "participation_share": 1.0,
+          "position": "GK",
+          "range": {
+            "high": {
+              "attack_loss_pct": 0.0,
+              "defence_cost_pct": 9.0
+            },
+            "kind": "replacement assumptions, not a confidence interval",
+            "low": {
+              "attack_loss_pct": 0.0,
+              "defence_cost_pct": 2.7
+            }
+          },
+          "replacement_retained": 0.7,
+          "source": [
+            "project-dataset"
+          ],
+          "status": "prior",
+          "tier": 1
+        },
+        "aggregate_rows": 1,
+        "club": "BOU",
+        "competitions": [
+          "Premier League"
+        ],
+        "dated_matches": 0,
+        "detail": [
+          {
+            "competition": "Premier League",
+            "decay": null,
+            "key": "premier_league",
+            "match_date": null,
+            "matched": true,
+            "minutes": 450.0,
+            "weight": 1.0
+          }
+        ],
+        "effective_minutes": 450.0,
+        "excluded": [],
+        "fetched_at": "2026-10-04T20:53:09+00:00",
+        "identity_match": "exact",
+        "name": "\u0110or\u0111e Petrovi\u0107",
+        "note": "descriptive output index, not a probability; goalkeeper index needs ratings",
+        "output_90": 0.0,
+        "player_id": "petrovic",
+        "position": "GK",
+        "rating": null,
+        "raw_minutes": 450.0,
+        "recency": "season-totals; recency unavailable",
+        "reliability": 0.5,
+        "scope": "league-only",
+        "score": null,
+        "sources": [
+          "project-dataset"
+        ],
+        "uncapped_effective_minutes": 450.0
+      },
+      {
+        "absence": {
+          "attack_loss_pct": 15.0,
+          "basis": "club league goals, not the sum of the tracked squad sample",
+          "causal": false,
+          "defence_basis": "position-share assumption; goalkeeper/defender impact is not measured",
+          "defence_cost_pct": 1.566,
+          "fetched_at": "2026-10-04T20:53:09+00:00",
+          "label": "replacement-share prior",
+          "measured": false,
+          "output_share": 0.625,
+          "participation_share": 0.9489,
+          "position": "MID",
+          "range": {
+            "high": {
+              "attack_loss_pct": 25.0,
+              "defence_cost_pct": 2.609
+            },
+            "kind": "replacement assumptions, not a confidence interval",
+            "low": {
+              "attack_loss_pct": 7.5,
+              "defence_cost_pct": 0.783
+            }
+          },
+          "replacement_retained": 0.7,
+          "source": [
+            "project-dataset"
+          ],
+          "status": "prior",
+          "tier": 1
+        },
+        "aggregate_rows": 1,
+        "club": "BOU",
+        "competitions": [
+          "Premier League"
+        ],
+        "dated_matches": 0,
+        "detail": [
+          {
+            "competition": "Premier League",
+            "decay": null,
+            "key": "premier_league",
+            "match_date": null,
+            "matched": true,
+            "minutes": 427.0,
+            "weight": 1.0
+          }
+        ],
+        "effective_minutes": 427.0,
+        "excluded": [],
+        "fetched_at": "2026-10-04T20:53:09+00:00",
+        "identity_match": "exact",
+        "name": "Marcus Tavernier",
+        "note": "descriptive output index, not a probability; goalkeeper index needs ratings",
+        "output_90": 0.7904,
+        "player_id": "tavernier",
+        "position": "MID",
+        "rating": null,
+        "raw_minutes": 427.0,
+        "recency": "season-totals; recency unavailable",
+        "reliability": 0.4869,
+        "scope": "league-only",
+        "score": 61.9,
+        "sources": [
+          "project-dataset"
+        ],
+        "uncapped_effective_minutes": 427.0
+      },
+      {
+        "absence": {
+          "attack_loss_pct": 8.25,
+          "basis": "club league goals, not the sum of the tracked squad sample",
+          "causal": false,
+          "defence_basis": "position-share assumption; goalkeeper/defender impact is not measured",
+          "defence_cost_pct": 0.547,
+          "fetched_at": "2026-10-04T20:53:09+00:00",
+          "label": "replacement-share prior",
+          "measured": false,
+          "output_share": 0.275,
+          "participation_share": 0.9111,
+          "position": "FWD",
+          "range": {
+            "high": {
+              "attack_loss_pct": 13.75,
+              "defence_cost_pct": 0.911
+            },
+            "kind": "replacement assumptions, not a confidence interval",
+            "low": {
+              "attack_loss_pct": 4.125,
+              "defence_cost_pct": 0.273
+            }
+          },
+          "replacement_retained": 0.7,
+          "source": [
+            "project-dataset"
+          ],
+          "status": "prior",
+          "tier": 1
+        },
+        "aggregate_rows": 1,
+        "club": "BRE",
+        "competitions": [
+          "Premier League"
+        ],
+        "dated_matches": 0,
+        "detail": [
+          {
+            "competition": "Premier League",
+            "decay": null,
+            "key": "premier_league",
+            "match_date": null,
+            "matched": true,
+            "minutes": 410.0,
+            "weight": 1.0
+          }
+        ],
+        "effective_minutes": 410.0,
+        "excluded": [],
+        "fetched_at": "2026-10-04T20:53:09+00:00",
+        "identity_match": "exact",
+        "name": "Igor Thiago",
+        "note": "descriptive output index, not a probability; goalkeeper index needs ratings",
+        "output_90": 0.6037,
+        "player_id": "igor_thiago",
+        "position": "FWD",
+        "rating": null,
+        "raw_minutes": 410.0,
+        "recency": "season-totals; recency unavailable",
+        "reliability": 0.4767,
+        "scope": "league-only",
+        "score": 48.94,
+        "sources": [
+          "project-dataset"
+        ],
+        "uncapped_effective_minutes": 410.0
+      },
+      {
+        "absence": {
+          "attack_loss_pct": 0.0,
+          "basis": "club league goals, not the sum of the tracked squad sample",
+          "causal": false,
+          "defence_basis": "position-share assumption; goalkeeper/defender impact is not measured",
+          "defence_cost_pct": 5.4,
+          "fetched_at": "2026-10-04T20:53:09+00:00",
+          "label": "replacement-share prior",
+          "measured": false,
+          "output_share": 0.0,
+          "participation_share": 1.0,
+          "position": "GK",
+          "range": {
+            "high": {
+              "attack_loss_pct": 0.0,
+              "defence_cost_pct": 9.0
+            },
+            "kind": "replacement assumptions, not a confidence interval",
+            "low": {
+              "attack_loss_pct": 0.0,
+              "defence_cost_pct": 2.7
+            }
+          },
+          "replacement_retained": 0.7,
+          "source": [
+            "project-dataset"
+          ],
+          "status": "prior",
+          "tier": 1
+        },
+        "aggregate_rows": 1,
+        "club": "BRE",
+        "competitions": [
+          "Premier League"
+        ],
+        "dated_matches": 0,
+        "detail": [
+          {
+            "competition": "Premier League",
+            "decay": null,
+            "key": "premier_league",
+            "match_date": null,
+            "matched": true,
+            "minutes": 450.0,
+            "weight": 1.0
+          }
+        ],
+        "effective_minutes": 450.0,
+        "excluded": [],
+        "fetched_at": "2026-10-04T20:53:09+00:00",
+        "identity_match": "exact",
+        "name": "Caoimh\u00edn Kelleher",
+        "note": "descriptive output index, not a probability; goalkeeper index needs ratings",
+        "output_90": 0.0,
+        "player_id": "kelleher",
+        "position": "GK",
+        "rating": null,
+        "raw_minutes": 450.0,
+        "recency": "season-totals; recency unavailable",
+        "reliability": 0.5,
+        "scope": "league-only",
+        "score": null,
+        "sources": [
+          "project-dataset"
+        ],
+        "uncapped_effective_minutes": 450.0
+      },
+      {
+        "absence": {
+          "attack_loss_pct": 11.25,
+          "basis": "club league goals, not the sum of the tracked squad sample",
+          "causal": false,
+          "defence_basis": "position-share assumption; goalkeeper/defender impact is not measured",
+          "defence_cost_pct": 0.597,
+          "fetched_at": "2026-10-04T20:53:09+00:00",
+          "label": "replacement-share prior",
+          "measured": false,
+          "output_share": 0.375,
+          "participation_share": 0.9956,
+          "position": "FWD",
+          "range": {
+            "high": {
+              "attack_loss_pct": 18.75,
+              "defence_cost_pct": 0.996
+            },
+            "kind": "replacement assumptions, not a confidence interval",
+            "low": {
+              "attack_loss_pct": 5.625,
+              "defence_cost_pct": 0.299
+            }
+          },
+          "replacement_retained": 0.7,
+          "source": [
+            "project-dataset"
+          ],
+          "status": "prior",
+          "tier": 1
+        },
+        "aggregate_rows": 1,
+        "club": "BRE",
+        "competitions": [
+          "Premier League"
+        ],
+        "dated_matches": 0,
+        "detail": [
+          {
+            "competition": "Premier League",
+            "decay": null,
+            "key": "premier_league",
+            "match_date": null,
+            "matched": true,
+            "minutes": 448.0,
+            "weight": 1.0
+          }
+        ],
+        "effective_minutes": 448.0,
+        "excluded": [],
+        "fetched_at": "2026-10-04T20:53:09+00:00",
+        "identity_match": "exact",
+        "name": "Kevin Schade",
+        "note": "descriptive output index, not a probability; goalkeeper index needs ratings",
+        "output_90": 0.7533,
+        "player_id": "schade",
+        "position": "FWD",
+        "rating": null,
+        "raw_minutes": 448.0,
+        "recency": "season-totals; recency unavailable",
+        "reliability": 0.4989,
+        "scope": "league-only",
+        "score": 52.21,
+        "sources": [
+          "project-dataset"
+        ],
+        "uncapped_effective_minutes": 448.0
+      },
+      {
+        "absence": {
+          "attack_loss_pct": 15.75,
+          "basis": "club league goals, not the sum of the tracked squad sample",
+          "causal": false,
+          "defence_basis": "position-share assumption; goalkeeper/defender impact is not measured",
+          "defence_cost_pct": 0.48,
+          "fetched_at": "2026-10-04T20:53:09+00:00",
+          "label": "replacement-share prior",
+          "measured": false,
+          "output_share": 0.525,
+          "participation_share": 0.8,
+          "position": "FWD",
+          "range": {
+            "high": {
+              "attack_loss_pct": 26.25,
+              "defence_cost_pct": 0.8
+            },
+            "kind": "replacement assumptions, not a confidence interval",
+            "low": {
+              "attack_loss_pct": 7.875,
+              "defence_cost_pct": 0.24
+            }
+          },
+          "replacement_retained": 0.7,
+          "source": [
+            "project-dataset"
+          ],
+          "status": "prior",
+          "tier": 1
+        },
+        "aggregate_rows": 1,
+        "club": "CHE",
+        "competitions": [
+          "Premier League"
+        ],
+        "dated_matches": 0,
+        "detail": [
+          {
+            "competition": "Premier League",
+            "decay": null,
+            "key": "premier_league",
+            "match_date": null,
+            "matched": true,
+            "minutes": 360.0,
+            "weight": 1.0
+          }
+        ],
+        "effective_minutes": 360.0,
+        "excluded": [],
+        "fetched_at": "2026-10-04T20:53:09+00:00",
+        "identity_match": "exact",
+        "name": "Jo\u00e3o Pedro",
+        "note": "descriptive output index, not a probability; goalkeeper index needs ratings",
+        "output_90": 1.3125,
+        "player_id": "joao_pedro",
+        "position": "FWD",
+        "rating": null,
+        "raw_minutes": 360.0,
+        "recency": "season-totals; recency unavailable",
+        "reliability": 0.4444,
+        "scope": "league-only",
+        "score": 59.37,
+        "sources": [
+          "project-dataset"
+        ],
+        "uncapped_effective_minutes": 360.0
+      },
+      {
+        "absence": {
+          "attack_loss_pct": 8.4,
+          "basis": "club league goals, not the sum of the tracked squad sample",
+          "causal": false,
+          "defence_basis": "position-share assumption; goalkeeper/defender impact is not measured",
+          "defence_cost_pct": 1.624,
+          "fetched_at": "2026-10-04T20:53:09+00:00",
+          "label": "replacement-share prior",
+          "measured": false,
+          "output_share": 0.35,
+          "participation_share": 0.9844,
+          "position": "MID",
+          "range": {
+            "high": {
+              "attack_loss_pct": 14.0,
+              "defence_cost_pct": 2.707
+            },
+            "kind": "replacement assumptions, not a confidence interval",
+            "low": {
+              "attack_loss_pct": 4.2,
+              "defence_cost_pct": 0.812
+            }
+          },
+          "replacement_retained": 0.7,
+          "source": [
+            "project-dataset"
+          ],
+          "status": "prior",
+          "tier": 1
+        },
+        "aggregate_rows": 1,
+        "club": "CHE",
+        "competitions": [
+          "Premier League"
+        ],
+        "dated_matches": 0,
+        "detail": [
+          {
+            "competition": "Premier League",
+            "decay": null,
+            "key": "premier_league",
+            "match_date": null,
+            "matched": true,
+            "minutes": 443.0,
+            "weight": 1.0
+          }
+        ],
+        "effective_minutes": 443.0,
+        "excluded": [],
+        "fetched_at": "2026-10-04T20:53:09+00:00",
+        "identity_match": "exact",
+        "name": "Cole Palmer",
+        "note": "descriptive output index, not a probability; goalkeeper index needs ratings",
+        "output_90": 0.7111,
+        "player_id": "palmer",
+        "position": "MID",
+        "rating": null,
+        "raw_minutes": 443.0,
+        "recency": "season-totals; recency unavailable",
+        "reliability": 0.4961,
+        "scope": "league-only",
+        "score": 60.55,
+        "sources": [
+          "project-dataset"
+        ],
+        "uncapped_effective_minutes": 443.0
+      },
+      {
+        "absence": {
+          "attack_loss_pct": 9.0,
+          "basis": "club league goals, not the sum of the tracked squad sample",
+          "causal": false,
+          "defence_basis": "position-share assumption; goalkeeper/defender impact is not measured",
+          "defence_cost_pct": 1.61,
+          "fetched_at": "2026-10-04T20:53:09+00:00",
+          "label": "replacement-share prior",
+          "measured": false,
+          "output_share": 0.375,
+          "participation_share": 0.9756,
+          "position": "MID",
+          "range": {
+            "high": {
+              "attack_loss_pct": 15.0,
+              "defence_cost_pct": 2.683
+            },
+            "kind": "replacement assumptions, not a confidence interval",
+            "low": {
+              "attack_loss_pct": 4.5,
+              "defence_cost_pct": 0.805
+            }
+          },
+          "replacement_retained": 0.7,
+          "source": [
+            "project-dataset"
+          ],
+          "status": "prior",
+          "tier": 1
+        },
+        "aggregate_rows": 1,
+        "club": "CHE",
+        "competitions": [
+          "Premier League"
+        ],
+        "dated_matches": 0,
+        "detail": [
+          {
+            "competition": "Premier League",
+            "decay": null,
+            "key": "premier_league",
+            "match_date": null,
+            "matched": true,
+            "minutes": 439.0,
+            "weight": 1.0
+          }
+        ],
+        "effective_minutes": 439.0,
+        "excluded": [],
+        "fetched_at": "2026-10-04T20:53:09+00:00",
+        "identity_match": "exact",
+        "name": "Morgan Rogers",
+        "note": "descriptive output index, not a probability; goalkeeper index needs ratings",
+        "output_90": 0.7688,
+        "player_id": "rogers",
+        "position": "MID",
+        "rating": null,
+        "raw_minutes": 439.0,
+        "recency": "season-totals; recency unavailable",
+        "reliability": 0.4938,
+        "scope": "league-only",
+        "score": 61.66,
+        "sources": [
+          "project-dataset"
+        ],
+        "uncapped_effective_minutes": 439.0
+      },
+      {
+        "absence": {
+          "attack_loss_pct": 0.0,
+          "basis": "club league goals, not the sum of the tracked squad sample",
+          "causal": false,
+          "defence_basis": "position-share assumption; goalkeeper/defender impact is not measured",
+          "defence_cost_pct": 5.4,
+          "fetched_at": "2026-10-04T20:53:09+00:00",
+          "label": "replacement-share prior",
+          "measured": false,
+          "output_share": 0.0,
+          "participation_share": 1.0,
+          "position": "GK",
+          "range": {
+            "high": {
+              "attack_loss_pct": 0.0,
+              "defence_cost_pct": 9.0
+            },
+            "kind": "replacement assumptions, not a confidence interval",
+            "low": {
+              "attack_loss_pct": 0.0,
+              "defence_cost_pct": 2.7
+            }
+          },
+          "replacement_retained": 0.7,
+          "source": [
+            "project-dataset"
+          ],
+          "status": "prior",
+          "tier": 1
+        },
+        "aggregate_rows": 1,
+        "club": "CHE",
+        "competitions": [
+          "Premier League"
+        ],
+        "dated_matches": 0,
+        "detail": [
+          {
+            "competition": "Premier League",
+            "decay": null,
+            "key": "premier_league",
+            "match_date": null,
+            "matched": true,
+            "minutes": 450.0,
+            "weight": 1.0
+          }
+        ],
+        "effective_minutes": 450.0,
+        "excluded": [],
+        "fetched_at": "2026-10-04T20:53:09+00:00",
+        "identity_match": "exact",
+        "name": "Robert S\u00e1nchez",
+        "note": "descriptive output index, not a probability; goalkeeper index needs ratings",
+        "output_90": 0.0,
+        "player_id": "sanchez",
+        "position": "GK",
+        "rating": null,
+        "raw_minutes": 450.0,
+        "recency": "season-totals; recency unavailable",
+        "reliability": 0.5,
+        "scope": "league-only",
+        "score": null,
+        "sources": [
+          "project-dataset"
+        ],
+        "uncapped_effective_minutes": 450.0
+      },
+      {
+        "absence": {
+          "attack_loss_pct": 0.0,
+          "basis": "club league goals, not the sum of the tracked squad sample",
+          "causal": false,
+          "defence_basis": "position-share assumption; goalkeeper/defender impact is not measured",
+          "defence_cost_pct": 5.4,
+          "fetched_at": "2026-10-04T20:53:09+00:00",
+          "label": "replacement-share prior",
+          "measured": false,
+          "output_share": 0.75,
+          "participation_share": 1.0,
+          "position": "GK",
+          "range": {
+            "high": {
+              "attack_loss_pct": 0.0,
+              "defence_cost_pct": 9.0
+            },
+            "kind": "replacement assumptions, not a confidence interval",
+            "low": {
+              "attack_loss_pct": 0.0,
+              "defence_cost_pct": 2.7
+            }
+          },
+          "replacement_retained": 0.7,
+          "source": [
+            "project-dataset"
+          ],
+          "status": "prior",
+          "tier": 1
+        },
+        "aggregate_rows": 1,
+        "club": "COV",
+        "competitions": [
+          "Premier League"
+        ],
+        "dated_matches": 0,
+        "detail": [
+          {
+            "competition": "Premier League",
+            "decay": null,
+            "key": "premier_league",
+            "match_date": null,
+            "matched": true,
+            "minutes": 450.0,
+            "weight": 1.0
+          }
+        ],
+        "effective_minutes": 450.0,
+        "excluded": [],
+        "fetched_at": "2026-10-04T20:53:09+00:00",
+        "identity_match": "exact",
+        "name": "Carl Rushworth",
+        "note": "descriptive output index, not a probability; goalkeeper index needs ratings",
+        "output_90": 0.15,
+        "player_id": "rushworth",
+        "position": "GK",
+        "rating": null,
+        "raw_minutes": 450.0,
+        "recency": "season-totals; recency unavailable",
+        "reliability": 0.5,
+        "scope": "league-only",
+        "score": null,
+        "sources": [
+          "project-dataset"
+        ],
+        "uncapped_effective_minutes": 450.0
+      },
+      {
+        "absence": {
+          "attack_loss_pct": 0.0,
+          "basis": "club league goals, not the sum of the tracked squad sample",
+          "causal": false,
+          "defence_basis": "position-share assumption; goalkeeper/defender impact is not measured",
+          "defence_cost_pct": 5.4,
+          "fetched_at": "2026-10-04T20:53:09+00:00",
+          "label": "replacement-share prior",
+          "measured": false,
+          "output_share": 0.0,
+          "participation_share": 1.0,
+          "position": "GK",
+          "range": {
+            "high": {
+              "attack_loss_pct": 0.0,
+              "defence_cost_pct": 9.0
+            },
+            "kind": "replacement assumptions, not a confidence interval",
+            "low": {
+              "attack_loss_pct": 0.0,
+              "defence_cost_pct": 2.7
+            }
+          },
+          "replacement_retained": 0.7,
+          "source": [
+            "project-dataset"
+          ],
+          "status": "prior",
+          "tier": 1
+        },
+        "aggregate_rows": 1,
+        "club": "CRY",
+        "competitions": [
+          "Premier League"
+        ],
+        "dated_matches": 0,
+        "detail": [
+          {
+            "competition": "Premier League",
+            "decay": null,
+            "key": "premier_league",
+            "match_date": null,
+            "matched": true,
+            "minutes": 450.0,
+            "weight": 1.0
+          }
+        ],
+        "effective_minutes": 450.0,
+        "excluded": [],
+        "fetched_at": "2026-10-04T20:53:09+00:00",
+        "identity_match": "exact",
+        "name": "Dean Henderson",
+        "note": "descriptive output index, not a probability; goalkeeper index needs ratings",
+        "output_90": 0.0,
+        "player_id": "henderson",
+        "position": "GK",
+        "rating": null,
+        "raw_minutes": 450.0,
+        "recency": "season-totals; recency unavailable",
+        "reliability": 0.5,
+        "scope": "league-only",
+        "score": null,
+        "sources": [
+          "project-dataset"
+        ],
+        "uncapped_effective_minutes": 450.0
+      },
+      {
+        "absence": {
+          "attack_loss_pct": 13.0,
+          "basis": "club league goals, not the sum of the tracked squad sample",
+          "causal": false,
+          "defence_basis": "position-share assumption; goalkeeper/defender impact is not measured",
+          "defence_cost_pct": 1.522,
+          "fetched_at": "2026-10-04T20:53:09+00:00",
+          "label": "replacement-share prior",
+          "measured": false,
+          "output_share": 0.5417,
+          "participation_share": 0.9222,
+          "position": "MID",
+          "range": {
+            "high": {
+              "attack_loss_pct": 21.667,
+              "defence_cost_pct": 2.536
+            },
+            "kind": "replacement assumptions, not a confidence interval",
+            "low": {
+              "attack_loss_pct": 6.5,
+              "defence_cost_pct": 0.761
+            }
+          },
+          "replacement_retained": 0.7,
+          "source": [
+            "project-dataset"
+          ],
+          "status": "prior",
+          "tier": 1
+        },
+        "aggregate_rows": 1,
+        "club": "CRY",
+        "competitions": [
+          "Premier League"
+        ],
+        "dated_matches": 0,
+        "detail": [
+          {
+            "competition": "Premier League",
+            "decay": null,
+            "key": "premier_league",
+            "match_date": null,
+            "matched": true,
+            "minutes": 415.0,
+            "weight": 1.0
+          }
+        ],
+        "effective_minutes": 415.0,
+        "excluded": [],
+        "fetched_at": "2026-10-04T20:53:09+00:00",
+        "identity_match": "exact",
+        "name": "Daichi Kamada",
+        "note": "descriptive output index, not a probability; goalkeeper index needs ratings",
+        "output_90": 0.7048,
+        "player_id": "kamada",
+        "position": "MID",
+        "rating": null,
+        "raw_minutes": 415.0,
+        "recency": "season-totals; recency unavailable",
+        "reliability": 0.4798,
+        "scope": "league-only",
+        "score": 60.08,
+        "sources": [
+          "project-dataset"
+        ],
+        "uncapped_effective_minutes": 415.0
+      },
+      {
+        "absence": {
+          "attack_loss_pct": 0.0,
+          "basis": "club league goals, not the sum of the tracked squad sample",
+          "causal": false,
+          "defence_basis": "position-share assumption; goalkeeper/defender impact is not measured",
+          "defence_cost_pct": 5.4,
+          "fetched_at": "2026-10-04T20:53:09+00:00",
+          "label": "replacement-share prior",
+          "measured": false,
+          "output_share": 0.0,
+          "participation_share": 1.0,
+          "position": "GK",
+          "range": {
+            "high": {
+              "attack_loss_pct": 0.0,
+              "defence_cost_pct": 9.0
+            },
+            "kind": "replacement assumptions, not a confidence interval",
+            "low": {
+              "attack_loss_pct": 0.0,
+              "defence_cost_pct": 2.7
+            }
+          },
+          "replacement_retained": 0.7,
+          "source": [
+            "project-dataset"
+          ],
+          "status": "prior",
+          "tier": 1
+        },
+        "aggregate_rows": 1,
+        "club": "EVE",
+        "competitions": [
+          "Premier League"
+        ],
+        "dated_matches": 0,
+        "detail": [
+          {
+            "competition": "Premier League",
+            "decay": null,
+            "key": "premier_league",
+            "match_date": null,
+            "matched": true,
+            "minutes": 450.0,
+            "weight": 1.0
+          }
+        ],
+        "effective_minutes": 450.0,
+        "excluded": [],
+        "fetched_at": "2026-10-04T20:53:09+00:00",
+        "identity_match": "exact",
+        "name": "Jordan Pickford",
+        "note": "descriptive output index, not a probability; goalkeeper index needs ratings",
+        "output_90": 0.0,
+        "player_id": "pickford",
+        "position": "GK",
+        "rating": null,
+        "raw_minutes": 450.0,
+        "recency": "season-totals; recency unavailable",
+        "reliability": 0.5,
+        "scope": "league-only",
+        "score": null,
+        "sources": [
+          "project-dataset"
+        ],
+        "uncapped_effective_minutes": 450.0
+      },
+      {
+        "absence": {
+          "attack_loss_pct": 0.0,
+          "basis": "club league goals, not the sum of the tracked squad sample",
+          "causal": false,
+          "defence_basis": "position-share assumption; goalkeeper/defender impact is not measured",
+          "defence_cost_pct": 5.4,
+          "fetched_at": "2026-10-04T20:53:09+00:00",
+          "label": "replacement-share prior",
+          "measured": false,
+          "output_share": 0.0,
+          "participation_share": 1.0,
+          "position": "GK",
+          "range": {
+            "high": {
+              "attack_loss_pct": 0.0,
+              "defence_cost_pct": 9.0
+            },
+            "kind": "replacement assumptions, not a confidence interval",
+            "low": {
+              "attack_loss_pct": 0.0,
+              "defence_cost_pct": 2.7
+            }
+          },
+          "replacement_retained": 0.7,
+          "source": [
+            "project-dataset"
+          ],
+          "status": "prior",
+          "tier": 1
+        },
+        "aggregate_rows": 1,
+        "club": "FUL",
+        "competitions": [
+          "Premier League"
+        ],
+        "dated_matches": 0,
+        "detail": [
+          {
+            "competition": "Premier League",
+            "decay": null,
+            "key": "premier_league",
+            "match_date": null,
+            "matched": true,
+            "minutes": 450.0,
+            "weight": 1.0
+          }
+        ],
+        "effective_minutes": 450.0,
+        "excluded": [],
+        "fetched_at": "2026-10-04T20:53:09+00:00",
+        "identity_match": "exact",
+        "name": "Bernd Leno",
+        "note": "descriptive output index, not a probability; goalkeeper index needs ratings",
+        "output_90": 0.0,
+        "player_id": "leno",
+        "position": "GK",
+        "rating": null,
+        "raw_minutes": 450.0,
+        "recency": "season-totals; recency unavailable",
+        "reliability": 0.5,
+        "scope": "league-only",
+        "score": null,
+        "sources": [
+          "project-dataset"
+        ],
+        "uncapped_effective_minutes": 450.0
+      },
+      {
+        "absence": {
+          "attack_loss_pct": 17.5,
+          "basis": "club league goals, not the sum of the tracked squad sample",
+          "causal": false,
+          "defence_basis": "position-share assumption; goalkeeper/defender impact is not measured",
+          "defence_cost_pct": 0.531,
+          "fetched_at": "2026-10-04T20:53:09+00:00",
+          "label": "replacement-share prior",
+          "measured": false,
+          "output_share": 0.5833,
+          "participation_share": 0.8844,
+          "position": "FWD",
+          "range": {
+            "high": {
+              "attack_loss_pct": 29.167,
+              "defence_cost_pct": 0.884
+            },
+            "kind": "replacement assumptions, not a confidence interval",
+            "low": {
+              "attack_loss_pct": 8.75,
+              "defence_cost_pct": 0.265
+            }
+          },
+          "replacement_retained": 0.7,
+          "source": [
+            "project-dataset"
+          ],
+          "status": "prior",
+          "tier": 1
+        },
+        "aggregate_rows": 1,
+        "club": "HUL",
+        "competitions": [
+          "Premier League"
+        ],
+        "dated_matches": 0,
+        "detail": [
+          {
+            "competition": "Premier League",
+            "decay": null,
+            "key": "premier_league",
+            "match_date": null,
+            "matched": true,
+            "minutes": 398.0,
+            "weight": 1.0
+          }
+        ],
+        "effective_minutes": 398.0,
+        "excluded": [],
+        "fetched_at": "2026-10-04T20:53:09+00:00",
+        "identity_match": "exact",
+        "name": "Mohamed Belloumi",
+        "note": "descriptive output index, not a probability; goalkeeper index needs ratings",
+        "output_90": 0.7915,
+        "player_id": "belloumi",
+        "position": "FWD",
+        "rating": null,
+        "raw_minutes": 398.0,
+        "recency": "season-totals; recency unavailable",
+        "reliability": 0.4693,
+        "scope": "league-only",
+        "score": 52.77,
+        "sources": [
+          "project-dataset"
+        ],
+        "uncapped_effective_minutes": 398.0
+      },
+      {
+        "absence": {
+          "attack_loss_pct": 0.0,
+          "basis": "club league goals, not the sum of the tracked squad sample",
+          "causal": false,
+          "defence_basis": "position-share assumption; goalkeeper/defender impact is not measured",
+          "defence_cost_pct": 5.4,
+          "fetched_at": "2026-10-04T20:53:09+00:00",
+          "label": "replacement-share prior",
+          "measured": false,
+          "output_share": 0.0,
+          "participation_share": 1.0,
+          "position": "GK",
+          "range": {
+            "high": {
+              "attack_loss_pct": 0.0,
+              "defence_cost_pct": 9.0
+            },
+            "kind": "replacement assumptions, not a confidence interval",
+            "low": {
+              "attack_loss_pct": 0.0,
+              "defence_cost_pct": 2.7
+            }
+          },
+          "replacement_retained": 0.7,
+          "source": [
+            "project-dataset"
+          ],
+          "status": "prior",
+          "tier": 1
+        },
+        "aggregate_rows": 1,
+        "club": "HUL",
+        "competitions": [
+          "Premier League"
+        ],
+        "dated_matches": 0,
+        "detail": [
+          {
+            "competition": "Premier League",
+            "decay": null,
+            "key": "premier_league",
+            "match_date": null,
+            "matched": true,
+            "minutes": 450.0,
+            "weight": 1.0
+          }
+        ],
+        "effective_minutes": 450.0,
+        "excluded": [],
+        "fetched_at": "2026-10-04T20:53:09+00:00",
+        "identity_match": "exact",
+        "name": "Konstantinos Tzolakis",
+        "note": "descriptive output index, not a probability; goalkeeper index needs ratings",
+        "output_90": 0.0,
+        "player_id": "tzolakis",
+        "position": "GK",
+        "rating": null,
+        "raw_minutes": 450.0,
+        "recency": "season-totals; recency unavailable",
+        "reliability": 0.5,
+        "scope": "league-only",
+        "score": null,
+        "sources": [
+          "project-dataset"
+        ],
+        "uncapped_effective_minutes": 450.0
+      },
+      {
+        "absence": {
+          "attack_loss_pct": 8.571,
+          "basis": "club league goals, not the sum of the tracked squad sample",
+          "causal": false,
+          "defence_basis": "position-share assumption; goalkeeper/defender impact is not measured",
+          "defence_cost_pct": 1.503,
+          "fetched_at": "2026-10-04T20:53:09+00:00",
+          "label": "replacement-share prior",
+          "measured": false,
+          "output_share": 0.3571,
+          "participation_share": 0.9111,
+          "position": "MID",
+          "range": {
+            "high": {
+              "attack_loss_pct": 14.286,
+              "defence_cost_pct": 2.506
+            },
+            "kind": "replacement assumptions, not a confidence interval",
+            "low": {
+              "attack_loss_pct": 4.286,
+              "defence_cost_pct": 0.752
+            }
+          },
+          "replacement_retained": 0.7,
+          "source": [
+            "project-dataset"
+          ],
+          "status": "prior",
+          "tier": 1
+        },
+        "aggregate_rows": 1,
+        "club": "IPS",
+        "competitions": [
+          "Premier League"
+        ],
+        "dated_matches": 0,
+        "detail": [
+          {
+            "competition": "Premier League",
+            "decay": null,
+            "key": "premier_league",
+            "match_date": null,
+            "matched": true,
+            "minutes": 410.0,
+            "weight": 1.0
+          }
+        ],
+        "effective_minutes": 410.0,
+        "excluded": [],
+        "fetched_at": "2026-10-04T20:53:09+00:00",
+        "identity_match": "exact",
+        "name": "Julio Enciso",
+        "note": "descriptive output index, not a probability; goalkeeper index needs ratings",
+        "output_90": 0.5488,
+        "player_id": "enciso",
+        "position": "MID",
+        "rating": null,
+        "raw_minutes": 410.0,
+        "recency": "season-totals; recency unavailable",
+        "reliability": 0.4767,
+        "scope": "league-only",
+        "score": 56.43,
+        "sources": [
+          "project-dataset"
+        ],
+        "uncapped_effective_minutes": 410.0
+      },
+      {
+        "absence": {
+          "attack_loss_pct": 0.0,
+          "basis": "club league goals, not the sum of the tracked squad sample",
+          "causal": false,
+          "defence_basis": "position-share assumption; goalkeeper/defender impact is not measured",
+          "defence_cost_pct": 5.4,
+          "fetched_at": "2026-10-04T20:53:09+00:00",
+          "label": "replacement-share prior",
+          "measured": false,
+          "output_share": 0.0,
+          "participation_share": 1.0,
+          "position": "GK",
+          "range": {
+            "high": {
+              "attack_loss_pct": 0.0,
+              "defence_cost_pct": 9.0
+            },
+            "kind": "replacement assumptions, not a confidence interval",
+            "low": {
+              "attack_loss_pct": 0.0,
+              "defence_cost_pct": 2.7
+            }
+          },
+          "replacement_retained": 0.7,
+          "source": [
+            "project-dataset"
+          ],
+          "status": "prior",
+          "tier": 1
+        },
+        "aggregate_rows": 1,
+        "club": "IPS",
+        "competitions": [
+          "Premier League"
+        ],
+        "dated_matches": 0,
+        "detail": [
+          {
+            "competition": "Premier League",
+            "decay": null,
+            "key": "premier_league",
+            "match_date": null,
+            "matched": true,
+            "minutes": 450.0,
+            "weight": 1.0
+          }
+        ],
+        "effective_minutes": 450.0,
+        "excluded": [],
+        "fetched_at": "2026-10-04T20:53:09+00:00",
+        "identity_match": "exact",
+        "name": "Arijanet Muric",
+        "note": "descriptive output index, not a probability; goalkeeper index needs ratings",
+        "output_90": 0.0,
+        "player_id": "muric",
+        "position": "GK",
+        "rating": null,
+        "raw_minutes": 450.0,
+        "recency": "season-totals; recency unavailable",
+        "reliability": 0.5,
+        "scope": "league-only",
+        "score": null,
+        "sources": [
+          "project-dataset"
+        ],
+        "uncapped_effective_minutes": 450.0
+      },
+      {
+        "absence": {
+          "attack_loss_pct": 16.071,
+          "basis": "club league goals, not the sum of the tracked squad sample",
+          "causal": false,
+          "defence_basis": "position-share assumption; goalkeeper/defender impact is not measured",
+          "defence_cost_pct": 0.561,
+          "fetched_at": "2026-10-04T20:53:09+00:00",
+          "label": "replacement-share prior",
+          "measured": false,
+          "output_share": 0.5357,
+          "participation_share": 0.9356,
+          "position": "FWD",
+          "range": {
+            "high": {
+              "attack_loss_pct": 26.786,
+              "defence_cost_pct": 0.936
+            },
+            "kind": "replacement assumptions, not a confidence interval",
+            "low": {
+              "attack_loss_pct": 8.036,
+              "defence_cost_pct": 0.281
+            }
+          },
+          "replacement_retained": 0.7,
+          "source": [
+            "project-dataset"
+          ],
+          "status": "prior",
+          "tier": 1
+        },
+        "aggregate_rows": 1,
+        "club": "LEE",
+        "competitions": [
+          "Premier League"
+        ],
+        "dated_matches": 0,
+        "detail": [
+          {
+            "competition": "Premier League",
+            "decay": null,
+            "key": "premier_league",
+            "match_date": null,
+            "matched": true,
+            "minutes": 421.0,
+            "weight": 1.0
+          }
+        ],
+        "effective_minutes": 421.0,
+        "excluded": [],
+        "fetched_at": "2026-10-04T20:53:09+00:00",
+        "identity_match": "exact",
+        "name": "Dominic Calvert-Lewin",
+        "note": "descriptive output index, not a probability; goalkeeper index needs ratings",
+        "output_90": 0.8017,
+        "player_id": "dcl",
+        "position": "FWD",
+        "rating": null,
+        "raw_minutes": 421.0,
+        "recency": "season-totals; recency unavailable",
+        "reliability": 0.4834,
+        "scope": "league-only",
+        "score": 53.04,
+        "sources": [
+          "project-dataset"
+        ],
+        "uncapped_effective_minutes": 421.0
+      },
+      {
+        "absence": {
+          "attack_loss_pct": 0.0,
+          "basis": "club league goals, not the sum of the tracked squad sample",
+          "causal": false,
+          "defence_basis": "position-share assumption; goalkeeper/defender impact is not measured",
+          "defence_cost_pct": 5.4,
+          "fetched_at": "2026-10-04T20:53:09+00:00",
+          "label": "replacement-share prior",
+          "measured": false,
+          "output_share": 0.0,
+          "participation_share": 1.0,
+          "position": "GK",
+          "range": {
+            "high": {
+              "attack_loss_pct": 0.0,
+              "defence_cost_pct": 9.0
+            },
+            "kind": "replacement assumptions, not a confidence interval",
+            "low": {
+              "attack_loss_pct": 0.0,
+              "defence_cost_pct": 2.7
+            }
+          },
+          "replacement_retained": 0.7,
+          "source": [
+            "project-dataset"
+          ],
+          "status": "prior",
+          "tier": 1
+        },
+        "aggregate_rows": 1,
+        "club": "LEE",
+        "competitions": [
+          "Premier League"
+        ],
+        "dated_matches": 0,
+        "detail": [
+          {
+            "competition": "Premier League",
+            "decay": null,
+            "key": "premier_league",
+            "match_date": null,
+            "matched": true,
+            "minutes": 450.0,
+            "weight": 1.0
+          }
+        ],
+        "effective_minutes": 450.0,
+        "excluded": [],
+        "fetched_at": "2026-10-04T20:53:09+00:00",
+        "identity_match": "exact",
+        "name": "James Trafford",
+        "note": "descriptive output index, not a probability; goalkeeper index needs ratings",
+        "output_90": 0.0,
+        "player_id": "trafford",
+        "position": "GK",
+        "rating": null,
+        "raw_minutes": 450.0,
+        "recency": "season-totals; recency unavailable",
+        "reliability": 0.5,
+        "scope": "league-only",
+        "score": null,
+        "sources": [
+          "project-dataset"
+        ],
+        "uncapped_effective_minutes": 450.0
+      },
+      {
+        "absence": {
+          "attack_loss_pct": 0.0,
+          "basis": "club league goals, not the sum of the tracked squad sample",
+          "causal": false,
+          "defence_basis": "position-share assumption; goalkeeper/defender impact is not measured",
+          "defence_cost_pct": 5.4,
+          "fetched_at": "2026-10-04T20:53:09+00:00",
+          "label": "replacement-share prior",
+          "measured": false,
+          "output_share": 0.0,
+          "participation_share": 1.0,
+          "position": "GK",
+          "range": {
+            "high": {
+              "attack_loss_pct": 0.0,
+              "defence_cost_pct": 9.0
+            },
+            "kind": "replacement assumptions, not a confidence interval",
+            "low": {
+              "attack_loss_pct": 0.0,
+              "defence_cost_pct": 2.7
+            }
+          },
+          "replacement_retained": 0.7,
+          "source": [
+            "project-dataset"
+          ],
+          "status": "prior",
+          "tier": 1
+        },
+        "aggregate_rows": 1,
+        "club": "LIV",
+        "competitions": [
+          "Premier League"
+        ],
+        "dated_matches": 0,
+        "detail": [
+          {
+            "competition": "Premier League",
+            "decay": null,
+            "key": "premier_league",
+            "match_date": null,
+            "matched": true,
+            "minutes": 450.0,
+            "weight": 1.0
+          }
+        ],
+        "effective_minutes": 450.0,
+        "excluded": [],
+        "fetched_at": "2026-10-04T20:53:09+00:00",
+        "identity_match": "exact",
+        "name": "Alisson Becker",
+        "note": "descriptive output index, not a probability; goalkeeper index needs ratings",
+        "output_90": 0.0,
+        "player_id": "alisson",
+        "position": "GK",
+        "rating": null,
+        "raw_minutes": 450.0,
+        "recency": "season-totals; recency unavailable",
+        "reliability": 0.5,
+        "scope": "league-only",
+        "score": null,
+        "sources": [
+          "project-dataset"
+        ],
+        "uncapped_effective_minutes": 450.0
+      },
+      {
+        "absence": {
+          "attack_loss_pct": 13.929,
+          "basis": "club league goals, not the sum of the tracked squad sample",
+          "causal": false,
+          "defence_basis": "position-share assumption; goalkeeper/defender impact is not measured",
+          "defence_cost_pct": 0.547,
+          "fetched_at": "2026-10-04T20:53:09+00:00",
+          "label": "replacement-share prior",
+          "measured": false,
+          "output_share": 0.4643,
+          "participation_share": 0.9111,
+          "position": "FWD",
+          "range": {
+            "high": {
+              "attack_loss_pct": 23.214,
+              "defence_cost_pct": 0.911
+            },
+            "kind": "replacement assumptions, not a confidence interval",
+            "low": {
+              "attack_loss_pct": 6.964,
+              "defence_cost_pct": 0.273
+            }
+          },
+          "replacement_retained": 0.7,
+          "source": [
+            "project-dataset"
+          ],
+          "status": "prior",
+          "tier": 1
+        },
+        "aggregate_rows": 1,
+        "club": "LIV",
+        "competitions": [
+          "Premier League"
+        ],
+        "dated_matches": 0,
+        "detail": [
+          {
+            "competition": "Premier League",
+            "decay": null,
+            "key": "premier_league",
+            "match_date": null,
+            "matched": true,
+            "minutes": 410.0,
+            "weight": 1.0
+          }
+        ],
+        "effective_minutes": 410.0,
+        "excluded": [],
+        "fetched_at": "2026-10-04T20:53:09+00:00",
+        "identity_match": "exact",
+        "name": "Cody Gakpo",
+        "note": "descriptive output index, not a probability; goalkeeper index needs ratings",
+        "output_90": 0.7134,
+        "player_id": "gakpo",
+        "position": "FWD",
+        "rating": null,
+        "raw_minutes": 410.0,
+        "recency": "season-totals; recency unavailable",
+        "reliability": 0.4767,
+        "scope": "league-only",
+        "score": 51.33,
+        "sources": [
+          "project-dataset"
+        ],
+        "uncapped_effective_minutes": 410.0
+      },
+      {
+        "absence": {
+          "attack_loss_pct": 20.357,
+          "basis": "club league goals, not the sum of the tracked squad sample",
+          "causal": false,
+          "defence_basis": "position-share assumption; goalkeeper/defender impact is not measured",
+          "defence_cost_pct": 0.553,
+          "fetched_at": "2026-10-04T20:53:09+00:00",
+          "label": "replacement-share prior",
+          "measured": false,
+          "output_share": 0.6786,
+          "participation_share": 0.9222,
+          "position": "FWD",
+          "range": {
+            "high": {
+              "attack_loss_pct": 30,
+              "defence_cost_pct": 0.922
+            },
+            "kind": "replacement assumptions, not a confidence interval",
+            "low": {
+              "attack_loss_pct": 10.179,
+              "defence_cost_pct": 0.277
+            }
+          },
+          "replacement_retained": 0.7,
+          "source": [
+            "project-dataset"
+          ],
+          "status": "prior",
+          "tier": 1
+        },
+        "aggregate_rows": 1,
+        "club": "LIV",
+        "competitions": [
+          "Premier League"
+        ],
+        "dated_matches": 0,
+        "detail": [
+          {
+            "competition": "Premier League",
+            "decay": null,
+            "key": "premier_league",
+            "match_date": null,
+            "matched": true,
+            "minutes": 415.0,
+            "weight": 1.0
+          }
+        ],
+        "effective_minutes": 415.0,
+        "excluded": [],
+        "fetched_at": "2026-10-04T20:53:09+00:00",
+        "identity_match": "exact",
+        "name": "Alexander Isak",
+        "note": "descriptive output index, not a probability; goalkeeper index needs ratings",
+        "output_90": 1.0301,
+        "player_id": "isak",
+        "position": "FWD",
+        "rating": null,
+        "raw_minutes": 415.0,
+        "recency": "season-totals; recency unavailable",
+        "reliability": 0.4798,
+        "scope": "league-only",
+        "score": 56.63,
+        "sources": [
+          "project-dataset"
+        ],
+        "uncapped_effective_minutes": 415.0
+      },
+      {
+        "absence": {
+          "attack_loss_pct": 6.0,
+          "basis": "club league goals, not the sum of the tracked squad sample",
+          "causal": false,
+          "defence_basis": "position-share assumption; goalkeeper/defender impact is not measured",
+          "defence_cost_pct": 1.54,
+          "fetched_at": "2026-10-04T20:53:09+00:00",
+          "label": "replacement-share prior",
+          "measured": false,
+          "output_share": 0.25,
+          "participation_share": 0.9333,
+          "position": "MID",
+          "range": {
+            "high": {
+              "attack_loss_pct": 10.0,
+              "defence_cost_pct": 2.567
+            },
+            "kind": "replacement assumptions, not a confidence interval",
+            "low": {
+              "attack_loss_pct": 3.0,
+              "defence_cost_pct": 0.77
+            }
+          },
+          "replacement_retained": 0.7,
+          "source": [
+            "project-dataset"
+          ],
+          "status": "prior",
+          "tier": 1
+        },
+        "aggregate_rows": 1,
+        "club": "LIV",
+        "competitions": [
+          "Premier League"
+        ],
+        "dated_matches": 0,
+        "detail": [
+          {
+            "competition": "Premier League",
+            "decay": null,
+            "key": "premier_league",
+            "match_date": null,
+            "matched": true,
+            "minutes": 420.0,
+            "weight": 1.0
+          }
+        ],
+        "effective_minutes": 420.0,
+        "excluded": [],
+        "fetched_at": "2026-10-04T20:53:09+00:00",
+        "identity_match": "exact",
+        "name": "Florian Wirtz",
+        "note": "descriptive output index, not a probability; goalkeeper index needs ratings",
+        "output_90": 0.375,
+        "player_id": "wirtz",
+        "position": "MID",
+        "rating": null,
+        "raw_minutes": 420.0,
+        "recency": "season-totals; recency unavailable",
+        "reliability": 0.4828,
+        "scope": "league-only",
+        "score": 51.0,
+        "sources": [
+          "project-dataset"
+        ],
+        "uncapped_effective_minutes": 420.0
+      },
+      {
+        "absence": {
+          "attack_loss_pct": 8.308,
+          "basis": "club league goals, not the sum of the tracked squad sample",
+          "causal": false,
+          "defence_basis": "position-share assumption; goalkeeper/defender impact is not measured",
+          "defence_cost_pct": 1.122,
+          "fetched_at": "2026-10-04T20:53:09+00:00",
+          "label": "replacement-share prior",
+          "measured": false,
+          "output_share": 0.3462,
+          "participation_share": 0.68,
+          "position": "MID",
+          "range": {
+            "high": {
+              "attack_loss_pct": 13.846,
+              "defence_cost_pct": 1.87
+            },
+            "kind": "replacement assumptions, not a confidence interval",
+            "low": {
+              "attack_loss_pct": 4.154,
+              "defence_cost_pct": 0.561
+            }
+          },
+          "replacement_retained": 0.7,
+          "source": [
+            "project-dataset"
+          ],
+          "status": "prior",
+          "tier": 1
+        },
+        "aggregate_rows": 1,
+        "club": "MCI",
+        "competitions": [
+          "Premier League"
+        ],
+        "dated_matches": 0,
+        "detail": [
+          {
+            "competition": "Premier League",
+            "decay": null,
+            "key": "premier_league",
+            "match_date": null,
+            "matched": true,
+            "minutes": 306.0,
+            "weight": 1.0
+          }
+        ],
+        "effective_minutes": 306.0,
+        "excluded": [],
+        "fetched_at": "2026-10-04T20:53:09+00:00",
+        "identity_match": "exact",
+        "name": "Rayan Cherki",
+        "note": "descriptive output index, not a probability; goalkeeper index needs ratings",
+        "output_90": 1.3235,
+        "player_id": "cherki",
+        "position": "MID",
+        "rating": null,
+        "raw_minutes": 306.0,
+        "recency": "season-totals; recency unavailable",
+        "reliability": 0.4048,
+        "scope": "league-only",
+        "score": 66.15,
+        "sources": [
+          "project-dataset"
+        ],
+        "uncapped_effective_minutes": 306.0
+      },
+      {
+        "absence": {
+          "attack_loss_pct": 0.0,
+          "basis": "club league goals, not the sum of the tracked squad sample",
+          "causal": false,
+          "defence_basis": "position-share assumption; goalkeeper/defender impact is not measured",
+          "defence_cost_pct": 5.4,
+          "fetched_at": "2026-10-04T20:53:09+00:00",
+          "label": "replacement-share prior",
+          "measured": false,
+          "output_share": 0.0,
+          "participation_share": 1.0,
+          "position": "GK",
+          "range": {
+            "high": {
+              "attack_loss_pct": 0.0,
+              "defence_cost_pct": 9.0
+            },
+            "kind": "replacement assumptions, not a confidence interval",
+            "low": {
+              "attack_loss_pct": 0.0,
+              "defence_cost_pct": 2.7
+            }
+          },
+          "replacement_retained": 0.7,
+          "source": [
+            "project-dataset"
+          ],
+          "status": "prior",
+          "tier": 1
+        },
+        "aggregate_rows": 1,
+        "club": "MCI",
+        "competitions": [
+          "Premier League"
+        ],
+        "dated_matches": 0,
+        "detail": [
+          {
+            "competition": "Premier League",
+            "decay": null,
+            "key": "premier_league",
+            "match_date": null,
+            "matched": true,
+            "minutes": 450.0,
+            "weight": 1.0
+          }
+        ],
+        "effective_minutes": 450.0,
+        "excluded": [],
+        "fetched_at": "2026-10-04T20:53:09+00:00",
+        "identity_match": "exact",
+        "name": "Gianluigi Donnarumma",
+        "note": "descriptive output index, not a probability; goalkeeper index needs ratings",
+        "output_90": 0.0,
+        "player_id": "donnarumma",
+        "position": "GK",
+        "rating": null,
+        "raw_minutes": 450.0,
+        "recency": "season-totals; recency unavailable",
+        "reliability": 0.5,
+        "scope": "league-only",
+        "score": null,
+        "sources": [
+          "project-dataset"
+        ],
+        "uncapped_effective_minutes": 450.0
+      },
+      {
+        "absence": {
+          "attack_loss_pct": 4.615,
+          "basis": "club league goals, not the sum of the tracked squad sample",
+          "causal": false,
+          "defence_basis": "position-share assumption; goalkeeper/defender impact is not measured",
+          "defence_cost_pct": 1.247,
+          "fetched_at": "2026-10-04T20:53:09+00:00",
+          "label": "replacement-share prior",
+          "measured": false,
+          "output_share": 0.1923,
+          "participation_share": 0.7556,
+          "position": "MID",
+          "range": {
+            "high": {
+              "attack_loss_pct": 7.692,
+              "defence_cost_pct": 2.078
+            },
+            "kind": "replacement assumptions, not a confidence interval",
+            "low": {
+              "attack_loss_pct": 2.308,
+              "defence_cost_pct": 0.623
+            }
+          },
+          "replacement_retained": 0.7,
+          "source": [
+            "project-dataset"
+          ],
+          "status": "prior",
+          "tier": 1
+        },
+        "aggregate_rows": 1,
+        "club": "MCI",
+        "competitions": [
+          "Premier League"
+        ],
+        "dated_matches": 0,
+        "detail": [
+          {
+            "competition": "Premier League",
+            "decay": null,
+            "key": "premier_league",
+            "match_date": null,
+            "matched": true,
+            "minutes": 340.0,
+            "weight": 1.0
+          }
+        ],
+        "effective_minutes": 340.0,
+        "excluded": [],
+        "fetched_at": "2026-10-04T20:53:09+00:00",
+        "identity_match": "exact",
+        "name": "Phil Foden",
+        "note": "descriptive output index, not a probability; goalkeeper index needs ratings",
+        "output_90": 0.6618,
+        "player_id": "foden",
+        "position": "MID",
+        "rating": null,
+        "raw_minutes": 340.0,
+        "recency": "season-totals; recency unavailable",
+        "reliability": 0.4304,
+        "scope": "league-only",
+        "score": 58.22,
+        "sources": [
+          "project-dataset"
+        ],
+        "uncapped_effective_minutes": 340.0
+      },
+      {
+        "absence": {
+          "attack_loss_pct": 13.269,
+          "basis": "club league goals, not the sum of the tracked squad sample",
+          "causal": false,
+          "defence_basis": "position-share assumption; goalkeeper/defender impact is not measured",
+          "defence_cost_pct": 0.6,
+          "fetched_at": "2026-10-04T20:53:09+00:00",
+          "label": "replacement-share prior",
+          "measured": false,
+          "output_share": 0.4423,
+          "participation_share": 1.0,
+          "position": "FWD",
+          "range": {
+            "high": {
+              "attack_loss_pct": 22.115,
+              "defence_cost_pct": 1.0
+            },
+            "kind": "replacement assumptions, not a confidence interval",
+            "low": {
+              "attack_loss_pct": 6.635,
+              "defence_cost_pct": 0.3
+            }
+          },
+          "replacement_retained": 0.7,
+          "source": [
+            "project-dataset"
+          ],
+          "status": "prior",
+          "tier": 1
+        },
+        "aggregate_rows": 1,
+        "club": "MCI",
+        "competitions": [
+          "Premier League"
+        ],
+        "dated_matches": 0,
+        "detail": [
+          {
+            "competition": "Premier League",
+            "decay": null,
+            "key": "premier_league",
+            "match_date": null,
+            "matched": true,
+            "minutes": 450.0,
+            "weight": 1.0
+          }
+        ],
+        "effective_minutes": 450.0,
+        "excluded": [],
+        "fetched_at": "2026-10-04T20:53:09+00:00",
+        "identity_match": "exact",
+        "name": "Erling Haaland",
+        "note": "descriptive output index, not a probability; goalkeeper index needs ratings",
+        "output_90": 1.15,
+        "player_id": "haaland",
+        "position": "FWD",
+        "rating": null,
+        "raw_minutes": 450.0,
+        "recency": "season-totals; recency unavailable",
+        "reliability": 0.5,
+        "scope": "league-only",
+        "score": 58.56,
+        "sources": [
+          "project-dataset"
+        ],
+        "uncapped_effective_minutes": 450.0
+      },
+      {
+        "absence": {
+          "attack_loss_pct": 9.808,
+          "basis": "club league goals, not the sum of the tracked squad sample",
+          "causal": false,
+          "defence_basis": "position-share assumption; goalkeeper/defender impact is not measured",
+          "defence_cost_pct": 0.6,
+          "fetched_at": "2026-10-04T20:53:09+00:00",
+          "label": "replacement-share prior",
+          "measured": false,
+          "output_share": 0.3269,
+          "participation_share": 1.0,
+          "position": "FWD",
+          "range": {
+            "high": {
+              "attack_loss_pct": 16.346,
+              "defence_cost_pct": 1.0
+            },
+            "kind": "replacement assumptions, not a confidence interval",
+            "low": {
+              "attack_loss_pct": 4.904,
+              "defence_cost_pct": 0.3
+            }
+          },
+          "replacement_retained": 0.7,
+          "source": [
+            "project-dataset"
+          ],
+          "status": "prior",
+          "tier": 1
+        },
+        "aggregate_rows": 1,
+        "club": "MCI",
+        "competitions": [
+          "Premier League"
+        ],
+        "dated_matches": 0,
+        "detail": [
+          {
+            "competition": "Premier League",
+            "decay": null,
+            "key": "premier_league",
+            "match_date": null,
+            "matched": true,
+            "minutes": 450.0,
+            "weight": 1.0
+          }
+        ],
+        "effective_minutes": 450.0,
+        "excluded": [],
+        "fetched_at": "2026-10-04T20:53:09+00:00",
+        "identity_match": "exact",
+        "name": "Antoine Semenyo",
+        "note": "descriptive output index, not a probability; goalkeeper index needs ratings",
+        "output_90": 0.85,
+        "player_id": "semenyo",
+        "position": "FWD",
+        "rating": null,
+        "raw_minutes": 450.0,
+        "recency": "season-totals; recency unavailable",
+        "reliability": 0.5,
+        "scope": "league-only",
+        "score": 54.02,
+        "sources": [
+          "project-dataset"
+        ],
+        "uncapped_effective_minutes": 450.0
+      },
+      {
+        "absence": {
+          "attack_loss_pct": 11.25,
+          "basis": "club league goals, not the sum of the tracked squad sample",
+          "causal": false,
+          "defence_basis": "position-share assumption; goalkeeper/defender impact is not measured",
+          "defence_cost_pct": 1.65,
+          "fetched_at": "2026-10-04T20:53:09+00:00",
+          "label": "replacement-share prior",
+          "measured": false,
+          "output_share": 0.4688,
+          "participation_share": 1.0,
+          "position": "MID",
+          "range": {
+            "high": {
+              "attack_loss_pct": 18.75,
+              "defence_cost_pct": 2.75
+            },
+            "kind": "replacement assumptions, not a confidence interval",
+            "low": {
+              "attack_loss_pct": 5.625,
+              "defence_cost_pct": 0.825
+            }
+          },
+          "replacement_retained": 0.7,
+          "source": [
+            "project-dataset"
+          ],
+          "status": "prior",
+          "tier": 1
+        },
+        "aggregate_rows": 1,
+        "club": "MUN",
+        "competitions": [
+          "Premier League"
+        ],
+        "dated_matches": 0,
+        "detail": [
+          {
+            "competition": "Premier League",
+            "decay": null,
+            "key": "premier_league",
+            "match_date": null,
+            "matched": true,
+            "minutes": 450.0,
+            "weight": 1.0
+          }
+        ],
+        "effective_minutes": 450.0,
+        "excluded": [],
+        "fetched_at": "2026-10-04T20:53:09+00:00",
+        "identity_match": "exact",
+        "name": "Bruno Fernandes",
+        "note": "descriptive output index, not a probability; goalkeeper index needs ratings",
+        "output_90": 0.75,
+        "player_id": "bruno",
+        "position": "MID",
+        "rating": null,
+        "raw_minutes": 450.0,
+        "recency": "season-totals; recency unavailable",
+        "reliability": 0.5,
+        "scope": "league-only",
+        "score": 61.43,
+        "sources": [
+          "project-dataset"
+        ],
+        "uncapped_effective_minutes": 450.0
+      },
+      {
+        "absence": {
+          "attack_loss_pct": 10.313,
+          "basis": "club league goals, not the sum of the tracked squad sample",
+          "causal": false,
+          "defence_basis": "position-share assumption; goalkeeper/defender impact is not measured",
+          "defence_cost_pct": 0.6,
+          "fetched_at": "2026-10-04T20:53:09+00:00",
+          "label": "replacement-share prior",
+          "measured": false,
+          "output_share": 0.3438,
+          "participation_share": 1.0,
+          "position": "FWD",
+          "range": {
+            "high": {
+              "attack_loss_pct": 17.188,
+              "defence_cost_pct": 1.0
+            },
+            "kind": "replacement assumptions, not a confidence interval",
+            "low": {
+              "attack_loss_pct": 5.156,
+              "defence_cost_pct": 0.3
+            }
+          },
+          "replacement_retained": 0.7,
+          "source": [
+            "project-dataset"
+          ],
+          "status": "prior",
+          "tier": 1
+        },
+        "aggregate_rows": 1,
+        "club": "MUN",
+        "competitions": [
+          "Premier League"
+        ],
+        "dated_matches": 0,
+        "detail": [
+          {
+            "competition": "Premier League",
+            "decay": null,
+            "key": "premier_league",
+            "match_date": null,
+            "matched": true,
+            "minutes": 450.0,
+            "weight": 1.0
+          }
+        ],
+        "effective_minutes": 450.0,
+        "excluded": [],
+        "fetched_at": "2026-10-04T20:53:09+00:00",
+        "identity_match": "exact",
+        "name": "Bryan Mbeumo",
+        "note": "descriptive output index, not a probability; goalkeeper index needs ratings",
+        "output_90": 0.55,
+        "player_id": "mbeumo",
+        "position": "FWD",
+        "rating": null,
+        "raw_minutes": 450.0,
+        "recency": "season-totals; recency unavailable",
+        "reliability": 0.5,
+        "scope": "league-only",
+        "score": 47.49,
+        "sources": [
+          "project-dataset"
+        ],
+        "uncapped_effective_minutes": 450.0
+      },
+      {
+        "absence": {
+          "attack_loss_pct": 0.0,
+          "basis": "club league goals, not the sum of the tracked squad sample",
+          "causal": false,
+          "defence_basis": "position-share assumption; goalkeeper/defender impact is not measured",
+          "defence_cost_pct": 5.4,
+          "fetched_at": "2026-10-04T20:53:09+00:00",
+          "label": "replacement-share prior",
+          "measured": false,
+          "output_share": 0.0,
+          "participation_share": 1.0,
+          "position": "GK",
+          "range": {
+            "high": {
+              "attack_loss_pct": 0.0,
+              "defence_cost_pct": 9.0
+            },
+            "kind": "replacement assumptions, not a confidence interval",
+            "low": {
+              "attack_loss_pct": 0.0,
+              "defence_cost_pct": 2.7
+            }
+          },
+          "replacement_retained": 0.7,
+          "source": [
+            "project-dataset"
+          ],
+          "status": "prior",
+          "tier": 1
+        },
+        "aggregate_rows": 1,
+        "club": "MUN",
+        "competitions": [
+          "Premier League"
+        ],
+        "dated_matches": 0,
+        "detail": [
+          {
+            "competition": "Premier League",
+            "decay": null,
+            "key": "premier_league",
+            "match_date": null,
+            "matched": true,
+            "minutes": 450.0,
+            "weight": 1.0
+          }
+        ],
+        "effective_minutes": 450.0,
+        "excluded": [],
+        "fetched_at": "2026-10-04T20:53:09+00:00",
+        "identity_match": "exact",
+        "name": "Andr\u00e9 Onana",
+        "note": "descriptive output index, not a probability; goalkeeper index needs ratings",
+        "output_90": 0.0,
+        "player_id": "onana",
+        "position": "GK",
+        "rating": null,
+        "raw_minutes": 450.0,
+        "recency": "season-totals; recency unavailable",
+        "reliability": 0.5,
+        "scope": "league-only",
+        "score": null,
+        "sources": [
+          "project-dataset"
+        ],
+        "uncapped_effective_minutes": 450.0
+      },
+      {
+        "absence": {
+          "attack_loss_pct": 11.667,
+          "basis": "club league goals, not the sum of the tracked squad sample",
+          "causal": false,
+          "defence_basis": "position-share assumption; goalkeeper/defender impact is not measured",
+          "defence_cost_pct": 0.547,
+          "fetched_at": "2026-10-04T20:53:09+00:00",
+          "label": "replacement-share prior",
+          "measured": false,
+          "output_share": 0.3889,
+          "participation_share": 0.9111,
+          "position": "FWD",
+          "range": {
+            "high": {
+              "attack_loss_pct": 19.444,
+              "defence_cost_pct": 0.911
+            },
+            "kind": "replacement assumptions, not a confidence interval",
+            "low": {
+              "attack_loss_pct": 5.833,
+              "defence_cost_pct": 0.273
+            }
+          },
+          "replacement_retained": 0.7,
+          "source": [
+            "project-dataset"
+          ],
+          "status": "prior",
+          "tier": 1
+        },
+        "aggregate_rows": 1,
+        "club": "NEW",
+        "competitions": [
+          "Premier League"
+        ],
+        "dated_matches": 0,
+        "detail": [
+          {
+            "competition": "Premier League",
+            "decay": null,
+            "key": "premier_league",
+            "match_date": null,
+            "matched": true,
+            "minutes": 410.0,
+            "weight": 1.0
+          }
+        ],
+        "effective_minutes": 410.0,
+        "excluded": [],
+        "fetched_at": "2026-10-04T20:53:09+00:00",
+        "identity_match": "exact",
+        "name": "Harvey Barnes",
+        "note": "descriptive output index, not a probability; goalkeeper index needs ratings",
+        "output_90": 0.7683,
+        "player_id": "barnes",
+        "position": "FWD",
+        "rating": null,
+        "raw_minutes": 410.0,
+        "recency": "season-totals; recency unavailable",
+        "reliability": 0.4767,
+        "scope": "league-only",
+        "score": 52.39,
+        "sources": [
+          "project-dataset"
+        ],
+        "uncapped_effective_minutes": 410.0
+      },
+      {
+        "absence": {
+          "attack_loss_pct": 9.167,
+          "basis": "club league goals, not the sum of the tracked squad sample",
+          "causal": false,
+          "defence_basis": "position-share assumption; goalkeeper/defender impact is not measured",
+          "defence_cost_pct": 0.48,
+          "fetched_at": "2026-10-04T20:53:09+00:00",
+          "label": "replacement-share prior",
+          "measured": false,
+          "output_share": 0.3056,
+          "participation_share": 0.8,
+          "position": "FWD",
+          "range": {
+            "high": {
+              "attack_loss_pct": 15.278,
+              "defence_cost_pct": 0.8
+            },
+            "kind": "replacement assumptions, not a confidence interval",
+            "low": {
+              "attack_loss_pct": 4.583,
+              "defence_cost_pct": 0.24
+            }
+          },
+          "replacement_retained": 0.7,
+          "source": [
+            "project-dataset"
+          ],
+          "status": "prior",
+          "tier": 1
+        },
+        "aggregate_rows": 1,
+        "club": "NEW",
+        "competitions": [
+          "Premier League"
+        ],
+        "dated_matches": 0,
+        "detail": [
+          {
+            "competition": "Premier League",
+            "decay": null,
+            "key": "premier_league",
+            "match_date": null,
+            "matched": true,
+            "minutes": 360.0,
+            "weight": 1.0
+          }
+        ],
+        "effective_minutes": 360.0,
+        "excluded": [],
+        "fetched_at": "2026-10-04T20:53:09+00:00",
+        "identity_match": "exact",
+        "name": "Anthony Elanga",
+        "note": "descriptive output index, not a probability; goalkeeper index needs ratings",
+        "output_90": 0.6875,
+        "player_id": "elanga",
+        "position": "FWD",
+        "rating": null,
+        "raw_minutes": 360.0,
+        "recency": "season-totals; recency unavailable",
+        "reliability": 0.4444,
+        "scope": "league-only",
+        "score": 50.75,
+        "sources": [
+          "project-dataset"
+        ],
+        "uncapped_effective_minutes": 360.0
+      },
+      {
+        "absence": {
+          "attack_loss_pct": 0.0,
+          "basis": "club league goals, not the sum of the tracked squad sample",
+          "causal": false,
+          "defence_basis": "position-share assumption; goalkeeper/defender impact is not measured",
+          "defence_cost_pct": 5.4,
+          "fetched_at": "2026-10-04T20:53:09+00:00",
+          "label": "replacement-share prior",
+          "measured": false,
+          "output_share": 0.0,
+          "participation_share": 1.0,
+          "position": "GK",
+          "range": {
+            "high": {
+              "attack_loss_pct": 0.0,
+              "defence_cost_pct": 9.0
+            },
+            "kind": "replacement assumptions, not a confidence interval",
+            "low": {
+              "attack_loss_pct": 0.0,
+              "defence_cost_pct": 2.7
+            }
+          },
+          "replacement_retained": 0.7,
+          "source": [
+            "project-dataset"
+          ],
+          "status": "prior",
+          "tier": 1
+        },
+        "aggregate_rows": 1,
+        "club": "NEW",
+        "competitions": [
+          "Premier League"
+        ],
+        "dated_matches": 0,
+        "detail": [
+          {
+            "competition": "Premier League",
+            "decay": null,
+            "key": "premier_league",
+            "match_date": null,
+            "matched": true,
+            "minutes": 450.0,
+            "weight": 1.0
+          }
+        ],
+        "effective_minutes": 450.0,
+        "excluded": [],
+        "fetched_at": "2026-10-04T20:53:09+00:00",
+        "identity_match": "exact",
+        "name": "Luk\u00e1\u0161 Horn\u00ed\u010dek",
+        "note": "descriptive output index, not a probability; goalkeeper index needs ratings",
+        "output_90": 0.0,
+        "player_id": "hornicek",
+        "position": "GK",
+        "rating": null,
+        "raw_minutes": 450.0,
+        "recency": "season-totals; recency unavailable",
+        "reliability": 0.5,
+        "scope": "league-only",
+        "score": null,
+        "sources": [
+          "project-dataset"
+        ],
+        "uncapped_effective_minutes": 450.0
+      },
+      {
+        "absence": {
+          "attack_loss_pct": 15.0,
+          "basis": "club league goals, not the sum of the tracked squad sample",
+          "causal": false,
+          "defence_basis": "position-share assumption; goalkeeper/defender impact is not measured",
+          "defence_cost_pct": 1.65,
+          "fetched_at": "2026-10-04T20:53:09+00:00",
+          "label": "replacement-share prior",
+          "measured": false,
+          "output_share": 0.625,
+          "participation_share": 1.0,
+          "position": "MID",
+          "range": {
+            "high": {
+              "attack_loss_pct": 25.0,
+              "defence_cost_pct": 2.75
+            },
+            "kind": "replacement assumptions, not a confidence interval",
+            "low": {
+              "attack_loss_pct": 7.5,
+              "defence_cost_pct": 0.825
+            }
+          },
+          "replacement_retained": 0.7,
+          "source": [
+            "project-dataset"
+          ],
+          "status": "prior",
+          "tier": 1
+        },
+        "aggregate_rows": 1,
+        "club": "NFO",
+        "competitions": [
+          "Premier League"
+        ],
+        "dated_matches": 0,
+        "detail": [
+          {
+            "competition": "Premier League",
+            "decay": null,
+            "key": "premier_league",
+            "match_date": null,
+            "matched": true,
+            "minutes": 450.0,
+            "weight": 1.0
+          }
+        ],
+        "effective_minutes": 450.0,
+        "excluded": [],
+        "fetched_at": "2026-10-04T20:53:09+00:00",
+        "identity_match": "exact",
+        "name": "Morgan Gibbs-White",
+        "note": "descriptive output index, not a probability; goalkeeper index needs ratings",
+        "output_90": 0.5,
+        "player_id": "mgw",
+        "position": "MID",
+        "rating": null,
+        "raw_minutes": 450.0,
+        "recency": "season-totals; recency unavailable",
+        "reliability": 0.5,
+        "scope": "league-only",
+        "score": 55.35,
+        "sources": [
+          "project-dataset"
+        ],
+        "uncapped_effective_minutes": 450.0
+      },
+      {
+        "absence": {
+          "attack_loss_pct": 0.0,
+          "basis": "club league goals, not the sum of the tracked squad sample",
+          "causal": false,
+          "defence_basis": "position-share assumption; goalkeeper/defender impact is not measured",
+          "defence_cost_pct": 5.4,
+          "fetched_at": "2026-10-04T20:53:09+00:00",
+          "label": "replacement-share prior",
+          "measured": false,
+          "output_share": 0.0,
+          "participation_share": 1.0,
+          "position": "GK",
+          "range": {
+            "high": {
+              "attack_loss_pct": 0.0,
+              "defence_cost_pct": 9.0
+            },
+            "kind": "replacement assumptions, not a confidence interval",
+            "low": {
+              "attack_loss_pct": 0.0,
+              "defence_cost_pct": 2.7
+            }
+          },
+          "replacement_retained": 0.7,
+          "source": [
+            "project-dataset"
+          ],
+          "status": "prior",
+          "tier": 1
+        },
+        "aggregate_rows": 1,
+        "club": "NFO",
+        "competitions": [
+          "Premier League"
+        ],
+        "dated_matches": 0,
+        "detail": [
+          {
+            "competition": "Premier League",
+            "decay": null,
+            "key": "premier_league",
+            "match_date": null,
+            "matched": true,
+            "minutes": 450.0,
+            "weight": 1.0
+          }
+        ],
+        "effective_minutes": 450.0,
+        "excluded": [],
+        "fetched_at": "2026-10-04T20:53:09+00:00",
+        "identity_match": "exact",
+        "name": "Matz Sels",
+        "note": "descriptive output index, not a probability; goalkeeper index needs ratings",
+        "output_90": 0.0,
+        "player_id": "sels",
+        "position": "GK",
+        "rating": null,
+        "raw_minutes": 450.0,
+        "recency": "season-totals; recency unavailable",
+        "reliability": 0.5,
+        "scope": "league-only",
+        "score": null,
+        "sources": [
+          "project-dataset"
+        ],
+        "uncapped_effective_minutes": 450.0
+      },
+      {
+        "absence": {
+          "attack_loss_pct": 15.0,
+          "basis": "club league goals, not the sum of the tracked squad sample",
+          "causal": false,
+          "defence_basis": "position-share assumption; goalkeeper/defender impact is not measured",
+          "defence_cost_pct": 0.535,
+          "fetched_at": "2026-10-04T20:53:09+00:00",
+          "label": "replacement-share prior",
+          "measured": false,
+          "output_share": 0.5,
+          "participation_share": 0.8911,
+          "position": "FWD",
+          "range": {
+            "high": {
+              "attack_loss_pct": 25.0,
+              "defence_cost_pct": 0.891
+            },
+            "kind": "replacement assumptions, not a confidence interval",
+            "low": {
+              "attack_loss_pct": 7.5,
+              "defence_cost_pct": 0.267
+            }
+          },
+          "replacement_retained": 0.7,
+          "source": [
+            "project-dataset"
+          ],
+          "status": "prior",
+          "tier": 1
+        },
+        "aggregate_rows": 1,
+        "club": "SUN",
+        "competitions": [
+          "Premier League"
+        ],
+        "dated_matches": 0,
+        "detail": [
+          {
+            "competition": "Premier League",
+            "decay": null,
+            "key": "premier_league",
+            "match_date": null,
+            "matched": true,
+            "minutes": 401.0,
+            "weight": 1.0
+          }
+        ],
+        "effective_minutes": 401.0,
+        "excluded": [],
+        "fetched_at": "2026-10-04T20:53:09+00:00",
+        "identity_match": "exact",
+        "name": "Brian Brobbey",
+        "note": "descriptive output index, not a probability; goalkeeper index needs ratings",
+        "output_90": 0.6733,
+        "player_id": "brobbey",
+        "position": "FWD",
+        "rating": null,
+        "raw_minutes": 401.0,
+        "recency": "season-totals; recency unavailable",
+        "reliability": 0.4712,
+        "scope": "league-only",
+        "score": 50.5,
+        "sources": [
+          "project-dataset"
+        ],
+        "uncapped_effective_minutes": 401.0
+      },
+      {
+        "absence": {
+          "attack_loss_pct": 0.0,
+          "basis": "club league goals, not the sum of the tracked squad sample",
+          "causal": false,
+          "defence_basis": "position-share assumption; goalkeeper/defender impact is not measured",
+          "defence_cost_pct": 5.4,
+          "fetched_at": "2026-10-04T20:53:09+00:00",
+          "label": "replacement-share prior",
+          "measured": false,
+          "output_share": 0.0,
+          "participation_share": 1.0,
+          "position": "GK",
+          "range": {
+            "high": {
+              "attack_loss_pct": 0.0,
+              "defence_cost_pct": 9.0
+            },
+            "kind": "replacement assumptions, not a confidence interval",
+            "low": {
+              "attack_loss_pct": 0.0,
+              "defence_cost_pct": 2.7
+            }
+          },
+          "replacement_retained": 0.7,
+          "source": [
+            "project-dataset"
+          ],
+          "status": "prior",
+          "tier": 1
+        },
+        "aggregate_rows": 1,
+        "club": "SUN",
+        "competitions": [
+          "Premier League"
+        ],
+        "dated_matches": 0,
+        "detail": [
+          {
+            "competition": "Premier League",
+            "decay": null,
+            "key": "premier_league",
+            "match_date": null,
+            "matched": true,
+            "minutes": 450.0,
+            "weight": 1.0
+          }
+        ],
+        "effective_minutes": 450.0,
+        "excluded": [],
+        "fetched_at": "2026-10-04T20:53:09+00:00",
+        "identity_match": "exact",
+        "name": "Robin Roefs",
+        "note": "descriptive output index, not a probability; goalkeeper index needs ratings",
+        "output_90": 0.0,
+        "player_id": "roefs",
+        "position": "GK",
+        "rating": null,
+        "raw_minutes": 450.0,
+        "recency": "season-totals; recency unavailable",
+        "reliability": 0.5,
+        "scope": "league-only",
+        "score": null,
+        "sources": [
+          "project-dataset"
+        ],
+        "uncapped_effective_minutes": 450.0
+      },
+      {
+        "absence": {
+          "attack_loss_pct": 0.0,
+          "basis": "club league goals, not the sum of the tracked squad sample",
+          "causal": false,
+          "defence_basis": "position-share assumption; goalkeeper/defender impact is not measured",
+          "defence_cost_pct": 5.4,
+          "fetched_at": "2026-10-04T20:53:09+00:00",
+          "label": "replacement-share prior",
+          "measured": false,
+          "output_share": 0.0,
+          "participation_share": 1.0,
+          "position": "GK",
+          "range": {
+            "high": {
+              "attack_loss_pct": 0.0,
+              "defence_cost_pct": 9.0
+            },
+            "kind": "replacement assumptions, not a confidence interval",
+            "low": {
+              "attack_loss_pct": 0.0,
+              "defence_cost_pct": 2.7
+            }
+          },
+          "replacement_retained": 0.7,
+          "source": [
+            "project-dataset"
+          ],
+          "status": "prior",
+          "tier": 1
+        },
+        "aggregate_rows": 1,
+        "club": "TOT",
+        "competitions": [
+          "Premier League"
+        ],
+        "dated_matches": 0,
+        "detail": [
+          {
+            "competition": "Premier League",
+            "decay": null,
+            "key": "premier_league",
+            "match_date": null,
+            "matched": true,
+            "minutes": 450.0,
+            "weight": 1.0
+          }
+        ],
+        "effective_minutes": 450.0,
+        "excluded": [],
+        "fetched_at": "2026-10-04T20:53:09+00:00",
+        "identity_match": "exact",
+        "name": "Anton\u00edn Kinsk\u00fd",
+        "note": "descriptive output index, not a probability; goalkeeper index needs ratings",
+        "output_90": 0.0,
+        "player_id": "kinsky",
+        "position": "GK",
+        "rating": null,
+        "raw_minutes": 450.0,
+        "recency": "season-totals; recency unavailable",
+        "reliability": 0.5,
+        "scope": "league-only",
+        "score": null,
+        "sources": [
+          "project-dataset"
+        ],
+        "uncapped_effective_minutes": 450.0
+      }
+    ],
+    "policy_notes": [
+      "season totals have no per-match recency",
+      "form index is not a win probability",
+      "absence priors price a replacement, not zero contribution",
+      "with/without statistics are associations, not causal injury effects",
+      "exact rest/travel candidate does not replace the active europe proxy until validated"
+    ],
+    "problems": [],
+    "season": "2026-27",
+    "squads": {
+      "ARS": {
+        "coverage": "partial-squad sample; completeness not verified",
+        "effective_minutes": 2079.0,
+        "index": 53.37,
+        "recency_available": false,
+        "scored_players": 5,
+        "tracked_players": 6
+      },
+      "AVL": {
+        "coverage": "partial-squad sample; completeness not verified",
+        "effective_minutes": 435.0,
+        "index": 48.04,
+        "recency_available": false,
+        "scored_players": 1,
+        "tracked_players": 2
+      },
+      "BHA": {
+        "coverage": "partial-squad sample; completeness not verified",
+        "effective_minutes": 806.0,
+        "index": 59.59,
+        "recency_available": false,
+        "scored_players": 2,
+        "tracked_players": 3
+      },
+      "BOU": {
+        "coverage": "partial-squad sample; completeness not verified",
+        "effective_minutes": 847.0,
+        "index": 56.5,
+        "recency_available": false,
+        "scored_players": 2,
+        "tracked_players": 3
+      },
+      "BRE": {
+        "coverage": "partial-squad sample; completeness not verified",
+        "effective_minutes": 858.0,
+        "index": 50.65,
+        "recency_available": false,
+        "scored_players": 2,
+        "tracked_players": 3
+      },
+      "CHE": {
+        "coverage": "partial-squad sample; completeness not verified",
+        "effective_minutes": 1242.0,
+        "index": 60.6,
+        "recency_available": false,
+        "scored_players": 3,
+        "tracked_players": 4
+      },
+      "COV": {
+        "coverage": "partial-squad sample; completeness not verified",
+        "effective_minutes": 0,
+        "index": null,
+        "recency_available": false,
+        "scored_players": 0,
+        "tracked_players": 1
+      },
+      "CRY": {
+        "coverage": "partial-squad sample; completeness not verified",
+        "effective_minutes": 415.0,
+        "index": 60.08,
+        "recency_available": false,
+        "scored_players": 1,
+        "tracked_players": 2
+      },
+      "EVE": {
+        "coverage": "partial-squad sample; completeness not verified",
+        "effective_minutes": 0,
+        "index": null,
+        "recency_available": false,
+        "scored_players": 0,
+        "tracked_players": 1
+      },
+      "FUL": {
+        "coverage": "partial-squad sample; completeness not verified",
+        "effective_minutes": 0,
+        "index": null,
+        "recency_available": false,
+        "scored_players": 0,
+        "tracked_players": 1
+      },
+      "HUL": {
+        "coverage": "partial-squad sample; completeness not verified",
+        "effective_minutes": 398.0,
+        "index": 52.77,
+        "recency_available": false,
+        "scored_players": 1,
+        "tracked_players": 2
+      },
+      "IPS": {
+        "coverage": "partial-squad sample; completeness not verified",
+        "effective_minutes": 410.0,
+        "index": 56.43,
+        "recency_available": false,
+        "scored_players": 1,
+        "tracked_players": 2
+      },
+      "LEE": {
+        "coverage": "partial-squad sample; completeness not verified",
+        "effective_minutes": 421.0,
+        "index": 53.04,
+        "recency_available": false,
+        "scored_players": 1,
+        "tracked_players": 2
+      },
+      "LIV": {
+        "coverage": "partial-squad sample; completeness not verified",
+        "effective_minutes": 1245.0,
+        "index": 52.99,
+        "recency_available": false,
+        "scored_players": 3,
+        "tracked_players": 4
+      },
+      "MCI": {
+        "coverage": "partial-squad sample; completeness not verified",
+        "effective_minutes": 1546.0,
+        "index": 58.67,
+        "recency_available": false,
+        "scored_players": 4,
+        "tracked_players": 5
+      },
+      "MUN": {
+        "coverage": "partial-squad sample; completeness not verified",
+        "effective_minutes": 900.0,
+        "index": 54.46,
+        "recency_available": false,
+        "scored_players": 2,
+        "tracked_players": 3
+      },
+      "NEW": {
+        "coverage": "partial-squad sample; completeness not verified",
+        "effective_minutes": 770.0,
+        "index": 51.62,
+        "recency_available": false,
+        "scored_players": 2,
+        "tracked_players": 3
+      },
+      "NFO": {
+        "coverage": "partial-squad sample; completeness not verified",
+        "effective_minutes": 450.0,
+        "index": 55.35,
+        "recency_available": false,
+        "scored_players": 1,
+        "tracked_players": 2
+      },
+      "SUN": {
+        "coverage": "partial-squad sample; completeness not verified",
+        "effective_minutes": 401.0,
+        "index": 50.5,
+        "recency_available": false,
+        "scored_players": 1,
+        "tracked_players": 2
+      },
+      "TOT": {
+        "coverage": "partial-squad sample; completeness not verified",
+        "effective_minutes": 0,
+        "index": null,
+        "recency_available": false,
+        "scored_players": 0,
+        "tracked_players": 1
+      }
+    },
+    "version": "player-context/1"
+  },
+  "gate": {
+    "baseline": null,
+    "baseline_full_season": {
+      "accuracy": 46.3,
+      "brier": 0.6372,
+      "log_loss": 1.0561,
+      "rps": 0.2184
+    },
+    "candidate": null,
+    "dated_fixtures_joined": 0,
+    "delta": {
+      "accuracy_percentage_points": null,
+      "rps": null
+    },
+    "fixtures_in_result_matrix": 380,
+    "live_input_allowed": false,
+    "method": "exact kickoff order; prior completed matches only; 120-fixture warm-up; fixed constants",
+    "mode": "context",
+    "model_card": "v3.0",
+    "paired_rps_delta_95pct": null,
+    "policy": "player-signal/1",
+    "pre_match_coverage": 0.0,
+    "problems": [],
+    "reasons": [
+      "A validated dated calendar for all 380 historical fixtures is missing or disagrees with the result matrix.",
+      "No timestamped pre-kickoff availability captures; post-match appearances cannot stand in for them.",
+      "No usable per-match player appearances; season totals cannot be walked backwards through time.",
+      "Missing evidence is not a measured zero delta. Keep player form, absence and rest/travel as context."
+    ],
+    "scope": "structural shadow head only; the live ML ensemble is not validated by this comparison",
+    "season": "2025-26",
+    "shadow_verdict": "not-measured",
+    "test_matches": 0,
+    "version": "player-gate/1"
+  }
+}

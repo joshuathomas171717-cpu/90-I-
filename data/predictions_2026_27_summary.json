@@ -11,9 +11,30 @@
     },
     "fixture_calendar": "Official Premier League 2026-27 fixture release (19 June 2026)",
     "n_simulations": 5000,
-    "runtime_ms": 1296.4,
+    "runtime_ms": 1388.6,
     "lambda_scale": 0.948,
-    "scenario_active": false
+    "scenario_active": false,
+    "player_signal": {
+      "mode": "context",
+      "input_enabled": false,
+      "coverage": {
+        "availability_tracked": false,
+        "clubs": 20,
+        "competition_scope": [
+          "Premier League"
+        ],
+        "dated_players": 0,
+        "exact_next_kickoffs": 0,
+        "international_scope": "unverified; excluded unless explicitly verified per record",
+        "players": 52,
+        "scored_players": 32,
+        "squad_scope": "tracked sample; complete-squad coverage not verified",
+        "tier2_players": 0
+      },
+      "shadow_verdict": "not-measured",
+      "fingerprint": "6656e757e27a56c4",
+      "model_card": "player-model.html"
+    }
   },
   "headline_predictions": {
     "champion": {

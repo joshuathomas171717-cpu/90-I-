@@ -11,10 +11,10 @@ serving last week's build (nothing changed, so nothing to redeploy); it can also
 because the weekly job promoted nothing, while the *deployment* is perfectly up to date. This tool
 compares the deployment against the working tree, field by field, and says which of the two is wrong.
 
-    python3 verify_deployment.py                          # compare production with this checkout
-    python3 verify_deployment.py --url <site>             # somewhere else (a preview, a fork)
-    python3 verify_deployment.py --page static/index.html  # compare a local build, no network
-    python3 verify_deployment.py --retries 6 --wait 30     # wait for a deploy to finish (CI does this)
+    python3 tools/verify_deployment.py                          # compare production with this checkout
+    python3 tools/verify_deployment.py --url <site>             # somewhere else (a preview, a fork)
+    python3 tools/verify_deployment.py --page static/index.html  # compare a local build, no network
+    python3 tools/verify_deployment.py --retries 6 --wait 30     # wait for a deploy to finish (CI does this)
 
 Exit codes: 0 the deployment matches this checkout · 1 it does not · 2 the page could not be read.
 
@@ -39,7 +39,7 @@ LEDGER = os.path.join(ROOT, "data", "ledger_2026_27.json")
 
 def committed():
     """What this checkout says about itself — the values the deployment should be showing."""
-    out = {"matchweek": None, "as_of": None, "n_simulations": None, "season": None, "locks": None}
+    out = {"matchweek": None, "as_of": None, "n_simulations": None, "season": None, "locks": None, "player_context": None}
     if os.path.exists(SUMMARY):
         with open(SUMMARY, encoding="utf-8") as fh:
             meta = (json.load(fh) or {}).get("meta") or {}
@@ -47,6 +47,7 @@ def committed():
         out["as_of"] = str(meta.get("as_of_date") or "")[:10] or None
         out["n_simulations"] = meta.get("n_simulations")
         out["season"] = meta.get("season")
+        out["player_context"] = (meta.get("player_signal") or {}).get("fingerprint")
     if os.path.exists(LEDGER):
         with open(LEDGER, encoding="utf-8") as fh:
             out["locks"] = len((json.load(fh) or {}).get("locks") or [])
@@ -64,6 +65,7 @@ def deployed(html):
         "as_of": str(meta.get("as_of_date") or "")[:10] or None,
         "n_simulations": meta.get("n_simulations"),
         "season": meta.get("season"),
+        "player_context": (meta.get("player_signal") or {}).get("fingerprint"),
         "locks": len((blob.get("ledger") or {}).get("locks")
                      or ((blob.get("ledger") or {}).get("entries") or [])),
     }
@@ -78,7 +80,8 @@ def compare(want, got):
     checks = []
     for field, label in (("matchweek", "the matchweek the numbers are for"),
                          ("as_of", "the date the numbers were built from"),
-                         ("season", "the season label")):
+                         ("season", "the season label"),
+                         ("player_context", "the player-context content fingerprint")):
         checks.append((field, label, want.get(field), got.get(field), want.get(field) == got.get(field)))
     return checks
 

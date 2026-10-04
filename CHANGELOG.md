@@ -11,6 +11,38 @@ ones you do not have.
 
 ---
 
+## v2.3 — 5 October 2026
+
+**Model** — unchanged from v2.2. The production forecaster and the existing What-If injury assumptions
+are unchanged. The new player layer is context, not an extra feature slipped into the ensemble.
+
+**Player layer** — role-relative form with minute shrinkage, competition adjustment and a 35-day decay
+only when real match dates exist. Season aggregates say recency unavailable. Replacement-aware absence
+priors count a substitute as something, and a second tier fits opponent-adjusted with/without output
+where at least ten appearances and five explicit zero-minute records exist. Missing rows are not injuries;
+these fitted effects are associations, not causal claims. Exact rest and supplied travel replace the
+congestion candidate's membership proxy, not the active model's unvalidated feature.
+
+**Gate** — the 2025–26 matrix has no dates or lineups. The real-data candidate has therefore **not been
+measured**, and its RPS/hit-rate deltas are **not available**, not a measured zero. A resumable free-key
+or manual-drop backfill accepts actual match dates, but pre-kickoff availability captures must be supplied
+separately: fetching old lineups today does not make them pre-match evidence. The chronological shadow
+compares the structural replay head, not the live ML ensemble; even a good shadow cannot promote the
+latter without validation of that actual head.
+
+**Site** — player model card v3.0, a downloadable context/gate report, and a Model-tab input-status notice.
+Source, fetch date, partial-squad coverage and absence tier are visible. Weekly optional sources refresh
+before the rebuild, per-club availability distinguishes checked/unknown/failed, and deployment verification
+now also compares the player-context content fingerprint. Squad panels and named-player What-If ranges
+remain Phase 15, not features this release pretends to have shipped.
+
+**Measured** — existing structural baseline: 46.3% 1X2 · RPS 0.2184 · rank correlation 0.566 on the
+blind 2025–26 replay. These are not new player-layer measurements.
+**Delta vs v2.2** — 0.0 points, 0.0000 RPS for the unchanged production model. The new candidate's delta
+is unmeasured; no accuracy improvement is claimed. Card v3.0 is not a promoted production-model version.
+
+---
+
 ## v2.2 — 5 October 2026
 
 **Model** — unchanged from v2.1. No inputs, weights or hyperparameters moved, and the measured figures

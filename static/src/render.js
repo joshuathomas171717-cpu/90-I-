@@ -1262,7 +1262,7 @@ function renderAll(){
   renderHeader(); renderTicker(); renderHero(); renderHeadTiles(); renderGW(); renderRaceBars(); renderPulse();
   renderMarquee(); renderTable(); renderMarkets(); renderTop6Rings();
   renderAwardTiles(); renderAwards(); wireAwardSearch(); renderDuelSelects(); renderScenarioForm();
-  renderMetrics(); renderCharts(); renderBacktest(); renderArch(); renderLimits(); renderModelCard(); renderFreshness(); renderDataTab();
+  renderMetrics(); renderCharts(); renderBacktest(); renderArch(); renderLimits(); renderModelCard(); renderPlayerGate(); renderFreshness(); renderDataTab();
   renderScenarioAwards();
   animate(document);
   armGlow(document);
@@ -1554,6 +1554,20 @@ function renderModelCard(){
     match in three going the other way, because that is what it means.</p>
     <p class="sm dim">Wrong result? <a href="method.html" style="color:var(--accent);text-decoration:underline;text-underline-offset:2px">How the model is built</a>
     explains the method and how to report a miss.</p>`;
+}
+
+function renderPlayerGate(){
+  const host = $("playerGateStatus");
+  if(!host) return;
+  const status = (DATA.meta && DATA.meta.player_signal) || {};
+  const c = status.coverage || {};
+  const count = k => Number.isFinite(Number(c[k])) ? Math.max(0, Number(c[k])) : 0;
+  host.textContent = `${count("players")} tracked players across ${count("clubs")} clubs — a partial sample, not full squads. `
+    + `${count("dated_players")} with dated form, ${count("tier2_players")} measured absence estimates. `
+    + ((status.shadow_verdict || "not-measured") === "not-measured"
+      ? "Player input is off: missing historical evidence is not a measured accuracy improvement. "
+      : "Player input is off: a structural shadow does not authorize an untested live ML head. ")
+    + "Season totals say recency unavailable; the existing live forecasts and What-If assumptions are unchanged.";
 }
 
 function wireControlNames(){

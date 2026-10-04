@@ -1,0 +1,33 @@
+{
+  "version": "player-signal/1",
+  "half_life_days": 35,
+  "shrink_minutes": 450,
+  "minutes_cap": 1800,
+  "assist_value": 0.75,
+  "neutral_index": 50,
+  "position_output_prior_90": {"FWD": 0.65, "MID": 0.35, "DEF": 0.12},
+  "replacement_retained": 0.70,
+  "replacement_range": [0.50, 0.85],
+  "attack_role": {"FWD": 1.0, "MID": 0.8, "DEF": 0.35, "GK": 0.0},
+  "defence_role_share": {"FWD": 0.02, "MID": 0.055, "DEF": 0.10, "GK": 0.18},
+  "absence_attack_cap_pct": 30,
+  "absence_defence_cap_pct": 25,
+  "tier2_min_present": 10,
+  "tier2_min_absent": 5,
+  "tier2_shrink_matches": 10,
+  "rest_reference_days": 4,
+  "short_rest_cost_per_day_pct": 2,
+  "travel_cost_per_1000_km_pct": 0.5,
+  "congestion_cap_pct": 8,
+  "form_goal_scale_pct": 0.08,
+  "gate_min_test_matches": 200,
+  "gate_min_coverage": 0.80,
+  "gate_min_rps_gain": 0.002,
+  "gate_bootstrap_samples": 1000,
+  "notes": {
+    "form": "Judgement priors, not fitted coefficients. Shrink sparse output toward a neutral 50; goalkeeper form needs ratings rather than goals. Fetch time is never a match date.",
+    "absence": "Replacement shares and ranges are assumptions, not confidence intervals. Explicit zero-minute records support with/without associations, not injury diagnoses or causal effects.",
+    "congestion": "Actual kickoff timestamps and explicitly supplied travel only. A club's europe flag and an international window are not evidence that anyone played.",
+    "gate": "Constants fixed before evaluation. RPS must improve by at least 0.002, hit rate must improve, and the upper paired block-bootstrap RPS delta must be below zero. Missing history yields null deltas, not a measured zero. A structural shadow result cannot authorize the untested live ML head."
+  }
+}

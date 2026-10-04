@@ -175,8 +175,8 @@ def log(step, message):
     print("  %-9s %s" % (step, message), flush=True)
 
 
-def run_build(steps=("data_builder.py", "ml_engine.py", "backtest.py", "build_dashboard.py",
-                     "site_pages.py")):
+def run_build(steps=("data_builder.py", "backtest.py", "player_gate.py", "player_context.py",
+                     "ml_engine.py", "build_dashboard.py", "site_pages.py")):
     for script in steps:
         t0 = time.perf_counter()
         result = subprocess.run([sys.executable, os.path.join(BASE_DIR, script)], cwd=BASE_DIR,
@@ -286,6 +286,19 @@ def main(argv=None):
            "" if changed else " (content already current — the model cache key is untouched)",
            as_of_date(), last_gw))
 
+    # Optional player sources are collected once, before the rebuild. A missing key/error keeps
+    # good files, and the exact same availability capture is attached to the gameweek below.
+    _player_capture = None
+    if not args.skip_build:
+        try:
+            from tools.refresh_player_sources import refresh as _refresh_players
+            _refresh = _refresh_players(quiet=True)
+            _player_capture = _refresh.get("availability")
+            for _note in _refresh.get("notes") or []:
+                log("players", _note)
+        except Exception as exc:
+            log("warning", "optional player refresh retained previous files: %s" % exc)
+
     # ── 6. ledger: score the gameweek that just completed ──
     snap = latest_snapshot()
     if snap and snap.get("predictions"):
@@ -361,10 +374,15 @@ def main(argv=None):
     # page renders as "not tracked yet" rather than as "nobody is injured".
     try:
         import availability as _avail
-        _rows, _problems, _source = _avail._collect(source="auto", quiet=True)
-        _payload = _avail.build(_rows, _source, problems=_problems, gameweek=next_gw)
+        if _player_capture is None:
+            _rows, _problems, _source = _avail._collect(source="auto", quiet=True)
+            _payload = _avail.build(_rows, _source, problems=_problems, gameweek=next_gw)
+        else:
+            _payload = dict(_player_capture)
+            _payload["gameweek"] = next_gw
         state = _avail.attach(state, _payload)
-        _avail.write(_payload)
+        if _payload.get("tracked") or not _avail.load().get("tracked"):
+            _avail.write(_payload)
         log("availability", _avail.summarise(_payload))
     except Exception as exc:                                  # never fail the weekly job over this
         state["availability"] = {"tracked": False, "source": "error", "captured_at": None, "clubs": {},

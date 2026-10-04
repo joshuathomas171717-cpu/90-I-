@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Player layer — model card v3.0, evidence and limits</title>
+<meta name="description" content="Player form, replacement-aware absence and exact workload: context only until a temporal test earns input.">
+<meta name="theme-color" content="#0B0F1A">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="icons/favicon-32.png" sizes="32x32" type="image/png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="NINETY+">
+<meta property="og:title" content="Player layer — model card v3.0, evidence and limits">
+<meta property="og:description" content="Player form, replacement-aware absence and exact workload: context only until a temporal test earns input.">
+
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Player layer — model card v3.0, evidence and limits">
+<meta name="twitter:description" content="Player form, replacement-aware absence and exact workload: context only until a temporal test earns input.">
+<link rel="canonical" href="player-model.html">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebPage","name":"NINETY+ player layer model card v3.0"}]}</script>
+<style>
+:root{color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:#0B0F1A;color:#ECF1FB;
+     font:16px/1.55 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+a{color:#6ee7ff;text-decoration:none}a:hover{text-decoration:underline}
+.wrap{max-width:960px;margin:0 auto;padding:28px 20px 64px}
+header.site{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;padding:18px 20px;
+        border-bottom:1px solid #232b42;max-width:960px;margin:0 auto}
+header.site .brand{font-weight:800;letter-spacing:.14em;font-size:18px}
+header.site .tag{color:#8E9BB8;font-size:13px}
+nav.crumbs{color:#8E9BB8;font-size:13px;margin:0 0 18px}
+nav.crumbs a{color:#8E9BB8}
+h1{font-size:30px;line-height:1.15;margin:14px 0 6px;letter-spacing:-.01em}
+h2{font-size:19px;margin:30px 0 10px;letter-spacing:.01em}
+p.lede{color:#B9C4DC;margin:0 0 22px}
+/* the method page's tables and notes (P9.2): same palette as the rest of the generated site */
+.mtable{width:100%;border-collapse:collapse;margin:14px 0 18px;font-size:13px}
+.mtable caption{text-align:left;color:#97A1B3;font-size:11.5px;padding-bottom:7px}
+.mtable th{text-align:left;font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:#97A1B3;
+  border-bottom:1px solid rgba(255,255,255,.12);padding:6px 10px 7px 0;font-weight:600}
+.mtable td{padding:7px 10px 7px 0;border-bottom:1px solid rgba(255,255,255,.05);color:#C9D2E3;vertical-align:top}
+.mtable tr.hl td{color:#F3F6FA;font-weight:600}
+.mtable .num{text-align:right;font-variant-numeric:tabular-nums}
+p.note{color:#97A1B3;font-size:12.5px;border-left:2px solid rgba(45,212,191,.45);padding-left:11px;margin:0 0 18px}
+h2{margin-top:26px}
+.card{background:#12182A;border:1px solid #232b42;border-radius:14px;padding:18px 18px 8px;margin:0 0 18px}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid #1d2437;font-size:14px}
+th{color:#8E9BB8;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.08em}
+td.num,th.num{text-align:right}
+tr:last-child td{border-bottom:0}
+.chip{display:inline-block;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;
+      letter-spacing:.06em;text-transform:uppercase}
+.chip.ucl{background:rgba(34,211,238,.14);color:#6ee7ff}
+.chip.rel{background:rgba(229,75,154,.16);color:#ff8fc4}
+.bar{height:7px;border-radius:4px;background:#232b42;overflow:hidden;min-width:60px}
+.bar>i{display:block;height:100%;background:#22D3EE}
+.bar.rel>i{background:#E54B9A}
+.muted{color:#8E9BB8}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+.kv{background:#0f1626;border:1px solid #1d2437;border-radius:12px;padding:12px 14px}
+.kv b{display:block;font-size:22px;letter-spacing:-.01em}
+.kv span{color:#8E9BB8;font-size:12px;text-transform:uppercase;letter-spacing:.08em}
+footer.site{border-top:1px solid #232b42;margin-top:40px;padding-top:18px;color:#8E9BB8;font-size:13px}
+.cta{display:inline-block;background:#22D3EE;color:#062028;font-weight:700;padding:10px 18px;
+     border-radius:10px;margin:6px 0 0}
+.cta:hover{text-decoration:none;filter:brightness(1.08)}
+.fixture{display:flex;justify-content:space-between;gap:14px;align-items:baseline;
+         padding:9px 0;border-bottom:1px solid #1d2437}
+.fixture:last-child{border-bottom:0}
+.fixture .pick{color:#6ee7ff;font-weight:700;font-size:13px}
+.fixture .score{color:#8E9BB8;font-size:13px}
+ul.plain{padding-left:18px}ul.plain li{margin:4px 0}
+
+  /* ── receipts page (P10.3) ─────────────────────────────────────────────── */
+  .cards{display:flex;flex-wrap:wrap;gap:12px;margin:18px 0}
+  .cards .card{flex:1 1 150px;margin:0;text-align:center}
+  .cards .card b{display:block;font-size:26px;color:#EAF0FF;font-variant-numeric:tabular-nums}
+  .cards .card span{font-size:12px;color:#8E9BB8;letter-spacing:.03em;text-transform:uppercase}
+  .rbar{display:inline-flex;height:8px;width:132px;border-radius:4px;overflow:hidden;background:#1B2336}
+  .rbar i{display:block;height:100%}
+  .rbar i.h{background:#22D3EE}.rbar i.d{background:#64748B}.rbar i.a{background:#A855F7}
+  .ticks{display:flex;flex-wrap:wrap;gap:2px;margin:10px 0 4px}
+  .ticks i{width:7px;height:20px;border-radius:2px;display:block}
+  .ticks i.hit{background:#22D3EE}
+  .ticks i.miss{background:#7F1D4D;height:9px;align-self:flex-end}
+  .hit{color:#22D3EE;font-weight:600}
+  .miss{color:#F472B6;font-weight:600}
+  pre{background:#0E1424;border:1px solid #1E2537;border-radius:10px;padding:12px 14px;overflow-x:auto}
+  pre code{color:#B9C6E4;font-size:12.5px}
+  td code{color:#B9C6E4;font-size:12px}
+  .changelog .card{margin:0 0 14px}
+  .changelog h3{margin:0 0 10px;color:#EAF0FF;font-size:17px}
+  .changelog p{margin:8px 0;line-height:1.65}
+  .changelog .measured{color:#22D3EE;font-weight:600}
+  .changelog .delta{color:#F4B860;font-weight:600}
+  .changelog .bullet{color:#B9C6E4}
+  td.fb{white-space:nowrap}
+  /* The receipts tables are wide by design (seven columns). On a phone they must scroll rather than
+     stretch the page: a horizontally-scrolling table is usable, a page that pans sideways is not. */
+  .tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 0 4px}
+  .tbl{min-width:620px}
+  .tbl td:nth-last-child(2),.tbl td:last-child{white-space:nowrap}
+  td.fb button{background:#141B2C;color:#8E9BB8;border:1px solid #232C42;border-radius:6px;
+    width:26px;height:24px;cursor:pointer;font-size:12px;transition:all .15s ease}
+  td.fb button:hover{color:#EAF0FF;border-color:#3A4763}
+  td.fb button.on{background:#22D3EE;color:#08111C;border-color:#22D3EE;font-weight:700}
+  td.fb button[data-vote="bad"].on{background:#F472B6;border-color:#F472B6}
+  td.fb a.send{margin-left:6px;color:#5C6884;font-size:11px;text-decoration:underline}
+  td.fb a.send:hover{color:#22D3EE}
+</style>
+</head>
+<body>
+<header class="site">
+  <a class="brand" href="index.html">NINETY+</a>
+  <span class="tag">Premier League 2026–27 predictions, simulated 5,000 times</span>
+</header>
+<main class="wrap">
+<style>.player-layer p a,footer.site a{text-decoration:underline;text-underline-offset:3px}.player-layer :focus-visible{outline:2px solid #6ee7ff;outline-offset:3px}</style><div class="player-layer">
+<nav class="crumbs"><a href="index.html">Dashboard</a> › <a href="method.html">Method</a> › Player layer</nav>
+<div style="display:flex;gap:8px;flex-wrap:wrap"><span class="chip ucl">Model card v3.0</span>
+<span class="chip rel">Context only · input off</span></div>
+<h1>Players matter.<br>The evidence matters too.</h1>
+<p class="lede">A player-form, absence and workload layer for NINETY+.
+Built to work without a key; not allowed to change a forecast before it earns that right.</p>
+<div class="card" style="border-top:3px solid #6ee7ff">
+  <h2 style="margin-top:0">The live model has not changed</h2>
+  <p>The new layer is <b>context, not prediction input</b>. The historical result matrix has no kickoff dates or lineups. This run lacks the dated history and pre-match captures needed to evaluate the new layer; no new accuracy is claimed.
+  The existing What-If assumptions remain unchanged too.</p>
+  <p class="muted">Card version v3.0 is not a promoted production model. Current data: 2026-10-03.
+  <a href="changelog.html">Read the release</a>.</p>
+</div>
+<div class="grid">
+  <div class="card"><div class="kv"><span>Tracked players</span><b>52</b>
+    At 20 clubs; not complete squads.</div></div>
+  <div class="card"><div class="kv"><span>Players with dated form</span><b>0</b>
+    Fetch dates are not match dates.</div></div>
+  <div class="card"><div class="kv"><span>Measured absence estimates</span><b>0</b>
+    Tier 1 stays when Tier 2 lacks history.</div></div>
+</div>
+<h2>The gate, in the open</h2>
+<div class="card"><div class="tablewrap" style="overflow-x:auto" tabindex="0" role="region" aria-label="Player gate metrics; scroll horizontally on small screens">
+<table style="min-width:480px"><caption style="text-align:left;color:#8E9BB8;padding:0 0 10px">2025–26: baseline and new player candidate</caption>
+<thead><tr><th scope="col">Measurement</th><th scope="col">Existing baseline</th><th scope="col">New candidate</th></tr></thead>
+<tbody>
+<tr><td>Matches evaluated</td><td class="num">380</td><td class="num">0</td></tr>
+<tr><td>1X2 hit rate</td><td class="num">46.3%</td><td>Not measured</td></tr>
+<tr><td>RPS ↓</td><td class="num">0.2184</td><td>Not measured</td></tr>
+<tr><td>Candidate − baseline</td><td colspan="2">RPS: Not measured · hit rate: Not measured</td></tr>
+</tbody></table></div>
+<p class="note">Missing evidence is not a measured zero improvement. These are the structural replay's
+metrics, not a temporal validation of the live ML ensemble. A passing shadow test cannot silently
+promote an untested production head.</p>
+<ul><li>A validated dated calendar for all 380 historical fixtures is missing or disagrees with the result matrix.</li><li>No timestamped pre-kickoff availability captures; post-match appearances cannot stand in for them.</li><li>No usable per-match player appearances; season totals cannot be walked backwards through time.</li><li>Missing evidence is not a measured zero delta. Keep player form, absence and rest/travel as context.</li></ul>
+<p><a href="player-model.json" download>Download the context and gate report (JSON)</a></p>
+</div>
+<h2>01 · Form, without fake recency</h2>
+<p>Minutes-weighted, competition-adjusted output, shrunk toward 50 for sparse samples. Dated matches
+use a 35-day half-life; season totals explicitly say <b>recency unavailable</b>.
+A goalkeeper needs rating data, not goals. Scores below are descriptive indices, not win probabilities.</p>
+<div class="card"><div class="tablewrap" style="overflow-x:auto" tabindex="0" role="region" aria-label="Tracked player examples; scroll horizontally on small screens"><table style="min-width:420px">
+<caption style="text-align:left;color:#8E9BB8;padding-bottom:10px">Illustrative tracked players · Premier League · season totals where dates are absent</caption>
+<thead><tr><th scope="col">Player</th><th scope="col">Index / 100</th><th scope="col">Absence tier, if out</th></tr></thead>
+<tbody><tr><td><b>Erling Haaland</b><br><span class='muted'>MCI · FWD</span></td><td class='num'>58.6</td><td>replacement-share prior</td></tr><tr><td><b>Bukayo Saka</b><br><span class='muted'>ARS · FWD</span></td><td class='num'>55.7</td><td>replacement-share prior</td></tr><tr><td><b>David Raya</b><br><span class='muted'>ARS · GK</span></td><td class='num'>Unavailable</td><td>replacement-share prior</td></tr></tbody></table></div>
+<p class="note">This is a partial tracked sample, not a squad ranking. International coverage remains
+unverified; unverified minutes are excluded. A fetch timestamp is never used to create a recency trend.</p></div>
+<h2>02 · What a team loses, with a replacement counted</h2>
+<p><b>Tier 1:</b> position-weighted share of the club's goals. A replacement retains
+70% by assumption; the range uses
+50–85% retained contribution.
+These are scenario assumptions, not confidence intervals. Defensive and goalkeeper role shares are priors.</p>
+<p><b>Tier 2:</b> output with/without a player, adjusted for opponent and home advantage, using only
+completed prior matches. It needs at least 10 appearances and
+5 explicit zero-minute records. Missing records are unknown, not injuries.
+The fitted effect is an <b>association, not a causal injury estimate</b>—rotation and selection can explain it.</p>
+<h2>03 · Rest and travel, only when actually known</h2>
+<p>Exact kickoff intervals and explicitly supplied travel distances replace the candidate's crude
+European-membership proxy. An international window is not proof someone played; only named appearances
+count. Away travel without a distance stays unknown. Today the layer has
+<b>0 exact next kickoffs</b>; fixture windows are not converted
+into invented match dates. The live model's old proxy remains unchanged until the new head is validated.</p>
+<h2>Where this build came from</h2>
+<div class="card"><div class="tablewrap" style="overflow-x:auto" tabindex="0" role="region" aria-label="Player sources and fetch dates; scroll horizontally on small screens"><table style="min-width:470px">
+<caption style="text-align:left;color:#8E9BB8;padding-bottom:10px">Source and fetch date, separate from the results cutoff</caption>
+<thead><tr><th scope="col">Source</th><th scope="col">Players</th><th scope="col">Fetched / exported at</th></tr></thead>
+<tbody><tr><td>project-dataset</td><td class='num'>52</td><td>2026-10-04T20:53:09+00:00</td></tr></tbody></table></div>
+<p>Availability: <b>not tracked</b>.
+An empty unknown list is not a clean bill of health. No paid APIs, accounts on this site, databases or external scripts.</p></div>
+<details class="card"><summary style="cursor:pointer;color:#6ee7ff;padding-bottom:12px">How to reproduce, and what opens the gate</summary>
+<p><code>python3 player_gate.py</code> builds the report;
+<code>python3 player_context.py</code> builds the indices; <code>python3 run_all.py</code> rebuilds the site.</p>
+<p>Exact historical dates, appearances and separately timestamped pre-match captures are required.
+The first 120 fixtures warm up the features; later calls see only prior completed matches.
+No season-end totals or target lineups enter the features. Policy constants are fixed before evaluation.</p>
+<p>Requirements: ≥200 test matches, ≥80%
+pre-match coverage, RPS gain ≥0.002, improved hit rate, and the upper endpoint
+of a paired seven-day-block RPS-delta interval below zero. The actual production head then needs validation too.</p>
+<p>A free-provider backfill is optional and resumable; it never starts automatically in CI.
+Manual history/calendar drops work without a key. See <a href="https://github.com/joshuathomas171717-cpu/90-I-/blob/main/docs/player-model-card.md">the full model card and input schema</a>.</p>
+</details>
+<p class="note">Next, not already shipped: squad panels, named-player What-If ranges and pre-match missing-player digests.
+This card does not pretend those future UI features exist.</p>
+<p><a class="cta" href="index.html">Back to the dashboard</a></p>
+</div>
+<footer class="site">
+  <p><a href="index.html">Open the interactive dashboard</a> — six views, a
+  What-If simulator and the full model breakdown. Everything on this page is generated from
+  <code>data/</code> at build time; nothing here is hand-written.</p>
+  <p class="muted">Model output is a probabilistic forecast, not advice. Not affiliated with the
+  Premier League or any club. Results data from the official fixture list and
+  football-data.org; see <a href="model.html">the model page</a> for sources and
+  limitations.</p>
+</footer>
+</main>
+</body>
+</html>

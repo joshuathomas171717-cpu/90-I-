@@ -235,21 +235,25 @@ def test_the_bootstrap_exporter_writes_rows_the_loader_accepts():
 
 
 def test_an_empty_collection_never_empties_an_existing_table():
-    """The guard: a network failure or a spent quota must not wipe a table four other things read."""
+    """Prove both guard and explicit override in a disposable project, never the real dataset."""
+    import shutil
     with tempfile.TemporaryDirectory() as tmp:
-        table = os.path.join(tmp, "form.csv")
-        meta = os.path.join(tmp, "form.meta.json")
+        project = os.path.join(tmp, "project")
+        shutil.copytree(ROOT, project, ignore=shutil.ignore_patterns(
+            ".git", "artifacts", "__pycache__", "node_modules", "raw", "staging", "provider_drop"))
+        table = os.path.join(project, "data", "players_form_2026_27.csv")
+        meta = os.path.join(project, "data", "players_form_2026_27.meta.json")
         player_form.write([{"player": "X", "club": "ARS", "competition": "Premier League",
                             "minutes": 90}], {"rows": 1}, out_csv=table, out_meta=meta)
-        _check(len(player_form.load_form(table)) == 1, "the fixture table did not write")
-        out = subprocess.run([sys.executable, os.path.join(ROOT, "player_form.py"),
-                              "--source", "local", "--force", "--quiet"],
+        script = os.path.join(project, "player_form.py")
+        out = subprocess.run([sys.executable, script, "--source", "local", "--quiet"],
                              capture_output=True, text=True, cwd=tmp)
-        _check(out.returncode == 0, "the forced empty write failed")
-        # and the guard itself, exercised directly on the real function
-        source = _read("player_form.py")
-        _check("refusing to write" in source,
-               "the empty-overwrite guard is gone from player_form.py")
+        _check(out.returncode == 1, "an empty pull did not refuse to overwrite a good table")
+        _check(len(player_form.load_form(table)) == 1, "the rejected empty pull erased the good table")
+        out = subprocess.run([sys.executable, script, "--source", "local", "--force", "--quiet"],
+                             capture_output=True, text=True, cwd=tmp)
+        _check(out.returncode == 0, "the explicit forced empty write failed")
+        _check(player_form.load_form(table) == [], "--force did not perform the requested empty write")
 
 
 def test_the_provider_is_inert_without_a_key():

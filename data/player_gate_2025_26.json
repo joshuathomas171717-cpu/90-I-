@@ -1,0 +1,35 @@
+{
+  "baseline": null,
+  "baseline_full_season": {
+    "accuracy": 46.3,
+    "brier": 0.6372,
+    "log_loss": 1.0561,
+    "rps": 0.2184
+  },
+  "candidate": null,
+  "dated_fixtures_joined": 0,
+  "delta": {
+    "accuracy_percentage_points": null,
+    "rps": null
+  },
+  "fixtures_in_result_matrix": 380,
+  "live_input_allowed": false,
+  "method": "exact kickoff order; prior completed matches only; 120-fixture warm-up; fixed constants",
+  "mode": "context",
+  "model_card": "v3.0",
+  "paired_rps_delta_95pct": null,
+  "policy": "player-signal/1",
+  "pre_match_coverage": 0.0,
+  "problems": [],
+  "reasons": [
+    "A validated dated calendar for all 380 historical fixtures is missing or disagrees with the result matrix.",
+    "No timestamped pre-kickoff availability captures; post-match appearances cannot stand in for them.",
+    "No usable per-match player appearances; season totals cannot be walked backwards through time.",
+    "Missing evidence is not a measured zero delta. Keep player form, absence and rest/travel as context."
+  ],
+  "scope": "structural shadow head only; the live ML ensemble is not validated by this comparison",
+  "season": "2025-26",
+  "shadow_verdict": "not-measured",
+  "test_matches": 0,
+  "version": "player-gate/1"
+}

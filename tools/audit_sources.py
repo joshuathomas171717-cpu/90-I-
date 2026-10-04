@@ -86,10 +86,9 @@ def audit(provider, club_limit=2, replay=False):
             continue
         sample_rows += len(rows)
         competitions |= {(r.get("competition") or "").strip() for r in rows if r.get("competition")}
+    import competition_weights as _weights
     internationals = sorted(c for c in competitions
-                            if any(word in c.lower() for word in
-                                   ("world cup", "qualification", "nations league", "euro",
-                                    "copa", "afcon", "asian cup", "friendl")))
+                            if _weights.table().get(_weights.lookup(c)[1], {}).get("tier", "").startswith("international"))
     results.append(_check(
         "player statistics split by competition", "one row per player per competition",
         "proven" if sample_rows else "failed",

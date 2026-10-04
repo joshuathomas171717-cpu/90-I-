@@ -67,6 +67,31 @@ class FootballDataOrgProvider(Provider):
         return SEASON_YEAR if str(season).startswith("2026") else str(season)
 
     # ── the interface ──
+    def fetch_calendar(self, competition="PL", season=SEASON_LABEL):
+        """Exact PL/UCL schedule for rest calculations. Unknown foreign opponents need no club-code guess."""
+        import datetime as dt
+        if competition not in ("PL", "CL"):
+            raise ValueError("only the free PL and CL competition calendars are supported")
+        payload = self._get("competitions/%s/matches?season=%s" % (competition, self._season(season)),
+                            "calendar-%s-%s" % (competition, self._season(season)))
+        fetched = dt.datetime.now(dt.timezone.utc).replace(microsecond=0).isoformat()
+        events = []
+        for match in payload.get("matches") or []:
+            if not match.get("utcDate"):
+                continue
+            for side, other in (("homeTeam", "awayTeam"), ("awayTeam", "homeTeam")):
+                club = team_code((match.get(side) or {}).get("tla")) or team_code((match.get(side) or {}).get("name"))
+                if not club:
+                    continue
+                events.append({"fixture_id": str(match.get("id")), "club": club,
+                               "opponent": (match.get(other) or {}).get("name"),
+                               "competition": "Premier League" if competition == "PL" else "UEFA Champions League",
+                               "kickoff": match["utcDate"], "status": match.get("status"),
+                               "venue": "home" if side == "homeTeam" else "away",
+                               "travel_km": 0 if side == "homeTeam" else None,
+                               "minutes": 90, "known_at": fetched, "source": self.name})
+        return events
+
     def fetch_results(self, season=SEASON_LABEL):
         payload = self._get("competitions/%s/matches?season=%s&status=FINISHED" % (COMPETITION, self._season(season)),
                             "matches-finished")

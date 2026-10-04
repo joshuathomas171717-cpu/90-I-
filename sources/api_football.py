@@ -241,6 +241,49 @@ class ApiFootballProvider(Provider):
             })
         return out
 
+    def fetch_match_history(self, league=PL_LEAGUE_ID, replay=False):
+        """Finished fixtures with real timestamps/scores. Historical free-tier access is audited, not assumed."""
+        import datetime as dt
+        name = "history-fixtures-%s-%s" % (league, self.season)
+        payload = self._get("fixtures", {"league": league, "season": self.season, "status": "FT"},
+                            name, replay=replay or bool(latest_raw(self.name, name)))
+        out = []
+        for entry in self._entries(payload):
+            fixture, teams = entry.get("fixture") or {}, entry.get("teams") or {}
+            home = team_code((teams.get("home") or {}).get("name"))
+            away = team_code((teams.get("away") or {}).get("name"))
+            goals = entry.get("goals") or {}
+            if not home or not away or not fixture.get("date") or goals.get("home") is None or goals.get("away") is None:
+                self.warnings.append("history fixture could not be mapped: %s" % fixture.get("id"))
+                continue
+            out.append({"fixture_id": str(fixture.get("id")), "kickoff": fixture["date"],
+                        "home": home, "away": away, "home_goals": goals["home"], "away_goals": goals["away"],
+                        "competition": (entry.get("league") or {}).get("name") or "Premier League",
+                        "season": self.season, "source": self.name,
+                        "fetched_at": dt.datetime.now(dt.timezone.utc).replace(microsecond=0).isoformat()})
+        return out
+
+    def fetch_fixture_players(self, fixture_id, replay=False):
+        """Explicit per-match records. Null minutes stay null; missing names never become absences."""
+        name = "history-players-%s" % fixture_id
+        payload = self._get("fixtures/players", {"fixture": fixture_id}, name,
+                            replay=replay or bool(latest_raw(self.name, name)))
+        out = []
+        for entry in self._entries(payload):
+            club = team_code((entry.get("team") or {}).get("name"))
+            if not club:
+                continue
+            for player_row in entry.get("players") or []:
+                player = player_row.get("player") or {}
+                for stat in player_row.get("statistics") or []:
+                    games, goals = stat.get("games") or {}, stat.get("goals") or {}
+                    out.append({"club": club, "player_id": str(player.get("id") or ""),
+                                "player": player.get("name"), "position": games.get("position"),
+                                "minutes": games.get("minutes"), "rating": games.get("rating"),
+                                "goals": goals.get("total") or 0, "assists": goals.get("assists") or 0,
+                                "source": self.name})
+        return out
+
     def fetch_sidelined(self, player_id, replay=False):
         """One player's absence history — the durability signal, deliberately not used yet (P13.1's NO-GO
         for injury-proneness until it is measured), fetched only when a caller asks for it by name."""

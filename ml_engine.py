@@ -151,6 +151,11 @@ class PremierLeagueMLEngine:
         self.df_played = pd.read_csv(os.path.join(DATA_DIR, "matches_2026_27_played.csv"))
         self.df_rem = pd.read_csv(os.path.join(DATA_DIR, "fixtures_2026_27_remaining.csv"))
         self.df_players = pd.read_csv(os.path.join(DATA_DIR, "players_2026_27.csv"))
+        # P14: descriptive context, not an extra feature smuggled into the trained models.
+        from player_data import load_json as _load_player_json
+        from player_context import compact as _compact_player_context
+        self.player_signal_status = _compact_player_context(_load_player_json(
+            os.path.join(DATA_DIR, "player_context_2026_27.json")))
 
         # Historical lookup for relegated 2025-26 teams
         relegated_25_26 = {
@@ -199,6 +204,7 @@ class PremierLeagueMLEngine:
 
         if use_cache and not force and self._load_from_cache():
             self._restamp_as_of()
+            self.baseline_results["meta"]["player_signal"] = self.player_signal_status
             self.boot_ms = round((time.perf_counter() - t0) * 1000.0, 1)
             return
 
@@ -967,6 +973,7 @@ class PremierLeagueMLEngine:
                 "runtime_ms": elapsed_ms,
                 "lambda_scale": round(float(self.lambda_scale), 4),
                 "scenario_active": bool(player_injuries or team_boosts or points_deductions or custom_scores),
+                "player_signal": self.player_signal_status,
             },
             "headline_predictions": {
                 "champion": table_projections[0],

@@ -77,6 +77,8 @@ for _code, _row in TEAMS.items():
             _LOOKUP[normalize_name(_name)] = _code
 for _alias, _code in ALIASES.items():
     _LOOKUP[normalize_name(_alias)] = _code
+    # Historical clubs resolve both by name and by code, so a normalised 2025–26 row round-trips.
+    _LOOKUP[normalize_name(_code)] = _code
 
 
 def team_code(value):

@@ -156,6 +156,13 @@ with the actual final table was <b>0.57</b>, average points error <b>±10.3</b>,
 champion was <b>Liverpool</b> rather than the actual <b>Arsenal</b>. Predicting a 38-game table is harder than
 predicting matches, because small per-match errors compound.</p>
 
+<h2>The player layer: built, not silently promoted</h2>
+<p>Player form, replacement-aware absence priors and an exact workload candidate now have their own
+<a href="player-model.html">model card v3.0</a>. They are context, not live prediction inputs:
+season totals do not prove recency, and the historical matrix lacks the dated appearances and
+pre-match captures needed for a temporal comparison. The active forecasts and existing What-If
+assumptions remain unchanged until their actual head is validated.</p>
+
 <h2>What it cannot know</h2>
 <ul>
   <li><b>Team news.</b> Injuries, suspensions and illness are invisible to it until they have already

@@ -21,9 +21,9 @@ python3 tests/run_tests.py -k weekly   # rehearse a whole week on a throwaway co
 |---|---|
 | Runs | Mondays 06:00 UTC (`0 6 * * 1`), plus manual dispatch |
 | Workflow | `.github/workflows/weekly-update.yml` → "Weekly update" |
-| Does | fetch → validate → promote → rebuild → snapshot → lock → score → commit `data/` + `static/` |
+| Does | fetch → validate → promote → optional player refresh → rebuild → snapshot → lock → score → commit `data/` + `static/` → verify deployment |
 | Commits as | `chore(data): weekly refresh <date>` |
-| Deploys | Vercel rebuilds from the push. There is no other deploy step |
+| Deploys | Vercel rebuilds from the push. The last step waits for and verifies the deployed vintage and player-context fingerprint |
 | Artifacts | `weekly-audit` — `data/raw/` and `data/staging/`, kept 30 days |
 
 **With no `FOOTBALL_DATA_KEY` secret** the job falls back to the repository's own snapshot and promotes
@@ -32,6 +32,37 @@ data) and it is also the most dangerous normal state this project has: from the 
 nothing to do" and "has not updated in two months" look identical. `check_live.py` is what tells them
 apart, and the page itself says **out of date** in its header when its data predates the last completed
 gameweek.
+
+### The website checks run even when nobody pushes
+
+The independent **Site is current** workflow (`.github/workflows/site-current.yml`) is scheduled for
+Mondays 08:00 UTC, two hours after the 06:00 refresh. Both schedules can be delayed by GitHub's queue;
+they are not a real-time service. It holds no secret and writes nothing, and goes red with a readable
+reason if the site is behind, unreadable or the published record is broken.
+
+```bash
+python3 tools/verify_deployment.py                   # committed vintage + player-context fingerprint vs live
+python3 tools/verify_deployment.py --retries 6 --wait 30  # wait up to 3 minutes for a new Vercel build
+```
+
+The fingerprint matters when only player context changed: matching the matchweek and data date alone
+cannot prove those updates landed. The first successful automated live refresh still needs a real
+dispatch/results source; installing a schedule is not evidence that a scheduled run already worked.
+The failing GitHub Pages workflow is separate from this Vercel deployment.
+
+### Optional player sources do not control publication
+
+`API_FOOTBALL_KEY` is an optional, separate free-provider secret. Missing/failed or partial player
+pulls retain good files. The results key also fetches exact PL/UCL calendar timestamps; cup/national
+calendars accept manual drops. A captured availability list says which clubs were checked, failed or
+remain unknown. The snapshot and rebuilt player card use the same collection, rather than fetching
+team news a second time after publication. Player-source changes keep the rebuild even when the
+headline probabilities do not move.
+
+Historical match backfills are opt-in (`player_history.py`), not part of this job. The player layer
+stays context-only until a genuine temporal comparison is available; see
+[player-model-card.md](player-model-card.md). Never use a season-total or post-match lineup as a
+retrospective pre-kickoff feature.
 
 ### If the site is stale
 
