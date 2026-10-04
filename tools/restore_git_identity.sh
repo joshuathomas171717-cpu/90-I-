@@ -9,7 +9,7 @@
 # Same story for the deploy key: it survives, but its mode does not, and ssh refuses a private key
 # that the world can read ("Permissions 0644 ... too open"). Both are one command.
 #
-#   bash tools/restore_git_identity.sh          # set identity + remote, fix key mode, report
+#   bash tools/restore_git_identity.sh          # set identity + remote, fix key mode, file modes, report
 #
 # Safe to run repeatedly. It never touches the working tree or the history.
 set -u
@@ -29,6 +29,21 @@ email="$(git log -1 --format='%ae' 2>/dev/null || echo '')"
 git config user.name "$name"
 git config user.email "$email"
 printf '  identity: %s <%s>\n' "$name" "$email"
+
+# File modes do not survive the snapshot either, and this one is quiet: an executable script comes back
+# 0644, the next `git add -A` records the loss, and the commit message says nothing about it. That has
+# happened once already — three executable tool scripts were turned into plain files by a commit that
+# was about something else. Rather than guess which files are meant to be executable, read the modes
+# back out of git's own index, which cannot be wrong about what was committed.
+fixed=0
+while read -r mode _hash _stage path; do
+  [ "$mode" = "100755" ] || continue
+  [ -f "$path" ] || continue
+  if [ ! -x "$path" ]; then
+    chmod +x "$path" && fixed=$((fixed + 1))
+  fi
+done < <(git ls-files --stage)
+printf '  modes:    %d executable file(s) restored from the index\n' "$fixed"
 
 if git remote get-url origin >/dev/null 2>&1; then
   git remote set-url origin "$REMOTE"
