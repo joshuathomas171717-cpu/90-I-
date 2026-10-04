@@ -607,6 +607,24 @@ def test_weekly_job_end_to_end_in_a_copy():
         assert verdict["locked_before_kickoff"] is True, \
             "the gw7 lock the job took does not precede gw7's first kickoff"
 
+        # ── P13.3: the snapshot the job wrote carries a dated availability capture ──────────────────
+        # It will be untracked here (no key, no drop file, deliberate) — and the point is that the
+        # *field* exists and says so, because "we did not check" and "nobody is injured" must never
+        # render the same way on the site.
+        with open(os.path.join(project, "data", "snapshots", "gw07.json"), encoding="utf-8") as fh:
+            published = json.load(fh)
+        assert "availability" in published, (
+            "the weekly snapshot carries no availability capture — P13.3's date would be lost, and the "
+            "record of who was out at lock time could never be checked again")
+        capture = published["availability"]
+        assert capture.get("gameweek") == 7, "the capture is stamped for the wrong gameweek: %r" % capture.get("gameweek")
+        assert "tracked" in capture, "the capture does not say whether it is tracked"
+        assert len(capture.get("clubs") or {}) == 20, (
+            "the capture lists %d clubs rather than all 20 — an omitted club is indistinguishable from "
+            "an unchecked one" % len(capture.get("clubs") or {}))
+        assert (capture.get("source") == "none") == (capture.get("tracked") is False), (
+            "source and tracked disagree: source=%r tracked=%r" % (capture.get("source"), capture.get("tracked")))
+
         # and the page itself must say the gameweek was completed — the stamp alone could be a rebuild
         # that changed nothing. This is the assertion that catches "ran green, promoted nothing".
         with open(os.path.join(project, "static", "index.html"), encoding="utf-8") as fh:

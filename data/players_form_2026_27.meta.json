@@ -1,0 +1,45 @@
+{
+  "clubs": [
+    "ARS",
+    "AVL",
+    "BHA",
+    "BOU",
+    "BRE",
+    "CHE",
+    "COV",
+    "CRY",
+    "EVE",
+    "FUL",
+    "HUL",
+    "IPS",
+    "LEE",
+    "LIV",
+    "MCI",
+    "MUN",
+    "NEW",
+    "NFO",
+    "SUN",
+    "TOT"
+  ],
+  "clubs_missing": [],
+  "competitions": {
+    "Premier League": {
+      "minutes": 22223,
+      "players": 52,
+      "rows": 52
+    }
+  },
+  "generated_at": "2026-10-04T20:19:05+00:00",
+  "players": 52,
+  "problems": [],
+  "report": {
+    "calls": 0,
+    "clubs": 20,
+    "note": "read from data/provider_drop/players"
+  },
+  "rows": 52,
+  "season": "2026-27",
+  "sources": [
+    "project-dataset"
+  ]
+}

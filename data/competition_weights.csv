@@ -1,0 +1,23 @@
+competition_key,name,tier,weight,counts_toward_form,note
+premier_league,Premier League,domestic_top,1.00,yes,The reference. Every other weight is read relative to this one.
+champions_league,UEFA Champions League,continental_elite,1.08,yes,Strongest regular opposition in club football; minutes are if anything understated in a form index.
+champions_league_qualification,UEFA Champions League Qualification,continental_mid,0.95,yes,"Real European opposition, but uneven quality across rounds."
+europa_league,UEFA Europa League,continental_mid,1.00,yes,Comparable to mid-table Premier League opposition on average.
+conference_league,UEFA Conference League,continental_low,0.90,yes,"Weaker on average, with a long tail of very weak sides."
+fa_cup,FA Cup,domestic_cup,0.95,yes,The tournament average; weighted by round where the source gives round detail.
+efl_cup,EFL Cup,domestic_cup,0.88,yes,Rotation-heavy: minutes here say more about squad depth than about form.
+efl_trophy,EFL Trophy,domestic_cup,0.60,no,Under-21 sides and lower divisions; excludes itself from the index.
+community_shield,Community Shield,domestic_supercup,0.70,no,"One match, and rarely a competitive selection."
+fifa_club_world_cup,FIFA Club World Cup,continental_elite,1.00,yes,"Strong field, small sample; capped by the minutes cap rather than the weight."
+world_cup,World Cup,international_finals,1.15,yes,The highest standard of opposition in the sport.
+euro,European Championship,international_finals,1.12,yes,Second only to the World Cup in depth.
+copa_america,Copa America,international_finals,1.12,yes,Comparable strength to the Euros.
+afcon,Africa Cup of Nations,international_finals,1.05,yes,Strong tournament; mid-season scheduling makes its minutes unusually costly.
+asian_cup,AFC Asian Cup,international_finals,1.00,yes,"Uneven strength across the field, competitive at the top."
+world_cup_qualification,WC Qualification,international_qualifier,0.95,yes,Averaged across confederations; the spread inside this row is the widest in the table.
+euro_qualification,EC Qualification,international_qualifier,1.00,yes,European qualifiers are a reasonable standard throughout.
+nations_league,UEFA Nations League,international_qualifier,1.02,yes,"Competitive by design, unlike a friendly."
+friendlies,Friendlies,international_friendly,0.70,yes,Where minutes mean least: substitutions are near-arbitrary and the opposition is chosen for convenience.
+club_friendly,Club Friendlies,club_friendly,0.50,no,"Pre-season minutes are fitness, not form."
+youth,Youth or age-group,age_group,0.60,no,"Age-group football is a different task; it belongs in a development view, not a form index."
+other_known,Other recorded competition,unknown_competition,0.85,yes,Used when a competition is named but absent from this table. Flagged so nobody mistakes it for a decision.

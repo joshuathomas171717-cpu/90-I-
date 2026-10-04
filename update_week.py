@@ -354,6 +354,23 @@ def main(argv=None):
         "stale_payload": stale,
         "validation": {"ok": report["ok"], "checks": len(report["checks"])},
     }
+    # ── who was out, dated (P13.3) ──
+    # Captured into the snapshot rather than a rolling file, so matchweek 6's record of who was
+    # unavailable stays matchweek 6's record for the rest of the season. Offline, or with no key and no
+    # drop file, this is a clean no-op that records itself as untracked — which is a fact, and one the
+    # page renders as "not tracked yet" rather than as "nobody is injured".
+    try:
+        import availability as _avail
+        _rows, _problems, _source = _avail._collect(source="auto", quiet=True)
+        _payload = _avail.build(_rows, _source, problems=_problems, gameweek=next_gw)
+        state = _avail.attach(state, _payload)
+        _avail.write(_payload)
+        log("availability", _avail.summarise(_payload))
+    except Exception as exc:                                  # never fail the weekly job over this
+        state["availability"] = {"tracked": False, "source": "error", "captured_at": None, "clubs": {},
+                                 "totals": {"players_out": 0, "clubs_reporting": 0},
+                                 "problems": ["%s: %s" % (type(exc).__name__, exc)]}
+        log("warning", "availability not captured: %s" % exc)
     path = write_snapshot(state)
     log("snapshot", os.path.relpath(path, BASE_DIR))
     # Locked here, right after publication, while the fixtures are still in the future. This is the

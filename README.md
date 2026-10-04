@@ -158,6 +158,25 @@ python3 update_week.py --source local             # the pipeline's own CSVs / da
 python3 update_week.py --replay                   # work from cached payloads, no network
 ```
 
+### The player signal (Phase 13)
+
+Player form and availability are a **separate, optional** source, because the results provider has no
+player data on its free tier and the one that does is a different account:
+
+```bash
+python3 tools/export_players_drop.py   # keyless: our own squad dataset -> data/provider_drop/players/
+python3 player_form.py --source local  # keyless: build the form table from those drop files
+python3 player_form.py                 # with a free API_FOOTBALL_KEY: per-competition minutes
+python3 availability.py                # who is out, dated, stored inside the gameweek snapshot
+python3 tools/audit_sources.py         # P13.1: prove what the source delivers, or report not-proven
+```
+
+The keyless path is not a stub: it is what the tests exercise, what CI runs, and what produces the
+committed `data/players_form_2026_27.csv`. It is **league-only** — no cup, European or international
+minutes — because the project's own dataset has none, and every surface that shows it says so
+([docs/player-signal.md](docs/player-signal.md) is the measured audit; it reports each capability as
+proven, not-proven or failed, and never turns "no key" into a green tick).
+
 A scheduled workflow ([.github/workflows/weekly-update.yml](.github/workflows/weekly-update.yml),
 Mondays 06:00 UTC) runs it in CI and commits only when the gate passes. xG is a **manual, dated** input by
 design — see [docs/xg-strategy.md](docs/xg-strategy.md) for why and for the upgrade path.
@@ -362,6 +381,12 @@ ninety-plus-pl-predictor/
 ├── check_page_current.py      # gate: is the published page the page the committed data describes?
 ├── check_live.py              # is the *deployed* site current? (Phase 11, P11.2) — the only check here
 │                              #   that looks at the deployment rather than the working tree
+├── player_form.py             # the player signal: minutes/goals/assists per competition (Phase 13, P13.2)
+├── availability.py            # who was out, dated, stored inside each gameweek snapshot (P13.3)
+├── competition_weights.py     # how much a minute is worth, and the sensitivity of that claim (P13.4)
+├── sources/api_football.py    # the free player-data provider: 100 requests/day, quota-aware, keyless no-op
+├── tools/audit_sources.py     # P13.1: measure what the source delivers; not-proven is a real answer
+├── tools/export_players_drop.py  # our own dataset -> drop files, so the player path runs with no key
 ├── score_ledger.py            # lock, score and verify the public prediction ledger (Wave 7, P10.2)
 ├── CHANGELOG.md               # every version and its measured accuracy delta; source of /changelog
 ├── docs/reviews/              # one review per gameweek — the week-by-week reading of the ledger

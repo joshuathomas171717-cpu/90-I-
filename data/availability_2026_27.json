@@ -1,0 +1,34 @@
+{
+  "captured_at": "2026-10-04T20:17:07+00:00",
+  "clubs": {
+    "ARS": [],
+    "AVL": [],
+    "BHA": [],
+    "BOU": [],
+    "BRE": [],
+    "CHE": [],
+    "COV": [],
+    "CRY": [],
+    "EVE": [],
+    "FUL": [],
+    "HUL": [],
+    "IPS": [],
+    "LEE": [],
+    "LIV": [],
+    "MCI": [],
+    "MUN": [],
+    "NEW": [],
+    "NFO": [],
+    "SUN": [],
+    "TOT": []
+  },
+  "gameweek": 6,
+  "problems": [],
+  "season": "2026-27",
+  "source": "none",
+  "totals": {
+    "clubs_reporting": 0,
+    "players_out": 0
+  },
+  "tracked": false
+}
