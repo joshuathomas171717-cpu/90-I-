@@ -5,6 +5,10 @@ page. This is a lightweight browser management game, **not the full EA/FIFA 3D g
 live match commentary or a promoted prediction model. A second usable idea, **Beat the Model**, turns
 the forecast into a personal matchday prediction challenge.
 
+*Superseded in part by [phase 17](phase17-matchday.md): the matchday is now played with a half-time
+decision and a manager's inbox, and the world rule version is `club-manager/2`. Everything below about
+the frozen world, the control season, saves and the honest-data boundary still applies.*
+
 ## Career Mode: what you can actually do
 
 1. Choose any of the 20 current clubs. Start at its actual published table, with the first five weeks

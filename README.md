@@ -217,6 +217,20 @@ live on your device. Export/import validated JSON to back up a frozen world. Sam
 produce the same scores; a reload does not reroll them. The comparison is with an unchanged path using
 the same game engine and draws. It is not an assertion that your management improved model accuracy.
 
+**The matchday is played, not skipped.** Kick off and a first half runs minute by minute with a live
+score and named scorers; the match **stops at half time** so you can choose stay calm, push, hold or
+press and bring up to two players on; the second half plays your call out and full time tells you what it
+added or took away — including what the same world would have finished without it. Every matchday then
+ends in the **manager's inbox**: the dressing room, a player under discussion, the analyst's note, board
+money or a rival asking about you, each reply with a named bounded effect recorded in your notebook.
+`Skip match (no instruction)` and `Fast-forward 3 weeks` are still there if you want the fast route.
+
+Same world code, same decisions, same score — reloading never rerolls a match. The score you see is the
+result of one draw plus, at most, a small bounded effect from your half-time call; a calm half time with
+no substitutions produces exactly the result the earlier version produced, so old saves still replay to
+the scores their owners saw. Rules are game assumptions: this is not a simulated real kickoff, and it
+never touches the published forecast, the ledger or the real results file.
+
 **Beat the Model** is the second playable idea. Pick outcomes or exact scores, play a simulated practice
 round immediately, or lock your real matchweek picks before the visible window deadline. Only published
 actual results award real points; absent results remain pending. Local clocks/saves can be edited, so

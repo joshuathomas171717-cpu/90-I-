@@ -11,6 +11,38 @@ ones you do not have.
 
 ---
 
+## v2.6 — 6 October 2026
+
+**Model** — unchanged automatic forecasts; the historical player-input gate stays closed. The game is a
+separate alternate world and never rewrites a prediction, a real result or a ledger lock.
+
+**Matchday is now played.** Kickoff runs a ticking first half (minute-by-minute feed, named scorers,
+half-time statistics). The match **stops at half time** for your call: stay calm, push, hold or press,
+plus up to two substitutions. The second half plays your decision out, with second-half goals marked,
+then a full-time report that says what the call added or took away and what the same world would have
+finished without it. Skip and fast-forward remain as shortcuts.
+
+**Determinism preserved.** The full-time score is still the single phase-16 draw; an instruction only
+adds or removes goals through a separate bounded draw (±0.6 goals per side mean, at most a few goals in
+a match). "Stay calm" with no substitutions is identical to the old engine, so a phase-16 save replays
+to exactly the scores its owner saw. A rested player can never score or be brought on.
+
+**Manager's inbox.** Each matchday now ends with 1–4 decisions — the dressing room, a player under
+discussion, an analyst's note about conceding after the break, board money, or a rival club asking about
+you — each with a named, bounded effect (≤ +4 fitness, ≤ +6 credits, ≤ ±3% next-match modifier inside the
+existing ±8% cap) and each stored in the matchday notebook. A defensive-drills reply lowers the
+conceded-goal rate instead of handing out an attacking bonus. Replies are replayed from the journal on
+reload; a save naming an inbox item that was never open, or an instruction that does not exist, is refused.
+
+**Phase-16 saves still open**, flagged as the earlier rules, keeping their results and using half-time
+decisions from the next matchday. Pressure, mood and a job offer give the season a shape beyond the table.
+
+**Measured** — unchanged existing structural baseline: 46.3% 1X2 · RPS 0.2184 · rank correlation 0.566.
+**Delta vs v2.5** — 0.0 points, 0.0000 RPS for unchanged automatic forecasts. Matchday rules are game
+assumptions, not validated football effects or a measured accuracy gain.
+
+---
+
 ## v2.5 — 6 October 2026
 
 **Model** — unchanged automatic forecasts and the same closed historical player gate. New games are

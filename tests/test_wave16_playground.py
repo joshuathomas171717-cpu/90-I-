@@ -161,7 +161,7 @@ def test_future_versions_invalid_identifiers_and_nonfinite_coefficients_are_reje
 def test_no_random_reroll_is_hidden_in_render_or_restore():
     source=Path(ROOT,'static/game/engine.js').read_text()
     assert 'Math.random' not in source and 'Date.now' not in source
-    assert 'Recompute points, credits' in source
+    assert 'Recompute every derived value' in source and 'never trust editable totals' in source
 
 
 def test_goal_reveal_is_deterministic_fiction_and_uses_only_available_tracked_stars():
@@ -224,7 +224,8 @@ def test_game_import_is_size_and_schema_validated_before_storage():
 
 def test_game_ui_escapes_all_imported_names_and_never_evaluates_them():
     source=Path(ROOT,'static/game/ui.js').read_text()
-    assert 'esc(p.name)' in source and 'esc(e.scorer)' in source
+    assert 'esc(p.name)' in source and 'esc(item.scorer)' in source
+    assert 'esc(goal.scorer)' in source and 'esc(c.label)' in source
     assert 'eval(' not in source and 'new Function' not in source and '.innerHTML=f' not in source
 
 

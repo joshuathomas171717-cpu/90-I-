@@ -198,3 +198,13 @@ numbers do not change. Verify actual game-page bytes and play/resume/practice on
 Games are local, hypothetical worlds. They never write actual results or prediction locks. New data
 must not replace an existing career's frozen world, and practice cannot rewrite real locked challenge
 picks. No account/global leaderboard is provided; client saves/clocks are not independently trusted.
+
+## 7. Career game rule changes
+
+`data/playground_manifest.json` records `version: club-manager/2` — the played-matchday rules. Any change
+to `static/game/*` or `playground.py` changes the published fingerprint, so the deployment verifier
+catches a game-only release even when every forecast field is identical. Keep three promises when
+editing the engine: the full-time score must remain base-plus-bounded-delta (never a reroll), `stay calm`
+with no substitutions must stay identical to the previous rule version, and `restore()` must rebuild the
+same inbox for the same state so journal replay is exact. A resume also recomputes derived points,
+credits and fitness; editable totals are never trusted.

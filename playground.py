@@ -51,7 +51,7 @@ def payload(data=DATA):
     fixtures=[{'id':f["home"]+'-'+f['away'],'gw':int(f['gw']),'h':f['home'],'a':f['away'],
                'lh':float(f['lambda_home']),'la':float(f['lambda_away']),'dates':f['dates']}
               for f in rows('projected_fixtures_2026_27.csv',data)]
-    world={'version':1,'rules':'club-manager/1','season':'2026-27','asOf':summary['meta']['as_of_date'][:10],
+    world={'version':2,'rules':'club-manager/2','season':'2026-27','asOf':summary['meta']['as_of_date'][:10],
            'teams':teams,'players':players,'fixtures':fixtures}
     world['hash']=hashlib.sha256(json.dumps(world,sort_keys=True,separators=(',',':')).encode()).hexdigest()[:32]
     next_gw=int(summary['meta']['next_gw'])
@@ -83,7 +83,7 @@ def build(data=DATA, output=OUT, manifest=MANIFEST):
     digest=hashlib.sha256(json.dumps(pack,sort_keys=True,separators=(',',':')).encode())
     for key in sorted(parts):digest.update(parts[key].encode())
     digest.update(store.encode());fingerprint=digest.hexdigest()[:16]
-    pack['build']={'version':'club-manager/1','fingerprint':fingerprint}
+    pack['build']={'version':'club-manager/2','fingerprint':fingerprint}
     html='''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Club Manager & Beat the Model — NINETY+</title><meta name="description" content="Take a club through a simulated season: tactics, training, tracked-player transfers and your own match predictions. Free, browser-only and clearly separate from real football results.">
 <meta name="playground-fingerprint" content="%s"><style>%s\n%s</style></head><body>%s<script>
@@ -91,7 +91,7 @@ const PLAY_DATA = %s;
 %s\n%s\n%s
 </script></body></html>''' % (fingerprint,fonts,parts['style.css'],parts['shell.html'],script_json(pack),store,parts['engine.js'],parts['ui.js'])
     Path(output).parent.mkdir(parents=True,exist_ok=True);Path(output).write_text(html)
-    result={'version':'club-manager/1','fingerprint':fingerprint,'world_hash':pack['world']['hash'],
+    result={'version':'club-manager/2','fingerprint':fingerprint,'world_hash':pack['world']['hash'],
             'season':'2026-27','as_of':pack['world']['asOf'],'players':len(pack['world']['players']),
             'fixtures':len(pack['world']['fixtures']),'page':'play.html'}
     atomic_json(str(manifest),result)
