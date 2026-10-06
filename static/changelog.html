@@ -55,7 +55,7 @@ tr:last-child td{border-bottom:0}
       letter-spacing:.06em;text-transform:uppercase}
 .chip.ucl{background:rgba(34,211,238,.14);color:#6ee7ff}
 .chip.rel{background:rgba(229,75,154,.16);color:#ff8fc4}
-.bar{height:7px;border-radius:4px;background:#232b42;overflow:hidden;min-width:60px}
+.bar{display:block;width:100%;height:7px;border-radius:4px;background:#232b42;overflow:hidden;min-width:60px;margin:8px 0}
 .bar>i{display:block;height:100%;background:#22D3EE}
 .bar.rel>i{background:#E54B9A}
 .muted{color:#8E9BB8}
@@ -64,6 +64,7 @@ tr:last-child td{border-bottom:0}
 .kv b{display:block;font-size:22px;letter-spacing:-.01em}
 .kv span{color:#8E9BB8;font-size:12px;text-transform:uppercase;letter-spacing:.08em}
 footer.site{border-top:1px solid #232b42;margin-top:40px;padding-top:18px;color:#8E9BB8;font-size:13px}
+p a,footer.site a{text-decoration:underline;text-underline-offset:3px}
 .cta{display:inline-block;background:#22D3EE;color:#062028;font-weight:700;padding:10px 18px;
      border-radius:10px;margin:6px 0 0}
 .cta:hover{text-decoration:none;filter:brightness(1.08)}
@@ -108,8 +109,10 @@ ul.plain{padding-left:18px}ul.plain li{margin:4px 0}
   td.fb button:hover{color:#EAF0FF;border-color:#3A4763}
   td.fb button.on{background:#22D3EE;color:#08111C;border-color:#22D3EE;font-weight:700}
   td.fb button[data-vote="bad"].on{background:#F472B6;border-color:#F472B6}
-  td.fb a.send{margin-left:6px;color:#5C6884;font-size:11px;text-decoration:underline}
+  td.fb a.send{margin-left:6px;color:#9AA8C4;font-size:11px;text-decoration:underline}
   td.fb a.send:hover{color:#22D3EE}
+
+.squad-panel a,.missing-digest a{text-decoration:underline;text-underline-offset:3px}.squad-panel :focus-visible{outline:2px solid #6ee7ff;outline-offset:3px}.missing-digest summary:focus-visible{outline:2px solid #6ee7ff}
 </style>
 </head>
 <body>
@@ -119,7 +122,17 @@ ul.plain{padding-left:18px}ul.plain li{margin:4px 0}
 </header>
 <main class="wrap">
 <nav class="crumbs"><a href="index.html">Dashboard</a> › Changelog</nav>
-<h1>Every version, and what it actually did to accuracy</h1><p class="lede">A delta appears against a version only where a blind replay was run for it. Where a change was not measured separately, the entry says so: an estimate presented as a result is worse than no number at all. This page is generated from <code>CHANGELOG.md</code> in the repository, which is the file a contributor edits.</p><div class="changelog"><div class="card"><h3>v2.3 — 5 October 2026</h3>
+<h1>Every version, and what it actually did to accuracy</h1><p class="lede">A delta appears against a version only where a blind replay was run for it. Where a change was not measured separately, the entry says so: an estimate presented as a result is worse than no number at all. This page is generated from <code>CHANGELOG.md</code> in the repository, which is the file a contributor edits.</p><div class="changelog"><div class="card"><h3>v2.4 — 6 October 2026</h3>
+<p><b>Model</b> — unchanged from v2.3 for automatic forecasts. The player gate remains closed; the new UI never auto-prices actual injury news or season-total form into a match call.</p>
+<p><b>Site</b> — tracked squad panels on all 20 club pages and the dashboard Table view: form/trend, competition minutes, availability, source/fetch date and absence tier. Season totals say trend unavailable; untracked availability is unknown, not healthy. All 38 matchweek pages and the dashboard now carry snapshot-derived missing-player digests. The lightweight embedded preview is bounded; complete generated pages and <code>players.json</code> retain the full source context. Mobile table/header/tick-strip overflow and generated-page link/contrast issues found in the browser check were repaired without changing the semantic colours.</p>
+<p><b>What-If</b> — 52 searchable named players with explicit out/in hypotheses and replacement-aware input ranges. New v2 links and v3 local saves retain names, coefficients, ranges, source dates and baseline vintage. Existing v1/unversioned links keep the legacy formula; they are not silently re-priced. A new baseline can change simulated outcomes, but the saved assumption coefficients remain frozen. These are scenario input ranges, not confidence intervals on wins/points, and their accuracy is not separately measured.</p>
+<p><b>Record</b> — future availability captures are sealed with their prediction locks and bound to the revision chain. Receipts/public/local checks detect changed capture bytes and deleted/altered seals. Old MW6 stays not recorded at lock: later news cannot fill its history retroactively.</p>
+<p><b>Security and publication</b> — HTML-script-safe JSON, bounded known-player profiles, prototype-key rejection and an offline credential guard before commit/push and public artifact uploads. Every finished wave commits, pushes and verifies the website unless a known security risk requires a hold. The guard redacts values and is not a complete security audit. No new paid API, site account or runtime dependency.</p>
+<p class="measured"><b>Measured</b> — existing structural baseline: 46.3% 1X2 · RPS 0.2184 · rank correlation 0.566.</p>
+<p class="muted delta"><b>Delta vs v2.3</b> — 0.0 points, 0.0000 RPS for unchanged automatic forecasts. UI/explicit scenario work,</p>
+<p>not a claimed predictive accuracy gain; the new manual scenario assumptions are not accuracy-tested.</p>
+</div>
+<div class="card"><h3>v2.3 — 5 October 2026</h3>
 <p><b>Model</b> — unchanged from v2.2. The production forecaster and the existing What-If injury assumptions are unchanged. The new player layer is context, not an extra feature slipped into the ensemble.</p>
 <p><b>Player layer</b> — role-relative form with minute shrinkage, competition adjustment and a 35-day decay only when real match dates exist. Season aggregates say recency unavailable. Replacement-aware absence priors count a substitute as something, and a second tier fits opponent-adjusted with/without output where at least ten appearances and five explicit zero-minute records exist. Missing rows are not injuries; these fitted effects are associations, not causal claims. Exact rest and supplied travel replace the congestion candidate&#x27;s membership proxy, not the active model&#x27;s unvalidated feature.</p>
 <p><b>Gate</b> — the 2025–26 matrix has no dates or lineups. The real-data candidate has therefore <b>not been measured</b>, and its RPS/hit-rate deltas are <b>not available</b>, not a measured zero. A resumable free-key or manual-drop backfill accepts actual match dates, but pre-kickoff availability captures must be supplied separately: fetching old lineups today does not make them pre-match evidence. The chronological shadow compares the structural replay head, not the live ML ensemble; even a good shadow cannot promote the latter without validation of that actual head.</p>

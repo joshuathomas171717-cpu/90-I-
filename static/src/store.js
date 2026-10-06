@@ -30,7 +30,7 @@
 
   var NAMESPACE = "nt90";         // every key this app writes starts with this
   var KEY = NAMESPACE + ":state"; // one blob: { v: <schema>, data: {…} }
-  var VERSION = 2;                // bump when the shape of `data` changes
+  var VERSION = 3;                // bump when the shape of `data` changes
 
   /* Migrations run in ascending order from the stored version up to VERSION. Each entry takes the
      whole data object and returns the next one. Never edit one once shipped: the reader's browser
@@ -48,6 +48,9 @@
       };
     },
   };
+
+  // v2 saved scenarios retain their original method. v3 may store frozen named-player profiles.
+  MIGRATIONS[2] = function(data){ return data || fresh(); };
 
   var memory = null;              // the fallback store, created on first use
   var backendState = null;

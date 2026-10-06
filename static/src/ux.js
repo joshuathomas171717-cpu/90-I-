@@ -206,7 +206,8 @@ const UX = (() => {
     });
     Object.entries(SCENARIO.points_deductions).forEach(([k, v]) => { if(v > 0) compact.d[k] = v; });
     Object.entries(SCENARIO.custom_scores).forEach(([k, v]) => { compact.c[k] = v; });
-    return btoa(JSON.stringify(compact)).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+    if(SCENARIO.player_effects && Object.keys(SCENARIO.player_effects).length) compact.e=SCENARIO.player_effects;
+    return (compact.e ? "v2-" : "")+btoa(unescape(encodeURIComponent(JSON.stringify(compact)))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
   }
   /* A scenario encoded by either writer this page has ever had, or by a link someone else made.
    *
@@ -222,6 +223,7 @@ const UX = (() => {
    */
   function decodeScenario(token){
     let body = String(token || ""), version = 1;
+    if(body.length>48000)throw new Error("scenario link is too large");
     const prefixed = body.match(/^v(\d+)-(.*)$/);
     if(prefixed){
       version = parseInt(prefixed[1], 10);
@@ -237,6 +239,7 @@ const UX = (() => {
       team_boosts: c.team_boosts || c.b,
       points_deductions: c.points_deductions || c.d,
       custom_scores: c.custom_scores || c.c,
+      player_effects: version >= 2 ? (c.player_effects || c.e) : undefined,
     });
   }
   function applyScenarioFromHash(){

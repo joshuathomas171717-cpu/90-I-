@@ -102,8 +102,15 @@ jobs:
             -d '{"n_sims":600,"team_boosts":{"ARS":{"attack":5,"defence":5}}}' | head -c 200; echo
           kill $SRV
 
-      - name: Upload the built dashboard
+      - name: Guard public build artifacts
+        id: public_safety
         if: always()
+        run: |
+          python3 tools/publication_gate.py
+          echo "safe=true" >> "$GITHUB_OUTPUT"
+
+      - name: Upload the built dashboard
+        if: always() && steps.public_safety.outputs.safe == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: dashboard

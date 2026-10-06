@@ -154,6 +154,7 @@ def verify_published_chain(ledger):
         if record.get("hash") != score_ledger._chain_hash(prev, record):
             problems.append("revision %d: hash does not recompute — edited after it was written" % i)
         prev = record.get("hash", "")
+    problems.extend(score_ledger.availability_chain_problems(ledger))
     return {"ok": not problems, "chain": len(revisions), "problems": problems,
             "locks": len(ledger.get("locks") or [])}
 

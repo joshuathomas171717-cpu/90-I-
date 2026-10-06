@@ -830,16 +830,22 @@ function scnNum(v){
 }
 
 function renderScenarioForm(){
-  const { teamsSorted, players } = scenarioInputTemplates();
+  const templates = scenarioInputTemplates();
+  const teamsSorted = templates.teamsSorted;
+  const players = templates.players.map(p => ({...p, name:((SCENARIO.player_effects||{})[p.player_id]||{}).name||p.name}));
   const boosted = SCENARIO.team_boosts, ded = SCENARIO.points_deductions;
   const keyFixtures = [["MCI","LIV"],["ARS","MCI"],["LIV","MCI"],["MCI","ARS"]];
   $("scenarioForm").innerHTML = `
     <details class="acc" open>
       <summary>Injuries &amp; absences <span class="cnt" data-cnt="inj">0 active</span></summary>
       <div class="body">
-        <div class="small mut">Games out of the remaining 33 matchweeks. Losing a frontline player
-          cuts the club's attacking output and Elo by a magnitude scaled to their goal involvement.</div>
+        <div class="note">Named-player hypotheses, not actual injury reports. Ranges count a replacement and describe
+          input assumptions, not confidence intervals on wins or table points. The baseline does not auto-price team news.</div>
+        <div class="player-filters"><label>Find a player<input id="scenPlayerSearch" type="search" placeholder="Name or club" autocomplete="off"></label>
+          <label>Club<select id="scenClubFilter"><option value="ALL">All tracked clubs</option>${teamsSorted.map(t=>`<option value="${esc(t.code)}">${esc(t.short)}</option>`).join("")}</select></label></div>
+        <div class="scenario-player-list" tabindex="0" role="region" aria-label="Named player absence assumptions">
         ${players.map((p, i) => `
+          <div class="scenario-player-row" data-scenario-player="${esc(p.player_id)}" data-club="${esc(p.club)}" data-search="${esc((p.name+" "+p.club).toLowerCase())}">
           <div class="itemrow wide">
             <div class="row" style="gap:9px">${crest(p.club, 18)}
               <div><div class="disp" style="font-size:13px">${esc(p.name)}</div>
@@ -848,10 +854,13 @@ function renderScenarioForm(){
               <input class="slider inj" type="range" min="0" max="33" value="${scnNum(SCENARIO.player_injuries[p.player_id])}"
                 aria-label="Games out: ${esc(p.name)}"
                 aria-valuetext="${scnNum(SCENARIO.player_injuries[p.player_id]) === 0 ? "available" : scnNum(SCENARIO.player_injuries[p.player_id]) + " games out"}"
-                data-pid="${p.player_id}" data-name="${esc(p.name)}">
-              <span class="val" id="inj_${p.player_id}">${scnNum(SCENARIO.player_injuries[p.player_id])}</span>
+                data-pid="${esc(p.player_id)}" data-name="${esc(p.name)}">
+              <span class="val" id="inj_${esc(p.player_id)}">${scnNum(SCENARIO.player_injuries[p.player_id])}</span>
+              <button class="btn sm" data-player-in="${esc(p.player_id)}" aria-label="Assume ${esc(p.name)} available">In</button>
             </div>
-          </div>`).join("")}
+          </div><p class="player-assumption" id="effect_${esc(p.player_id)}">${esc(profileDescription(p.player_id,scnNum(SCENARIO.player_injuries[p.player_id])))}</p>
+          <p class="player-source">${esc(layerPlayer(p.player_id)?playerProvenance(layerPlayer(p.player_id)):"Player signal unavailable; legacy method only")}</p></div>`).join("")}
+        </div><div id="playerEffectSummary" aria-live="polite"></div>
       </div>
     </details>
 
@@ -906,11 +915,25 @@ function renderScenarioForm(){
   $("scenarioForm").querySelectorAll(".inj").forEach(el => {
     el.oninput = () => {
       const v = +el.value; SCENARIO.player_injuries[el.dataset.pid] = v;
+      el.setAttribute("aria-valuetext", v === 0 ? "no absence assumed" : v + " games assumed out");
       $("inj_" + el.dataset.pid).textContent = v;
-      if(v === 0) delete SCENARIO.player_injuries[el.dataset.pid];
+      if(v === 0){
+        delete SCENARIO.player_injuries[el.dataset.pid];
+        if(SCENARIO.player_effects) delete SCENARIO.player_effects[el.dataset.pid];
+      }else{
+        const frozen=(SCENARIO.player_effects||{})[el.dataset.pid]||freezePlayerEffect(el.dataset.pid);
+        if(frozen){SCENARIO.player_effects=SCENARIO.player_effects||{};SCENARIO.player_effects[el.dataset.pid]=frozen;}
+      }
+      const effect=document.getElementById("effect_"+el.dataset.pid);if(effect)effect.textContent=profileDescription(el.dataset.pid,v);
       markScenario();
     };
   });
+  $("scenarioForm").querySelectorAll("[data-player-in]").forEach(button=>button.onclick=()=>{
+    const slider=Array.from($("scenarioForm").querySelectorAll(".inj")).find(x=>x.dataset.pid===button.dataset.playerIn);
+    if(slider){slider.value=0;slider.dispatchEvent(new Event("input",{bubbles:true}));}
+  });
+  $("scenPlayerSearch").oninput=filterScenarioPlayers;$("scenClubFilter").onchange=filterScenarioPlayers;
+  renderPlayerEffects();
   $("scenarioForm").querySelectorAll(".atk").forEach(el => {
     el.oninput = () => {
       const c = el.dataset.code, v = +el.value;
@@ -978,7 +1001,7 @@ function renderScenario(){
     </div>
     <div class="note" style="margin-top:12px">
       ${s.meta.n_simulations.toLocaleString()} seasons re-simulated${s.meta.client_fallback ? " with the client-side structural engine" : " by the Python ML engine"} ·
-      ${injCount} injuries · ${boostCount} form swings · ${dedCount} deductions · ${Object.keys(SCENARIO.custom_scores).length} forced results.
+      ${injCount} assumed absences · ${boostCount} form swings · ${dedCount} deductions · ${Object.keys(SCENARIO.custom_scores).length} forced results.
       Deltas below compare against the baseline run.
     </div>`;
 
@@ -1264,6 +1287,7 @@ function renderAll(){
   renderAwardTiles(); renderAwards(); wireAwardSearch(); renderDuelSelects(); renderScenarioForm();
   renderMetrics(); renderCharts(); renderBacktest(); renderArch(); renderLimits(); renderModelCard(); renderPlayerGate(); renderFreshness(); renderDataTab();
   renderScenarioAwards();
+  renderPlayerSquad(); renderMissingDigest();
   animate(document);
   armGlow(document);
   applyAwardFilter();
@@ -1419,7 +1443,10 @@ function scenarioSummary(sc){
   const form = Object.values(s.team_boosts || {}).filter(b => b && (b.attack || b.defence)).length;
   const ded = Object.values(s.points_deductions || {}).filter(v => v > 0).length;
   const forced = Object.keys(s.custom_scores || {}).length;
-  if(inj) parts.push(`${inj} injured`);
+  if(inj){
+    const names=Object.keys(s.player_injuries||{}).filter(id=>s.player_injuries[id]>0).map(id=>((s.player_effects||{})[id]||{}).name||(SCEN_PLAYERS().find(p=>p.player_id===id)||{}).name||id);
+    parts.push(names.slice(0,3).join(", ")+" assumed out"+(names.length>3?` +${names.length-3} more`:""));
+  }
   if(form) parts.push(`${form} form change${form === 1 ? "" : "s"}`);
   if(ded) parts.push(`${ded} deduction${ded === 1 ? "" : "s"}`);
   if(forced) parts.push(`${forced} forced result${forced === 1 ? "" : "s"}`);

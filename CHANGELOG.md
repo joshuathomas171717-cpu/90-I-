@@ -11,6 +11,39 @@ ones you do not have.
 
 ---
 
+## v2.4 — 6 October 2026
+
+**Model** — unchanged from v2.3 for automatic forecasts. The player gate remains closed; the new UI
+never auto-prices actual injury news or season-total form into a match call.
+
+**Site** — tracked squad panels on all 20 club pages and the dashboard Table view: form/trend, competition
+minutes, availability, source/fetch date and absence tier. Season totals say trend unavailable; untracked
+availability is unknown, not healthy. All 38 matchweek pages and the dashboard now carry snapshot-derived
+missing-player digests. The lightweight embedded preview is bounded; complete generated pages and
+`players.json` retain the full source context. Mobile table/header/tick-strip overflow and generated-page
+link/contrast issues found in the browser check were repaired without changing the semantic colours.
+
+**What-If** — 52 searchable named players with explicit out/in hypotheses and replacement-aware input
+ranges. New v2 links and v3 local saves retain names, coefficients, ranges, source dates and baseline
+vintage. Existing v1/unversioned links keep the legacy formula; they are not silently re-priced. A new
+baseline can change simulated outcomes, but the saved assumption coefficients remain frozen. These are
+scenario input ranges, not confidence intervals on wins/points, and their accuracy is not separately measured.
+
+**Record** — future availability captures are sealed with their prediction locks and bound to the
+revision chain. Receipts/public/local checks detect changed capture bytes and deleted/altered seals.
+Old MW6 stays not recorded at lock: later news cannot fill its history retroactively.
+
+**Security and publication** — HTML-script-safe JSON, bounded known-player profiles, prototype-key
+rejection and an offline credential guard before commit/push and public artifact uploads. Every finished
+wave commits, pushes and verifies the website unless a known security risk requires a hold. The guard
+redacts values and is not a complete security audit. No new paid API, site account or runtime dependency.
+
+**Measured** — existing structural baseline: 46.3% 1X2 · RPS 0.2184 · rank correlation 0.566.
+**Delta vs v2.3** — 0.0 points, 0.0000 RPS for unchanged automatic forecasts. UI/explicit scenario work,
+not a claimed predictive accuracy gain; the new manual scenario assumptions are not accuracy-tested.
+
+---
+
 ## v2.3 — 5 October 2026
 
 **Model** — unchanged from v2.2. The production forecaster and the existing What-If injury assumptions

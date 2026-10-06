@@ -173,3 +173,16 @@ After the last match of a gameweek (the owner's job — the site does not do thi
    nowhere. Passing them on means opening the pre-filled issue the page links to.
 
 The first real test of this loop is the matchweek 6 review after 12 October 2026.
+
+## 5. Every finished wave must reach GitHub and the website
+
+The standing release procedure is [publishing.md](publishing.md): rebuild/test, credential/XSS checks,
+stage and guard the prospective commit, commit, push, wait for Vercel and compare actual published
+feature pages/data plus context/UI fingerprints. A successful push is not proof of a website update.
+Only a known security risk is a reason to hold a finished release; explain the risk, fix/rotate any
+exposed credential and rerun. An unfinished failing build must be repaired, not presented as done.
+
+Future availability seals bind the exact capture to its prediction lock/revision chain. Never add a
+current capture to an old lock to make receipts look complete. For MW6 the correct label is **not
+recorded at lock**. New named-player scenario links carry explicit hypotheses, not injury diagnoses;
+legacy links keep their old method and saved coefficients are never silently re-priced.

@@ -24,7 +24,7 @@
 (function(){
   "use strict";
 
-  const VERSION = 1;
+  const VERSION = 2;
   const PREFIX = "v" + VERSION + "-";
   const CARD_W = 1200, CARD_H = 630;
 
@@ -50,12 +50,15 @@
       });
       Object.entries(s.points_deductions || {}).forEach(([k, v]) => { if(v > 0) compact.d[k] = v; });
       Object.entries(s.custom_scores || {}).forEach(([k, v]) => { compact.c[k] = v; });
-      return PREFIX + b64url(JSON.stringify(compact));
+      // Preserve v1 wire/maths for legacy scenarios. New explicit profiles are version 2.
+      if(s.player_effects && Object.keys(s.player_effects).length) compact.e = s.player_effects;
+      return (compact.e ? PREFIX : "v1-") + b64url(JSON.stringify(compact));
     },
 
     /** Token → scenario. Accepts v1 and the unversioned tokens shared before versions existed. */
     decode: function(token){
       if(typeof token !== "string" || !token) throw new Error("empty token");
+      if(token.length>48000) throw new Error("scenario link is too large");
       let body = token, version = 1, migrated = false;
       const m = token.match(/^v(\d+)-(.*)$/);
       if(m){
@@ -73,6 +76,7 @@
         // both go through the same validator rather than each doing its own partial job.
         scenario: sanitizeScenario({
           player_injuries: c.i, team_boosts: c.b, points_deductions: c.d, custom_scores: c.c,
+          player_effects: version >= 2 ? c.e : undefined,
         }),
       };
     },
@@ -251,7 +255,7 @@
     const active = (typeof SCENARIO_ACTIVE === "function") && SCENARIO_ACTIVE();
     const s = (typeof SCENARIO !== "undefined") ? SCENARIO : {};
     const rows = [];
-    Object.entries(s.player_injuries || {}).forEach(([k, v]) => { if(v > 0) rows.push({ label:k + " out", value:v + " games", frac:Math.min(1, v / 12), color:"#E54B9A" }); });
+    Object.entries(s.player_injuries || {}).forEach(([k, v]) => { if(v > 0) rows.push({ label:((s.player_effects||{})[k]||{}).name || ((typeof SCEN_PLAYERS === "function" && SCEN_PLAYERS().find(p=>p.player_id===k))||{}).name || k, value:v + " games", frac:Math.min(1, v / 12), color:"#E54B9A" }); });
     Object.entries(s.team_boosts || {}).forEach(([k, v]) => {
       const any = (v.attack || 0) || (v.defence || 0);
       if(any) rows.push({ label:k + " form", value:((v.attack || 0) >= 0 ? "+" : "") + (v.attack || 0) + "% att",

@@ -9,6 +9,8 @@ import os
 from datetime import datetime
 import re
 import pandas as pd
+from safe_embed import script_json
+from player_ui import embedded as _player_preview
 
 BASE = os.path.dirname(os.path.abspath(__file__))
 DATA = os.path.join(BASE, "data")
@@ -182,6 +184,8 @@ def _schedule(path):
 
 payload = json_safe({
     "baseline": summary, "backtest": backtest, "club_extras": club_extras, "h2h": h2h,
+    "player_layer": _player_preview(json.load(open(os.path.join(DATA, "player_ui_2026_27.json"), encoding="utf-8")),
+                                     summary["meta"].get("next_gw"), players["player_id"].tolist()),
     "inputs": {"teams": teams_in, "fixtures": fixtures_in, "players": players_in, "gks": gks_in},
     "ledger": _ledger_digest(os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                           "data", "ledger_2026_27.json")),
@@ -190,7 +194,7 @@ payload = json_safe({
 })
 
 parts = {p: open(os.path.join(SRC, p), encoding="utf-8").read()
-         for p in ("fonts.css", "theme.css", "app.html", "core.js", "motion.js", "ux.js", "store.js",
+         for p in ("fonts.css", "theme.css", "app.html", "core.js", "players.js", "motion.js", "ux.js", "store.js",
                    "render.js", "share.js", "router.js")}
 
 # ── identity, previews and structured data for the app page itself (P5.1, P5.2) ────────────────
@@ -287,9 +291,10 @@ html = f"""<!DOCTYPE html>
 <body>
 {parts['app.html']}
 <script>
-const EMBEDDED = {json.dumps(payload, separators=(",", ":"), allow_nan=False)};
+const EMBEDDED = {script_json(payload)};
 {parts['store.js']}
 {parts['core.js']}
+{parts['players.js']}
 {parts['motion.js']}
 {parts['ux.js']}
 {parts['render.js']}

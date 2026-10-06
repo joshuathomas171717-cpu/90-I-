@@ -21,6 +21,7 @@ STEPS = [
     ("backtest.py", "replaying the 2025-26 season for out-of-sample scoring"),
     ("player_gate.py", "testing the temporal player shadow, or keeping missing evidence as context"),
     ("player_context.py", "building the offline player layer with source, timing and absence tiers"),
+    ("player_ui.py", "building source-labelled squads, named scenario profiles and lock-safe digests"),
     ("ml_engine.py", "training models + running the baseline Monte Carlo (player input remains gated)"),
     # The pages are built *before* the tests, not after. Two of the checks read the generated site —
     # that its fixture text matches the projected-fixtures table, that a club page states its club's
@@ -31,6 +32,7 @@ STEPS = [
     ("build_dashboard.py", "rebuilding static/index.html"),
     ("feeds.py", "writing the calendar feeds (league + one per club)"),
     ("site_pages.py", "writing crawlable pages, icons, previews and the sitemap"),
+    ("tools/publication_gate.py", "blocking credentials from public artifacts"),
     ("tests/run_tests.py", "verifying invariants, golden snapshots, the generated site and portability"),
     # Last, because it can only be answered once the page has been rebuilt: does the page carry the
     # numbers the committed dataset describes? The library versions running here cannot affect the

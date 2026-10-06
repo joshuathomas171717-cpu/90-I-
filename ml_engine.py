@@ -156,6 +156,9 @@ class PremierLeagueMLEngine:
         from player_context import compact as _compact_player_context
         self.player_signal_status = _compact_player_context(_load_player_json(
             os.path.join(DATA_DIR, "player_context_2026_27.json")))
+        from player_ui import fingerprint as _ui_fingerprint
+        self.player_ui_status = {"version": "player-ui/1", "fingerprint": _ui_fingerprint(
+            _load_player_json(os.path.join(DATA_DIR, "player_ui_2026_27.json")))}
 
         # Historical lookup for relegated 2025-26 teams
         relegated_25_26 = {
@@ -205,6 +208,7 @@ class PremierLeagueMLEngine:
         if use_cache and not force and self._load_from_cache():
             self._restamp_as_of()
             self.baseline_results["meta"]["player_signal"] = self.player_signal_status
+            self.baseline_results["meta"]["player_ui"] = self.player_ui_status
             self.boot_ms = round((time.perf_counter() - t0) * 1000.0, 1)
             return
 
@@ -512,6 +516,7 @@ class PremierLeagueMLEngine:
         t0 = time.time()
         scenario = scenario or {}
         player_injuries = scenario.get("player_injuries", {})
+        player_effects = scenario.get("player_effects") or {}
         team_boosts = scenario.get("team_boosts", {})
         points_deductions = scenario.get("points_deductions", {})
         custom_scores = scenario.get("custom_scores", {})
@@ -525,7 +530,8 @@ class PremierLeagueMLEngine:
             pid = p["player_id"]
             games_out = int(player_injuries.get(pid, 0))
             p["games_out"] = max(0, min(33, games_out))
-            if p["games_out"] > 0:
+            if p["games_out"] > 0 and pid not in player_effects:
+                # v1 links keep this legacy formula. New profiles are explicit user hypotheses below.
                 frac_missed = p["games_out"] / 33.0
                 club = p["club"]
                 if p["pos"] in ("FWD", "MID"):
@@ -538,6 +544,15 @@ class PremierLeagueMLEngine:
                     gk_weight = max(0.05, (p["gk_psxg_diff"] + 2.0) * 0.03)
                     ts[club]["xga_90_live"] *= (1.0 + gk_weight * frac_missed)
                     ts[club]["elo_live"] -= 25.0 * gk_weight * frac_missed
+
+        from player_scenarios import club_effects
+        remaining_by_club = {c: int(sum((r["home"] == c or r["away"] == c) for r in self.df_rem.to_dict("records"))) for c in ts}
+        frozen_effects = club_effects(player_effects, player_injuries, remaining_by_club)
+        for club, effect in frozen_effects.items():
+            if club in ts:
+                ts[club]["xg_90_live"] *= 1-effect["attack"]/100
+                ts[club]["xga_90_live"] *= 1+effect["defence"]/100
+        # Automatic predictions never load injury news as an input. This branch is user-selected only.
 
         # Apply manual team attack/defense form boosts.
         # Note: the dashboard sends `defence` (British) while this engine originally read only
@@ -974,6 +989,8 @@ class PremierLeagueMLEngine:
                 "lambda_scale": round(float(self.lambda_scale), 4),
                 "scenario_active": bool(player_injuries or team_boosts or points_deductions or custom_scores),
                 "player_signal": self.player_signal_status,
+                "player_ui": self.player_ui_status,
+                "manual_player_effects": frozen_effects,
             },
             "headline_predictions": {
                 "champion": table_projections[0],

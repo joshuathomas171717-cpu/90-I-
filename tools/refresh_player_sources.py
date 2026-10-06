@@ -16,7 +16,7 @@ from player_data import atomic_json, load_json
 from sources.api_football import ApiFootballProvider
 
 
-def refresh(quiet=False):
+def refresh(quiet=False, gameweek=None):
     notes = []
     provider = ApiFootballProvider()
     player_incoming = provider.available() or bool(player_form.drop_files())
@@ -56,9 +56,9 @@ def refresh(quiet=False):
 
     try:
         rows, problems, source = availability._collect(source="auto", quiet=True)
-        capture = availability.build(rows, source, problems=problems)
+        capture = availability.build(rows, source, problems=problems, gameweek=gameweek)
     except Exception as exc:
-        capture = availability.build([], "none", problems=["collection failed: %s" % exc])
+        capture = availability.build([], "none", problems=["collection failed: %s" % exc], gameweek=gameweek)
     previous = availability.load()
     if capture.get("tracked") or not previous.get("tracked"):
         availability.write(capture)

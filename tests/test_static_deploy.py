@@ -87,11 +87,16 @@ def test_no_stale_as_of_date_is_anywhere_in_the_page():
     which is the same mistake the Wave-5 model-card test made with its own documentation.
     """
     as_of = json.loads(_read("as_of.json", DATA))["date"]
-    page = _code_only(_page())
+    page = _page()  # parse the literal JSON before stripping code comments (source strings may contain comment characters)
     # The fixture calendar is exempt, and only the fixture calendar. It has to be full of dates — that
     # is what a calendar is — and it makes no claim about when the numbers were built. It is checked
     # against the published fixture list instead, in tests/test_wave11_liveness.py, which is a stronger
     # assertion than "these dates do not look stale". Everything else in the page is still scanned.
+    marker = "const EMBEDDED = "
+    start = page.index(marker)+len(marker)
+    embedded, length = json.JSONDecoder().raw_decode(page[start:])
+    embedded.pop("player_layer", None)  # independently checked source/capture dates, NOT a results stamp
+    page = _code_only(page[:start]+json.dumps(embedded)+page[start+length:])
     page = re.sub(r'"schedule"\s*:\s*\{[^{}]*\}', '"schedule": {}', page)
     found = set(re.findall(r"20\d\d-\d\d-\d\d", page))
     stale = sorted(d for d in found if d != as_of)

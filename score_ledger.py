@@ -204,13 +204,59 @@ def lock_gameweek(snapshot, path=LEDGER_PATH, source_file=None):
         "content_hash": digest,
         "supersedes": existing[-1]["content_hash"] if existing else None,
     }
+    capture = snapshot.get("availability")
+    if isinstance(capture, dict):
+        # Only NEW locks get this seal. Idempotent old locks above are never retroactively upgraded.
+        lock["availability"] = json.loads(json.dumps(capture))
+        lock["availability_hash"] = content_hash(capture)
     ledger["locks"].append(lock)
     _append_revision(ledger, "superseded" if existing else "locked", gameweek,
                      "%d predictions, hash %s%s" % (len(predictions), digest[:12],
                                                     " (replaces %s)" % existing[-1]["content_hash"][:12]
                                                     if existing else ""), digest)
+    if "availability_hash" in lock:
+        _append_revision(ledger, "availability-locked", gameweek,
+                         "availability sealed with its prediction lock; no retrospective replacement",
+                         availability_binding(lock))
     save(ledger, path)
     return ledger, lock, True
+
+
+def availability_binding(lock):
+    return content_hash({k: lock.get(k) for k in ("gameweek", "locked_at", "snapshot", "content_hash", "availability_hash")})
+
+
+def availability_evidence(lock, snapshot=None):
+    """Sealed evidence only; a rolling capture or a later snapshot field never fills an old lock."""
+    if "availability_hash" not in lock:
+        return {"status": "not-recorded-at-lock", "capture": None,
+                "note": "No sealed availability record at this lock. Current team news is not backfilled."}
+    capture = lock.get("availability")
+    if not isinstance(capture, dict) or content_hash(capture) != lock["availability_hash"]:
+        return {"status": "mismatch", "capture": None, "note": "Sealed availability hash does not verify."}
+    from player_data import timestamp
+    captured, locked = timestamp(capture.get("captured_at")), timestamp(lock.get("locked_at"))
+    if (captured is not None and locked is not None and captured > locked) or (capture.get("tracked") and captured is None):
+        return {"status": "mismatch", "capture": None, "note": "Capture time is missing or later than the lock."}
+    if snapshot is not None and content_hash(snapshot.get("availability")) != lock["availability_hash"]:
+        return {"status": "mismatch", "capture": None, "note": "Snapshot availability changed after lock."}
+    return {"status": "sealed-at-lock", "capture": capture, "hash": lock["availability_hash"],
+            "locked_at": lock.get("locked_at"), "note": "Exact capture sealed when the predictions were locked."}
+
+
+def availability_chain_problems(ledger):
+    locks = [l for l in ledger.get("locks", []) if "availability_hash" in l]
+    records = [r for r in ledger.get("revisions", []) if r.get("event") == "availability-locked"]
+    problems = []
+    for lock in locks:
+        if availability_evidence(lock)["status"] == "mismatch":
+            problems.append("gw%s: sealed availability content changed" % lock.get("gameweek"))
+        if not any(r.get("content") == availability_binding(lock) for r in records):
+            problems.append("gw%s: availability seal is not bound to the revision chain" % lock.get("gameweek"))
+    for record in records:
+        if not any(availability_binding(l) == record.get("content") for l in locks):
+            problems.append("sealed availability lock removed or altered")
+    return problems
 
 
 def entry_hash(entry):
@@ -327,6 +373,10 @@ def verify(path=LEDGER_PATH, snapshot_dir=SNAPSHOT_DIR):
         prev = record.get("hash", "")
     report["chain"] = len(ledger.get("revisions", []))
 
+    _seal_problems = availability_chain_problems(ledger)
+    if _seal_problems:
+        report["ok"] = False
+        report["problems"].extend(_seal_problems)
     for lock in ledger.get("locks", []):
         snapshot_path = os.path.join(snapshot_dir, lock.get("snapshot", ""))
         state = {"gameweek": lock["gameweek"], "hash": lock["content_hash"], "snapshot": lock.get("snapshot")}
@@ -340,6 +390,11 @@ def verify(path=LEDGER_PATH, snapshot_dir=SNAPSHOT_DIR):
                 snapshot = json.load(fh)
             actual = content_hash(snapshot["predictions"])
             report["checked"] += 1
+            evidence = availability_evidence(lock, snapshot)
+            state["availability"] = evidence["status"]
+            if evidence["status"] == "mismatch":
+                report["ok"] = False
+                report["problems"].append("gw%s: availability changed after the lock" % lock["gameweek"])
             if actual == lock["content_hash"]:
                 state["status"] = "verified"
             else:

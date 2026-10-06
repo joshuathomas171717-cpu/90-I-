@@ -64,6 +64,15 @@ def build(data=DATA):
                                          own_totals or own_dates, old_obs, cutoff.isoformat())
         player["absence"]["source"] = player["sources"]
         player["absence"]["fetched_at"] = player["fetched_at"]
+        # A trend needs comparable DATED records. Season totals never acquire a fake sparkline.
+        player["trend"] = {"delta": None, "previous_score": None, "days": 7,
+                           "status": "unavailable; comparable dated history missing"}
+        if player["aggregate_rows"] == 0 and player["dated_matches"] > 0:
+            from player_index import form_index
+            earlier = form_index(own, (cutoff-dt.timedelta(days=7)).isoformat(), player["position"])
+            if earlier["score"] is not None and player["score"] is not None:
+                player["trend"] = {"delta": round(player["score"]-earlier["score"], 2),
+                                   "previous_score": earlier["score"], "days": 7, "status": "dated comparison"}
     capture = load_json(os.path.join(data, "availability_2026_27.json"))
     unavailable = combine_absences(indices, capture)
     squads = squad_index(indices)

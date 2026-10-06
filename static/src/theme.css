@@ -671,3 +671,25 @@ section.page.leaving{opacity:0; transform:translateY(-8px); transition:opacity .
   .g5h{grid-template-columns:1fr 1fr}
 }
 @media(max-width:420px){ .hstat{font-size:10.5px; padding:5px 9px} .mark .wm{font-size:19px} }
+
+/* Phase 15 player context: same cyan/indigo/magenta identity, no colour-only state. */
+.squad-card{padding:18px;border:1px solid var(--line);background:rgba(17,24,42,.85);border-radius:14px;min-width:0}
+.squad-card h3{font:700 16px/1.3 var(--f-disp);margin:0 0 5px}.squad-index{font:700 12px var(--f-disp);color:var(--accent);white-space:nowrap}
+.competition-minutes{padding:0;list-style:none;font-size:12px}.competition-minutes li{display:flex;gap:12px;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--line)}
+.player-availability{border-left:2px solid var(--accent);padding:7px 10px;font-size:12px}.player-availability.out{border-color:var(--magi)}
+.player-source{font-size:11px;line-height:1.7;color:var(--mid);overflow-wrap:anywhere;margin:10px 0 4px}
+.player-filters{display:grid;grid-template-columns:1.5fr 1fr;gap:12px;margin:14px 0}.player-filters label{font-size:11px;color:var(--mid)}.player-filters input,.player-filters select{display:block;width:100%;margin-top:5px}
+.scenario-player-list{max-height:520px;overflow:auto;padding:0 5px 0 0;border-radius:10px}.scenario-player-row{border-bottom:1px solid var(--line);padding-bottom:12px}.scenario-player-row[hidden]{display:none}
+.player-assumption{font-size:12px;color:var(--mid);line-height:1.6;margin:0 0 8px}.scenario-player-row .srow{flex-wrap:wrap;justify-content:flex-end}
+.effect-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin-top:14px}.effect-tile{border:1px solid var(--line);border-radius:12px;padding:12px;font-size:12px;line-height:1.8}.effect-tile b{color:var(--accent)}
+.missing-clubs summary{cursor:pointer;color:var(--txt);font-size:13px;padding:8px 0}.missing-clubs li{font-size:12px;line-height:1.7;margin:8px 0;color:var(--mid)}
+.scenario-player-list:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+@media(max-width:640px){.player-filters{grid-template-columns:1fr}.scenario-player-row .itemrow.wide{grid-template-columns:1fr;gap:8px}.scenario-player-row .srow{justify-content:flex-start}.squad-card .row{flex-wrap:wrap}}
+
+/* Header lives outside .wrap: negative wrapper margins made the document wider than the viewport. */
+header.top{margin-left:0;margin-right:0}
+/* Grid items with wide tables must shrink so their own scroll wrappers, not the page, overflow. */
+.grid > *{min-width:0}
+@media(max-width:720px){.phead{flex-wrap:wrap;align-items:flex-start}.phead .row{flex-wrap:wrap;max-width:100%}}
+/* The 190-tick replay strip may wrap on phones instead of widening the document. */
+.hitstrip{flex-wrap:wrap;max-width:100%;row-gap:4px}

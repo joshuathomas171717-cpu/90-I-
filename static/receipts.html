@@ -55,7 +55,7 @@ tr:last-child td{border-bottom:0}
       letter-spacing:.06em;text-transform:uppercase}
 .chip.ucl{background:rgba(34,211,238,.14);color:#6ee7ff}
 .chip.rel{background:rgba(229,75,154,.16);color:#ff8fc4}
-.bar{height:7px;border-radius:4px;background:#232b42;overflow:hidden;min-width:60px}
+.bar{display:block;width:100%;height:7px;border-radius:4px;background:#232b42;overflow:hidden;min-width:60px;margin:8px 0}
 .bar>i{display:block;height:100%;background:#22D3EE}
 .bar.rel>i{background:#E54B9A}
 .muted{color:#8E9BB8}
@@ -64,6 +64,7 @@ tr:last-child td{border-bottom:0}
 .kv b{display:block;font-size:22px;letter-spacing:-.01em}
 .kv span{color:#8E9BB8;font-size:12px;text-transform:uppercase;letter-spacing:.08em}
 footer.site{border-top:1px solid #232b42;margin-top:40px;padding-top:18px;color:#8E9BB8;font-size:13px}
+p a,footer.site a{text-decoration:underline;text-underline-offset:3px}
 .cta{display:inline-block;background:#22D3EE;color:#062028;font-weight:700;padding:10px 18px;
      border-radius:10px;margin:6px 0 0}
 .cta:hover{text-decoration:none;filter:brightness(1.08)}
@@ -108,8 +109,10 @@ ul.plain{padding-left:18px}ul.plain li{margin:4px 0}
   td.fb button:hover{color:#EAF0FF;border-color:#3A4763}
   td.fb button.on{background:#22D3EE;color:#08111C;border-color:#22D3EE;font-weight:700}
   td.fb button[data-vote="bad"].on{background:#F472B6;border-color:#F472B6}
-  td.fb a.send{margin-left:6px;color:#5C6884;font-size:11px;text-decoration:underline}
+  td.fb a.send{margin-left:6px;color:#9AA8C4;font-size:11px;text-decoration:underline}
   td.fb a.send:hover{color:#22D3EE}
+
+.squad-panel a,.missing-digest a{text-decoration:underline;text-underline-offset:3px}.squad-panel :focus-visible{outline:2px solid #6ee7ff;outline-offset:3px}.missing-digest summary:focus-visible{outline:2px solid #6ee7ff}
 </style>
 </head>
 <body>
@@ -129,6 +132,7 @@ take any of that on trust — the file is in the repository and one command re-c
 <h2>The live ledger — 2026–27</h2>
 <div class="cards"><div class="card"><b>1</b><span>gameweek locked</span></div><div class="card"><b>0</b><span>scored so far</span></div><div class="card"><b>—</b><span>season accuracy</span></div><div class="card"><b>—</b><span>mean RPS</span></div></div>
 <div class="card"><h3>Matchweek 6</h3><p class="muted">Predictions generated <b>2026-10-03</b> · locked <b>2026-10-04</b> · sha256 <code>fc81a13fe72c60be…</code><br>locked, not yet scored — the matches have not been played</p>
+<section class="missing-digest" data-evidence="not-recorded-at-lock"><h2>Availability as recorded at this lock</h2><div class="card"><p class="note">No sealed availability record at this lock. Current team news is not backfilled.</p><p class="muted">No source or pre-lock capture recorded</p><details><summary style="cursor:pointer">Availability for 20 clubs</summary><ul><li><b>ARS</b> — Availability unknown — not a clean bill of health</li><li><b>AVL</b> — Availability unknown — not a clean bill of health</li><li><b>BHA</b> — Availability unknown — not a clean bill of health</li><li><b>BOU</b> — Availability unknown — not a clean bill of health</li><li><b>BRE</b> — Availability unknown — not a clean bill of health</li><li><b>CHE</b> — Availability unknown — not a clean bill of health</li><li><b>COV</b> — Availability unknown — not a clean bill of health</li><li><b>CRY</b> — Availability unknown — not a clean bill of health</li><li><b>EVE</b> — Availability unknown — not a clean bill of health</li><li><b>FUL</b> — Availability unknown — not a clean bill of health</li><li><b>HUL</b> — Availability unknown — not a clean bill of health</li><li><b>IPS</b> — Availability unknown — not a clean bill of health</li><li><b>LEE</b> — Availability unknown — not a clean bill of health</li><li><b>LIV</b> — Availability unknown — not a clean bill of health</li><li><b>MCI</b> — Availability unknown — not a clean bill of health</li><li><b>MUN</b> — Availability unknown — not a clean bill of health</li><li><b>NEW</b> — Availability unknown — not a clean bill of health</li><li><b>NFO</b> — Availability unknown — not a clean bill of health</li><li><b>SUN</b> — Availability unknown — not a clean bill of health</li><li><b>TOT</b> — Availability unknown — not a clean bill of health</li></ul></details><p class="muted">Context only; injury news is not automatically priced into these probabilities. Later team news never replaces the evidence at an earlier lock.</p></div></section>
 <div class="tablewrap"><table class="tbl"><tr><th>Fixture</th><th>Our call</th><th>Score</th><th>Home / draw / away</th><th>Actual</th><th></th><th>Your verdict</th></tr>
 <tr><td>Arsenal v Leeds United</td><td>Arsenal win</td><td>2-0</td><td><span class="rbar" title="home 68.5% · draw 20.9% · away 10.6%"><i class="h" style="width:68.5%"></i><i class="d" style="width:20.9%"></i><i class="a" style="width:10.6%"></i></span></td><td>not played</td><td></td><td class="fb" data-ref="gw6-ARS-LEE"><button type="button" data-vote="good" title="This call was reasonable">&#10003;</button><button type="button" data-vote="bad" title="This call looks wrong">&#10007;</button><a class="send" href="https://github.com/joshuathomas171717-cpu/90-I-/issues/new?labels=review&title=%5Breview%5D%20MW6%20ARS%20v%20LEE%20%E2%80%94%20Arsenal%20win&body=%2A%2AFixture%2A%2A%20MW6%3A%20ARS%20v%20LEE%0A%0A%2A%2AThe%20call%2A%2A%3A%20Arsenal%20win%20%28home%2068.5%25%20/%20draw%2020.9%25%20/%20away%2010.6%25%29%2C%20most%20likely%20score%202-0%0A%0A%2A%2ALocked%2A%2A%3A%202026-10-04%2C%20sha256%20%60fc81a13fe72c60be%60%0A%0A%2A%2AWhy%20I%20think%20this%20one%20is%20wrong%2A%2A%3A%20%0A%0A%3C%21--%20The%20lock%20hash%20is%20here%20so%20the%20review%20can%20tell%20which%20published%20version%20you%20were%20looking%20at.%20--%3E" target="_blank" rel="noopener" title="Open a pre-filled review issue for this fixture">send</a></td></tr>
 <tr><td>Aston Villa v Brentford</td><td>Brentford win</td><td>1-1</td><td><span class="rbar" title="home 34.0% · draw 28.3% · away 37.7%"><i class="h" style="width:34.0%"></i><i class="d" style="width:28.3%"></i><i class="a" style="width:37.7%"></i></span></td><td>not played</td><td></td><td class="fb" data-ref="gw6-AVL-BRE"><button type="button" data-vote="good" title="This call was reasonable">&#10003;</button><button type="button" data-vote="bad" title="This call looks wrong">&#10007;</button><a class="send" href="https://github.com/joshuathomas171717-cpu/90-I-/issues/new?labels=review&title=%5Breview%5D%20MW6%20AVL%20v%20BRE%20%E2%80%94%20Brentford%20win&body=%2A%2AFixture%2A%2A%20MW6%3A%20AVL%20v%20BRE%0A%0A%2A%2AThe%20call%2A%2A%3A%20Brentford%20win%20%28home%2034.0%25%20/%20draw%2028.3%25%20/%20away%2037.7%25%29%2C%20most%20likely%20score%201-1%0A%0A%2A%2ALocked%2A%2A%3A%202026-10-04%2C%20sha256%20%60fc81a13fe72c60be%60%0A%0A%2A%2AWhy%20I%20think%20this%20one%20is%20wrong%2A%2A%3A%20%0A%0A%3C%21--%20The%20lock%20hash%20is%20here%20so%20the%20review%20can%20tell%20which%20published%20version%20you%20were%20looking%20at.%20--%3E" target="_blank" rel="noopener" title="Open a pre-filled review issue for this fixture">send</a></td></tr>

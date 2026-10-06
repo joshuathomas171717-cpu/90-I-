@@ -175,7 +175,7 @@ def log(step, message):
     print("  %-9s %s" % (step, message), flush=True)
 
 
-def run_build(steps=("data_builder.py", "backtest.py", "player_gate.py", "player_context.py",
+def run_build(steps=("data_builder.py", "backtest.py", "player_gate.py", "player_context.py", "player_ui.py",
                      "ml_engine.py", "build_dashboard.py", "site_pages.py")):
     for script in steps:
         t0 = time.perf_counter()
@@ -292,7 +292,7 @@ def main(argv=None):
     if not args.skip_build:
         try:
             from tools.refresh_player_sources import refresh as _refresh_players
-            _refresh = _refresh_players(quiet=True)
+            _refresh = _refresh_players(quiet=True, gameweek=last_gw + 1)
             _player_capture = _refresh.get("availability")
             for _note in _refresh.get("notes") or []:
                 log("players", _note)

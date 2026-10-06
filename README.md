@@ -207,6 +207,29 @@ The site publishes `/player-model.html` and a downloadable `/player-model.json` 
 links to them. The weekly job refreshes optional inputs before rebuilding and checks the deployed
 player-context content fingerprint even when the matchweek/data date stay the same.
 
+### Visible players and named What-If (Phase 15)
+
+Open **Table → Squad context** to pick a club, or visit any `/club/<name>.html` page. You get source-labelled
+form, honest missing-trend labels, per-competition minutes, availability and absence tier. The bootstrap
+is a partial 52-player league-only sample, not twenty full squads. Goalkeepers need ratings for an index.
+
+In **What-If**, search any of the 52 tracked players, set games assumed out, or use **In** to clear the
+assumption. The displayed range counts a replacement and scales by the number of remaining games.
+It describes input assumptions, **not** a confidence interval on predicted wins or table points.
+The baseline never auto-loads actual injury news. New v2 links and v3 browser saves preserve the names,
+coefficients, ranges and source dates; old links keep their original formula. When the baseline changes,
+outcomes may change, but frozen profile coefficients do not silently update.
+
+All gameweek pages include a dated missing-player digest. `/receipts.html` shows the capture sealed at
+the prediction lock; old MW6 has no such record and remains visibly unrecorded, rather than being filled
+from today's rolling file. New availability seals are verified locally and by the public-site check.
+The full presentation data is downloadable at `/players.json`; `python3 player_ui.py` rebuilds it offline.
+
+[Phase 15 evidence](docs/phase15-evidence.md) and [the publication rule](docs/publishing.md) describe what
+was tested. Every wave ends with **commit → push → verify the live website**, except when a known security
+risk requires holding publication. `python3 tools/publication_gate.py --staged` blocks common credentials
+without echoing them; schema/XSS/browser checks are separate controls, not a blanket security certificate.
+
 A scheduled workflow ([.github/workflows/weekly-update.yml](.github/workflows/weekly-update.yml),
 Mondays 06:00 UTC) runs it in CI and commits only when the gate passes. xG is a **manual, dated** input by
 design — see [docs/xg-strategy.md](docs/xg-strategy.md) for why and for the upgrade path.

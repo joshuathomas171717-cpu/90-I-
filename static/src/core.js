@@ -12,6 +12,7 @@ const LAMBDA_SCALE = (BASELINE.meta && BASELINE.meta.lambda_scale) || 0.95;
 const BACKTEST = EMBEDDED.backtest || null;
 const EXTRAS = EMBEDDED.club_extras || {};
 const H2H = EMBEDDED.h2h || {};
+const PLAYER_LAYER = EMBEDDED.player_layer || { players:[], by_gameweek:{}, coverage:{} };
 
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -227,7 +228,7 @@ function scenarioInputTemplates(){
   const keyPlayers = ["haaland","saka","isak","bruno","palmer","raya","donnarumma","wirtz"];
   const pl = SCEN_PLAYERS();
   const flagged = keyPlayers.map(id => pl.find(p => p.player_id === id)).filter(Boolean);
-  return { teamsSorted, players:flagged };
+  return { teamsSorted, players:pl.sort((a,b) => a.club.localeCompare(b.club) || a.name.localeCompare(b.name)) };
 }
 function SCENARIO_ACTIVE(){
   return Object.values(SCENARIO.player_injuries).some(v => v > 0) ||
@@ -363,9 +364,9 @@ function sanitizeScenario(raw){
   const src = (raw && typeof raw === "object") ? raw : {};
   const out = { player_injuries:{}, team_boosts:{}, points_deductions:{}, custom_scores:{} };
 
-  const known = {};
+  const known = Object.create(null);
   TEAMS_IN.forEach(t => { known[t.code] = true; });
-  const players = {};
+  const players = Object.create(null);
   SCEN_PLAYERS().forEach(p => { players[p.player_id] = true; });
 
   const inj = (src.player_injuries && typeof src.player_injuries === "object") ? src.player_injuries : {};
@@ -409,6 +410,11 @@ function sanitizeScenario(raw){
     out.custom_scores[k] = [scnInt(pair[0], 0, 9), scnInt(pair[1], 0, 9)];
   });
 
+  if(src.player_effects && typeof NT90_PLAYERS !== "undefined"){
+    const frozen = NT90_PLAYERS.validate(src.player_effects, out.player_injuries, TEAMS_IN, SCEN_PLAYERS());
+    Object.keys(src.player_effects).forEach(pid => { if(!frozen.profiles[pid]) delete out.player_injuries[pid]; });
+    if(Object.keys(frozen.profiles).length) out.player_effects = frozen.profiles;
+  }
   return out;
 }
 
@@ -427,6 +433,7 @@ function markScenario(){
   const forced = Object.keys(SCENARIO.custom_scores).length;
   const badge = (k, v, word) => { const el = document.querySelector(`[data-cnt="${k}"]`); if(el) el.textContent = `${v} ${v === 1 ? word.replace(/s$/, "") : word}`; };
   badge("inj", inj, "active"); badge("form", form, "clubs"); badge("ded", ded, "clubs"); badge("forced", forced, "forced");
+  if(typeof renderPlayerEffects === "function") renderPlayerEffects();
   const b = $("runSim"); if(b) b.classList.toggle("has-changes", (inj + form + ded + forced) > 0);
   return inj + form + ded + forced;
 }
@@ -452,11 +459,18 @@ function localSimulate(scenario, nSims){
   players.concat(gks).forEach(p => {
     const g = Math.max(0, Math.min(33, +(inj[p.player_id] || 0)));
     p.games_out = g;
-    if(g > 0){
+    if(g > 0 && !(scenario.player_effects && scenario.player_effects[p.player_id])){
       const frac = g / 33, t = byCode[p.club]; if(!t) return;
       if(p.pos === "GK"){ const w = Math.max(0.05, (p.gk_psxg_diff + 2) * 0.03); t.xga *= (1 + w * frac); t.elo -= 25 * w * frac; }
       else { const w = (p.xg_90 + 0.8 * p.xa_90) * 0.16; t.xg *= (1 - w * frac); t.elo -= 42 * w * frac; }
     }
+  });
+  const remaining = Object.create(null);
+  FIXTURES_IN.forEach(([h,a]) => { remaining[h]=(remaining[h]||0)+1; remaining[a]=(remaining[a]||0)+1; });
+  const frozenEffects = typeof NT90_PLAYERS !== "undefined" ? NT90_PLAYERS.clubEffects(scenario.player_effects || {}, inj, remaining) : {};
+  Object.entries(frozenEffects).forEach(([club, effect]) => {
+    const team = byCode[club]; if(!team) return;
+    team.xg *= 1-effect.attack/100; team.xga *= 1+effect.defence/100;
   });
   Object.entries(scenario.team_boosts || {}).forEach(([c, b]) => {
     const t = byCode[c]; if(!t) return;
@@ -609,7 +623,7 @@ function localSimulate(scenario, nSims){
     // reported a vintage the rest of the page contradicted.
     meta:{ season:"2026–27 Premier League",
            as_of_date:(DATA.meta && DATA.meta.as_of_date) || "",
-           n_simulations:nSims, runtime_ms:0, scenario_active:true, client_fallback:true },
+           n_simulations:nSims, runtime_ms:0, scenario_active:true, client_fallback:true, manual_player_effects:frozenEffects },
     headline_predictions:{ champion:tableRows[0], runner_up:tableRows[1], golden_boot:gbSorted[0], playmaker:playmaker[0],
                            golden_glove:goldenGlove[0], poty:potySorted[0] },
     table_projections:tableRows, golden_boot_race:gbSorted.slice(0, 18), playmaker_race:playmaker.slice(0, 18),

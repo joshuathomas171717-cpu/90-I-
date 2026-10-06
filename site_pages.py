@@ -31,6 +31,8 @@ Run it directly (`python3 site_pages.py`) or as part of `run_all.py`.
 import csv
 import html
 import json
+from safe_embed import script_json
+from player_ui import squad_panel, availability_digest, gameweek_evidence
 import os
 import re
 
@@ -90,7 +92,7 @@ tr:last-child td{border-bottom:0}
       letter-spacing:.06em;text-transform:uppercase}
 .chip.ucl{background:rgba(34,211,238,.14);color:#6ee7ff}
 .chip.rel{background:rgba(229,75,154,.16);color:#ff8fc4}
-.bar{height:7px;border-radius:4px;background:#232b42;overflow:hidden;min-width:60px}
+.bar{display:block;width:100%;height:7px;border-radius:4px;background:#232b42;overflow:hidden;min-width:60px;margin:8px 0}
 .bar>i{display:block;height:100%;background:#22D3EE}
 .bar.rel>i{background:#E54B9A}
 .muted{color:#8E9BB8}
@@ -99,6 +101,7 @@ tr:last-child td{border-bottom:0}
 .kv b{display:block;font-size:22px;letter-spacing:-.01em}
 .kv span{color:#8E9BB8;font-size:12px;text-transform:uppercase;letter-spacing:.08em}
 footer.site{border-top:1px solid #232b42;margin-top:40px;padding-top:18px;color:#8E9BB8;font-size:13px}
+p a,footer.site a{text-decoration:underline;text-underline-offset:3px}
 .cta{display:inline-block;background:#22D3EE;color:#062028;font-weight:700;padding:10px 18px;
      border-radius:10px;margin:6px 0 0}
 .cta:hover{text-decoration:none;filter:brightness(1.08)}
@@ -143,7 +146,7 @@ ul.plain{padding-left:18px}ul.plain li{margin:4px 0}
   td.fb button:hover{color:#EAF0FF;border-color:#3A4763}
   td.fb button.on{background:#22D3EE;color:#08111C;border-color:#22D3EE;font-weight:700}
   td.fb button[data-vote="bad"].on{background:#F472B6;border-color:#F472B6}
-  td.fb a.send{margin-left:6px;color:#5C6884;font-size:11px;text-decoration:underline}
+  td.fb a.send{margin-left:6px;color:#9AA8C4;font-size:11px;text-decoration:underline}
   td.fb a.send:hover{color:#22D3EE}
 """
 
@@ -155,6 +158,9 @@ def _esc(t):
 def _rel(depth, target):
     """A path back to the site root from a page `depth` levels down."""
     return ("../" * depth) + target if depth else target
+
+
+PAGE_CSS += "\n.squad-panel a,.missing-digest a{text-decoration:underline;text-underline-offset:3px}.squad-panel :focus-visible{outline:2px solid #6ee7ff;outline-offset:3px}.missing-digest summary:focus-visible{outline:2px solid #6ee7ff}\n"
 
 
 def page(title, description, body, depth=0, canonical=None, og_image_rel=None, jsonld=None):
@@ -183,8 +189,7 @@ def page(title, description, body, depth=0, canonical=None, og_image_rel=None, j
         # @context, which is valid JSON and invalid JSON-LD — a validator rejects it and a consumer
         # has no way to know what vocabulary it is in.
         ld = ('\n<script type="application/ld+json">%s</script>'
-              % json.dumps({"@context": "https://schema.org", "@graph": graph},
-                           separators=(",", ":"), ensure_ascii=False))
+              % script_json({"@context": "https://schema.org", "@graph": graph}))
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -327,7 +332,7 @@ Built to work without a key; not allowed to change a forecast before it earns th
 <div class="card" style="border-top:3px solid #6ee7ff">
   <h2 style="margin-top:0">The live model has not changed</h2>
   <p>The new layer is <b>context, not prediction input</b>. {_esc(gate_explanation)}
-  The existing What-If assumptions remain unchanged too.</p>
+  Version 1 scenarios keep their original assumptions; new named-player scenarios explicitly apply frozen replacement-aware ranges. Neither auto-loads actual team news.</p>
   <p class="muted">Card version v3.0 is not a promoted production model. Current data: {_esc(context.get('as_of') or 'unknown')}.
   <a href="changelog.html">Read the release</a>.</p>
 </div>
@@ -399,8 +404,7 @@ of a paired seven-day-block RPS-delta interval below zero. The actual production
 <p>A free-provider backfill is optional and resumable; it never starts automatically in CI.
 Manual history/calendar drops work without a key. See <a href="{_esc(REPO_URL)}/blob/main/docs/player-model-card.md">the full model card and input schema</a>.</p>
 </details>
-<p class="note">Next, not already shipped: squad panels, named-player What-If ranges and pre-match missing-player digests.
-This card does not pretend those future UI features exist.</p>
+<p class="note">Now visible: source-labelled squad panels, named-player What-If input ranges and snapshot-derived matchweek digests. Legacy locks without availability stay visibly unrecorded; later team news is never backfilled.</p>
 <p><a class="cta" href="index.html">Back to the dashboard</a></p>
 """
     # Links inside prose must differ by more than colour (WCAG 1.4.1); scope to this new card.
@@ -807,6 +811,9 @@ take any of that on trust — the file is in the repository and one command re-c
                     % (gw, _esc(str(lock.get("generated") or "?")[:10]),
                        _esc(str(lock.get("locked_at") or "?")[:10]),
                        _esc(lock["content_hash"][:16] + "…"), verdict))
+        _proof = gameweek_evidence(gw, ledger)
+        bits.append(availability_digest(_proof, [c for pred in predictions for c in (pred["home"], pred["away"])],
+                                        heading="Availability as recorded at this lock", show_lock=True))
         if predictions:
             bits.append('<div class="tablewrap"><table class="tbl"><tr><th>Fixture</th><th>Our call</th><th>Score</th>'
                         '<th>Home / draw / away</th><th>Actual</th><th></th><th>Your verdict</th></tr>')
@@ -996,6 +1003,11 @@ def build(summary=None):
     teams = {t["code"]: t for t in summary["table_projections"]}
     meta = summary["meta"]
     written = []
+    _layer_path = os.path.join(DATA, "player_ui_2026_27.json")
+    _layer = {}
+    if os.path.exists(_layer_path):
+        with open(_layer_path, encoding="utf-8") as fh:
+            _layer = json.load(fh)
 
     def w(path, content, kind="page", binary=False):
         full = os.path.join(STATIC, path)
@@ -1129,6 +1141,9 @@ def build(summary=None):
                                   _pct(f.get("prob_home")), _pct(f.get("prob_draw")), _pct(f.get("prob_away"))))},
                  } for i, f in enumerate(fixtures)],
         }]
+        _news = (_layer.get("by_gameweek") or {}).get(str(gw))
+        body += availability_digest(_news, [c for f in fixtures for c in (f["home"], f["away"])],
+                                    heading="Availability recorded for this matchweek")
         title = ("Premier League matchweek %d results — NINETY+" % gw if is_played else
                  "Premier League matchweek %d predictions — NINETY+" % gw)
         desc = ("Every matchweek %d result: %d fixtures, %d goals." % (gw, len(fixtures), goals)
@@ -1173,6 +1188,7 @@ def build(summary=None):
 {"" if len(remaining) <= 10 else '<p class="muted">Showing the next 10; every fixture is listed on its matchweek page.</p>'}
 <p style="margin-top:18px"><a class="cta" href="../index.html">Open {_esc(t['short'])} in the dashboard</a></p>
 """
+        body += squad_panel(_layer, code)
         jsonld = [{
             "@type": "BreadcrumbList",
             "itemListElement": [
@@ -1230,6 +1246,7 @@ def build(summary=None):
                 _dest.update(json.load(fh))
     w("player-model.html", _player_model_page(_player_context, _player_gate))
     w("player-model.json", json.dumps({"context": _player_context, "gate": _player_gate}, indent=2, allow_nan=False)+"\n", "data")
+    w("players.json", json.dumps(_layer, indent=2, allow_nan=False)+"\n", "data")
     _ledger = {}
     _ledger_path = os.path.join(DATA, "ledger_2026_27.json")
     if os.path.exists(_ledger_path):

@@ -81,7 +81,7 @@ jobs:
             echo "repository's own CSVs rather than from the API. That is the designed fallback"
             echo "(sources/__init__.py), not a failure."
           fi
-          echo "site_url=${NT90_SITE_URL:-<unset: relative canonicals>}"
+          if [ -n "$NT90_SITE_URL" ]; then echo "Public site origin is configured (not echoed)."; else echo "Public site origin unset: relative canonicals."; fi
 
       - name: Validate the checked-in dataset before touching anything
         run: python3 validate_data.py
@@ -123,7 +123,7 @@ jobs:
         run: |
           git show HEAD:static/index.html > /tmp/committed_index.html
           # Context/provenance changes count even when headline predictions do not move.
-          PLAYER_CHANGES=$(git status --porcelain -- data/players_form_2026_27.csv data/players_form_2026_27.meta.json data/availability_2026_27.json data/player_calendar_2026_27.json data/player_context_2026_27.json data/player_gate_2025_26.json)
+          PLAYER_CHANGES=$(git status --porcelain -- data/players_form_2026_27.csv data/players_form_2026_27.meta.json data/availability_2026_27.json data/player_calendar_2026_27.json data/player_context_2026_27.json data/player_gate_2025_26.json data/player_ui_2026_27.json)
           if [ -z "$PLAYER_CHANGES" ] && python3 check_page_current.py --against /tmp/committed_index.html; then
             # Everything derived is put back together. `static/` now covers the crawlable pages,
             # the preview cards, the icons and the calendar feeds, and all of them are written from
@@ -152,6 +152,7 @@ jobs:
           # crawlable pages, the preview cards, the icons and the calendar feeds — so adding the
           # directory keeps every one of them in step with the data it was built from.
           git add data/ static/
+          python3 tools/publication_gate.py --staged
           if git diff --cached --quiet; then
             echo "No changes — the model already reflects the latest results, and Vercel has nothing to redeploy."
           else
@@ -173,8 +174,15 @@ jobs:
           --url "${{ vars.NT90_SITE_URL || 'https://90plus-cyan.vercel.app/' }}"
           --retries 6 --wait 30
 
-      - name: Upload the audit trail
+      - name: Guard audit artifact publication
+        id: audit_safety
         if: always()
+        run: |
+          python3 tools/publication_gate.py --include data/raw --include data/staging
+          echo "safe=true" >> "$GITHUB_OUTPUT"
+
+      - name: Upload the audit trail
+        if: always() && steps.audit_safety.outputs.safe == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: weekly-audit

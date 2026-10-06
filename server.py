@@ -295,7 +295,7 @@ def client_key(handler):
 
 
 # ── the scenario contract ────────────────────────────────────────────────────
-SCENARIO_KEYS = ("player_injuries", "team_boosts", "points_deductions", "custom_scores")
+SCENARIO_KEYS = ("player_injuries", "team_boosts", "points_deductions", "custom_scores", "player_effects")
 _CODE_RE = None
 
 
@@ -308,7 +308,7 @@ def rss_mb():
         return None
 
 
-def validate_scenario(body, known_codes, known_players):
+def validate_scenario(body, known_codes, known_players, player_clubs=None):
     """Normalise a what-if request, or explain exactly why it is not one.
 
     Returns (scenario, n_sims, errors). Errors are strings meant to be read by a human, because the
@@ -347,6 +347,13 @@ def validate_scenario(body, known_codes, known_players):
                 continue
             clean[pid] = int(max(0, min(33, games)))
         scenario["player_injuries"] = clean
+
+    from player_scenarios import sanitise_effects
+    effects, effect_errors = sanitise_effects(body.get("player_effects"), scenario.get("player_injuries") or {},
+                                             known_codes, known_players, player_clubs)
+    errors.extend(effect_errors)
+    if effects:
+        scenario["player_effects"] = effects
 
     boosts = body.get("team_boosts", {})
     if not isinstance(boosts, dict):
@@ -999,7 +1006,8 @@ class PLRequestHandler(BaseHTTPRequestHandler):
 
         known_codes = set(engine.df_teams["code"].values)
         known_players = set(engine.df_players["player_id"].values)
-        scenario, n_sims, errors = validate_scenario(body, known_codes, known_players)
+        scenario, n_sims, errors = validate_scenario(body, known_codes, known_players,
+            dict(zip(engine.df_players["player_id"], engine.df_players["club"])))
         if errors:
             return self._json(400, {"error": "invalid scenario", "details": errors,
                                     "expected": {"n_sims": "int %d-%d" % (MIN_SIMS, MAX_SIMS),
