@@ -71,9 +71,10 @@ if [ "$missing_before" != "0" ]; then
   base="http://deb.debian.org/debian/pool/main"
   for url in \
     "$base/n/nss/libnss3_3.110-1+deb13u4_amd64.deb" \
+    "$base/a/at-spi2-core/libatk1.0-0t64_2.56.2-1+deb13u2_amd64.deb" \
     "$base/a/at-spi2-core/libatk-bridge2.0-0t64_2.56.2-1+deb13u2_amd64.deb" \
     "$base/a/at-spi2-core/libatspi2.0-0t64_2.56.2-1+deb13u2_amd64.deb"; do
-    ( cd /tmp/nt90-debs && curl -s --max-time 60 -O "$url" ) || true
+    ( cd /tmp/nt90-debs && curl -fsS --max-time 60 -O "$url" ) || true
   done
   for d in /tmp/nt90-debs/*.deb; do dpkg-deb -x "$d" "$LIBS" 2>/dev/null || true; done
 fi

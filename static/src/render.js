@@ -1281,13 +1281,20 @@ function renderDataTab(){
 }
 
 /* ═══════════ BOOT ═══════════ */
+function renderPlayHub(){
+  const picker=$("hubClub");if(!picker)return;
+  picker.innerHTML=[...TEAMS_IN].sort((a,b)=>a.name.localeCompare(b.name)).map(t=>`<option value="${esc(t.code)}">${esc(t.name)}</option>`).join("");
+  const favourite=window.NT90_STORE&&window.NT90_STORE.favourites()[0];picker.value=TEAM_BY_CODE[favourite]?favourite:"ARS";
+  picker.onchange=()=>{$("hubCareer").href="play.html?mode=career&club="+encodeURIComponent(picker.value);};picker.onchange();
+}
+
 function renderAll(){
   renderHeader(); renderTicker(); renderHero(); renderHeadTiles(); renderGW(); renderRaceBars(); renderPulse();
   renderMarquee(); renderTable(); renderMarkets(); renderTop6Rings();
   renderAwardTiles(); renderAwards(); wireAwardSearch(); renderDuelSelects(); renderScenarioForm();
   renderMetrics(); renderCharts(); renderBacktest(); renderArch(); renderLimits(); renderModelCard(); renderPlayerGate(); renderFreshness(); renderDataTab();
   renderScenarioAwards();
-  renderPlayerSquad(); renderMissingDigest();
+  renderPlayerSquad(); renderMissingDigest(); renderPlayHub();
   animate(document);
   armGlow(document);
   applyAwardFilter();

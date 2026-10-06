@@ -186,3 +186,15 @@ Future availability seals bind the exact capture to its prediction lock/revision
 current capture to an old lock to make receipts look complete. For MW6 the correct label is **not
 recorded at lock**. New named-player scenario links carry explicit hypotheses, not injury diagnoses;
 legacy links keep their old method and saved coefficients are never silently re-priced.
+
+## 6. Career/Challenge game publication
+
+`python3 playground.py` builds the self-contained `static/play.html` plus its code/data fingerprint.
+Both normal and weekly rebuilds run it before the dashboard, which embeds that fingerprint. Never
+revert generated game pages while keeping a changed `data/playground_manifest.json`; the weekly
+change guard covers the manifest. The deployment verifier compares it even when forecast dates and
+numbers do not change. Verify actual game-page bytes and play/resume/practice on Vercel after push.
+
+Games are local, hypothetical worlds. They never write actual results or prediction locks. New data
+must not replace an existing career's frozen world, and practice cannot rewrite real locked challenge
+picks. No account/global leaderboard is provided; client saves/clocks are not independently trusted.

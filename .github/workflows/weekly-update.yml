@@ -123,7 +123,7 @@ jobs:
         run: |
           git show HEAD:static/index.html > /tmp/committed_index.html
           # Context/provenance changes count even when headline predictions do not move.
-          PLAYER_CHANGES=$(git status --porcelain -- data/players_form_2026_27.csv data/players_form_2026_27.meta.json data/availability_2026_27.json data/player_calendar_2026_27.json data/player_context_2026_27.json data/player_gate_2025_26.json data/player_ui_2026_27.json)
+          PLAYER_CHANGES=$(git status --porcelain -- data/players_form_2026_27.csv data/players_form_2026_27.meta.json data/availability_2026_27.json data/player_calendar_2026_27.json data/player_context_2026_27.json data/player_gate_2025_26.json data/player_ui_2026_27.json data/playground_manifest.json)
           if [ -z "$PLAYER_CHANGES" ] && python3 check_page_current.py --against /tmp/committed_index.html; then
             # Everything derived is put back together. `static/` now covers the crawlable pages,
             # the preview cards, the icons and the calendar feeds, and all of them are written from

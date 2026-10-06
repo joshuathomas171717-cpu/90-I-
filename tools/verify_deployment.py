@@ -39,7 +39,7 @@ LEDGER = os.path.join(ROOT, "data", "ledger_2026_27.json")
 
 def committed():
     """What this checkout says about itself — the values the deployment should be showing."""
-    out = {"matchweek": None, "as_of": None, "n_simulations": None, "season": None, "locks": None, "player_context": None, "player_ui": None}
+    out = {"matchweek": None, "as_of": None, "n_simulations": None, "season": None, "locks": None, "player_context": None, "player_ui": None, "playground": None}
     if os.path.exists(SUMMARY):
         with open(SUMMARY, encoding="utf-8") as fh:
             meta = (json.load(fh) or {}).get("meta") or {}
@@ -49,6 +49,9 @@ def committed():
         out["season"] = meta.get("season")
         out["player_context"] = (meta.get("player_signal") or {}).get("fingerprint")
         out["player_ui"] = (meta.get("player_ui") or {}).get("fingerprint")
+    _game = os.path.join(ROOT, "data", "playground_manifest.json")
+    if os.path.exists(_game):
+        with open(_game, encoding="utf-8") as fh: out["playground"] = json.load(fh).get("fingerprint")
     if os.path.exists(LEDGER):
         with open(LEDGER, encoding="utf-8") as fh:
             out["locks"] = len((json.load(fh) or {}).get("locks") or [])
@@ -68,6 +71,7 @@ def deployed(html):
         "season": meta.get("season"),
         "player_context": (meta.get("player_signal") or {}).get("fingerprint"),
         "player_ui": (meta.get("player_ui") or {}).get("fingerprint"),
+        "playground": (blob.get("playground") or {}).get("fingerprint"),
         "locks": len((blob.get("ledger") or {}).get("locks")
                      or ((blob.get("ledger") or {}).get("entries") or [])),
     }
@@ -84,7 +88,8 @@ def compare(want, got):
                          ("as_of", "the date the numbers were built from"),
                          ("season", "the season label"),
                          ("player_context", "the player-context content fingerprint"),
-                         ("player_ui", "the squad/digest presentation fingerprint")):
+                         ("player_ui", "the squad/digest presentation fingerprint"),
+                         ("playground", "the career/challenge build fingerprint")):
         checks.append((field, label, want.get(field), got.get(field), want.get(field) == got.get(field)))
     return checks
 

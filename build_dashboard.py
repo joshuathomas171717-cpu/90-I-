@@ -184,6 +184,7 @@ def _schedule(path):
 
 payload = json_safe({
     "baseline": summary, "backtest": backtest, "club_extras": club_extras, "h2h": h2h,
+    "playground": json.load(open(os.path.join(DATA, "playground_manifest.json"), encoding="utf-8")),
     "player_layer": _player_preview(json.load(open(os.path.join(DATA, "player_ui_2026_27.json"), encoding="utf-8")),
                                      summary["meta"].get("next_gw"), players["player_id"].tolist()),
     "inputs": {"teams": teams_in, "fixtures": fixtures_in, "players": players_in, "gks": gks_in},

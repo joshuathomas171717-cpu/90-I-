@@ -29,6 +29,7 @@ STEPS = [
     # pipeline testing itself out of order. Building first and verifying second is also the order that
     # makes the checks mean something: nothing downstream of a test can be published unverified,
     # because run_all exits non-zero and CI goes red on the first failure either way.
+    ("playground.py", "building an isolated Career Mode and Beat the Model game"),
     ("build_dashboard.py", "rebuilding static/index.html"),
     ("feeds.py", "writing the calendar feeds (league + one per club)"),
     ("site_pages.py", "writing crawlable pages, icons, previews and the sitemap"),

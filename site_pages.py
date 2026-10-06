@@ -955,12 +955,13 @@ accounts and no sign-in, and does not try to identify you.</p>
 <h2>What is stored on your device</h2>
 <p>The dashboard runs entirely in the page you loaded — the data is embedded in the HTML and the
 model's offline engine runs in your browser. Nothing about you is sent anywhere to make it work.</p>
-<p>Three things you do are remembered <b>in this browser</b>, using local storage, so that the page
-is still yours when you come back: the clubs you follow, the What-If scenarios you save, and the view
-you were last looking at. That is all of it — no cookie is set, nothing is sent to the server, and
-there is no identifier that follows you between sites. Your What-If settings also live in the URL you
-share if you use the share button, which is a link rather than storage.</p>
-<p>You can clear all three with <b>Forget everything</b> in the What-If panel, or erase them the
+<p>Your followed clubs, saved What-If scenarios, last view, <b>Career Mode saves</b> and personal
+<b>Beat the Model predictions</b> are remembered in local storage on this device. Receipt-page thumbs-up/down
+feedback is also kept locally. No cookie is set and no identifier follows you between sites. Game saves
+contain your fictional world/decisions, not an account; exported career backups are files you choose to
+save or share. What-If settings also live in a URL if you explicitly share it.</p>
+<p><b>Forget everything</b> in the What-If panel clears the dashboard state including careers and
+personal challenge records. Clear all site data to remove separate receipt feedback too. Or erase them the
 usual way by clearing site data. If your browser blocks local storage — private windows and some
 embedded frames do — the dashboard says so and keeps your session in memory instead: everything still
 works, but it will not survive a reload.</p>
@@ -1347,6 +1348,7 @@ data from the official fixture list and football-data.org.</p>
             ("method.html", "0.8"), ("player-model.html", "0.7"), ("calendar.html", "0.7"), ("privacy.html", "0.2")]
     urls += [(p, "0.7") for _gw, _d, p in gw_pages]
     urls += [(p, "0.6") for _t, p in club_pages]
+    if os.path.exists(os.path.join(STATIC, "play.html")): urls.append(("play.html", "0.8"))
     lastmod = _lastmod(meta.get("as_of_date", ""))
     entries = []
     for path, prio in urls:

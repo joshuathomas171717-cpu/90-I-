@@ -28,7 +28,7 @@ Do not treat pushing source code as proof that the website changed.
    python3 check_live.py --url https://90plus-cyan.vercel.app/
    ```
    Compare the generated pages/report bytes for the new feature too. The verifier compares matchweek,
-   results date, season, player-context hash and squad/digest UI hash. A matching results date alone
+   results date, season, player-context hash, squad/digest UI hash and Career/Challenge build hash. A matching results date alone
    cannot prove a context-only change landed. Check the actual GitHub CI result and leave a clean tree.
 7. Rebuild `ninety-plus-pl-predictor.zip` from tracked files only. Test a clean extraction with keys,
    git metadata, raw caches and model artifacts absent. Present the main result and report the commit

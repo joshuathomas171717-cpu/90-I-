@@ -207,6 +207,27 @@ The site publishes `/player-model.html` and a downloadable `/player-model.json` 
 links to them. The weekly job refreshes optional inputs before rebuilding and checks the deployed
 player-context content fingerprint even when the matchweek/data date stay the same.
 
+### Play a season, not just read one (Phase 16)
+
+Use the homepage **Start Career Mode** button, or open [`play.html`](https://90plus-cyan.vercel.app/play.html).
+Choose a club, manage tactics/training/fitness, rest a tracked star or make a fantasy signing using game
+credits, then **Play matchday**. Simulated fixtures move your alternate league table, not the official
+results. **Fast-forward 3 weeks** and a full-season report are available; at most three saved careers
+live on your device. Export/import validated JSON to back up a frozen world. Same world/choices/seed
+produce the same scores; a reload does not reroll them. The comparison is with an unchanged path using
+the same game engine and draws. It is not an assertion that your management improved model accuracy.
+
+**Beat the Model** is the second playable idea. Pick outcomes or exact scores, play a simulated practice
+round immediately, or lock your real matchweek picks before the visible window deadline. Only published
+actual results award real points; absent results remain pending. Local clocks/saves can be edited, so
+this is personal practice—not a verified competition or global leaderboard. Practice scores never enter
+the official ledger. No account, real-money purchase, API key or external script is needed.
+
+The game uses a tracked sample, not complete starting XIs. Transfer prices, tactics, training and board
+objectives are fictional game rules. Goal-reveal minutes/scorers are a simulated narrative, not live
+commentary. This is an original fan-built management sandbox, not the full EA/FIFA game or affiliated
+assets. [Game rules and evidence](docs/phase16-playground.md) explain the boundary.
+
 ### Visible players and named What-If (Phase 15)
 
 Open **Table → Squad context** to pick a club, or visit any `/club/<name>.html` page. You get source-labelled

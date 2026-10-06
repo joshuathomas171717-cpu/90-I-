@@ -304,7 +304,7 @@ def test_publication_pipeline_checks_security_before_commit_and_artifact_upload(
 
 def test_saved_storage_migration_is_versioned_without_rewriting_old_scenario_methods():
     store=Path(ROOT,'static/src/store.js').read_text()
-    assert 'var VERSION = 3' in store and 'MIGRATIONS[2]' in store
+    assert 'var VERSION = 4' in store and 'MIGRATIONS[2]' in store and 'MIGRATIONS[3]' in store
     assert 'JSON.parse(JSON.stringify(scenario || {}))' in store
 
 

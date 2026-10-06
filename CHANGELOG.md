@@ -11,6 +11,39 @@ ones you do not have.
 
 ---
 
+## v2.5 — 6 October 2026
+
+**Model** — unchanged automatic forecasts and the same closed historical player gate. New games are
+isolated alternative worlds, not new injury/transfer validation or real-result updates.
+
+**Play** — an action-first homepage leads into a self-contained Career Mode. Choose any of 20 clubs,
+start at the real current table, manage tactics/training/fitness, rest tracked players and sign/release
+from the 52-player fantasy market using fictional credits. Play/reveal matchdays or fast-forward,
+follow the alternate league and board objective, and reach a final report. The original EA-inspired
+management concept uses no EA assets/code, real money, paid service or complete-XI claim.
+
+**Fair comparison** — game worlds freeze their data and rules. Deterministic per-fixture draws also
+run an unchanged control season; the comparison is against that same game sampler, not an unrelated
+Monte Carlo run. Reloading/importing replays the decision journal, restoring the same results and
+recomputing editable totals, credits and fitness. Up to three local careers with JSON backup/restore.
+
+**Second game** — Beat the Model: select match outcomes/exact scores, run instantly labelled simulated
+practice rounds, and optionally lock personal real predictions before the conservative matchweek-window
+start. Practice never awards real points. Saved real picks score only against published actual results;
+missing results remain pending. Client clocks/saves are editable, so this is not a verified competition
+or public leaderboard. Model score picks are chosen consistently with their highest-probability outcome.
+
+**Release** — storage schema v4 retains earlier scenarios; game code/data get a publication fingerprint
+in the homepage and deployment verifier. Script-safe JSON, bounded state validation, import limits,
+DOM escaping, credential gates and mobile/keyboard/browser checks remain publication requirements.
+No API key, account, extra runtime dependency or Node server is required.
+
+**Measured** — unchanged existing structural baseline: 46.3% 1X2 · RPS 0.2184 · rank correlation 0.566.
+**Delta vs v2.4** — 0.0 points, 0.0000 RPS for unchanged automatic forecasts. Game-only rules are not
+separately accuracy-tested or presented as real football effects.
+
+---
+
 ## v2.4 — 6 October 2026
 
 **Model** — unchanged from v2.3 for automatic forecasts. The player gate remains closed; the new UI

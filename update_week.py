@@ -176,7 +176,7 @@ def log(step, message):
 
 
 def run_build(steps=("data_builder.py", "backtest.py", "player_gate.py", "player_context.py", "player_ui.py",
-                     "ml_engine.py", "build_dashboard.py", "site_pages.py")):
+                     "ml_engine.py", "playground.py", "build_dashboard.py", "site_pages.py")):
     for script in steps:
         t0 = time.perf_counter()
         result = subprocess.run([sys.executable, os.path.join(BASE_DIR, script)], cwd=BASE_DIR,
